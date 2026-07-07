@@ -16,6 +16,7 @@ export default defineConfig({
   build: {
     outDir: './dist'
   },
+  base: '/simple-crud/',
   resolve: {
     alias: {
       "@src": path.resolve(__dirname, "src"),
