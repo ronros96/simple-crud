@@ -1,0 +1,32 @@
+.pop-up{
+  position: absolute;
+  /* display: none; */
+  top: 0;
+  left: 0;
+  background-color: #FFC400;
+  padding: 1rem 2rem;
+  font-size: var(--font-base);
+  font-weight: 700;
+  color: var(--text-default);
+  border-radius: 100vmax;
+  &::before{
+    content: '';
+    position: absolute;
+    display: block;
+    bottom: calc(-1rem + 2px);
+    left: 1rem;
+    width: 1rem;
+    height: 1rem;
+    clip-path: polygon(100% 0, 0 0, 100% 100%);
+    background-color: #FFC400;
+  }
+}
+
+section *:has(.pop-up){
+  position: relative;
+  cursor: pointer;
+}
+
+.pop-up.pop{
+  display: block;
+}
