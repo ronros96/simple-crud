@@ -8,11 +8,11 @@ const Page = () =>{
 
 
   return(
-    <section className='container'>
+    <section className='container w-full'>
       {
         !isLogged ? (
           <>
-            <h1 className='header-3'>Simple CRUD</h1>
+            <h1 className='header-3 text-center'>User Login</h1>
             <Login/>
           </>
         ) : (

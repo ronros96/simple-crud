@@ -1,45 +1,13 @@
 .login-container{
   display: block;
   max-width: 25rem;
+  margin: 0 auto;
   padding: 1rem;
-  border: 1px solid #fff;
   border-radius: .5rem;
+  background-color: var(--frame-bg);
 
   form{
     display: block;
     width: 100%;
-  }
-
-  .form-group{
-    display: block;
-    width: 100%;
-    margin-bottom: 1rem;
-
-    label{
-      display: block;
-      font-size: inherit;
-      font-weight: 400;
-      margin-bottom: .5rem;
-    }
-
-    input{
-      display: block;
-      width: 100%;
-      padding: .5rem;
-      border-radius: .5rem;
-      border: 1px solid #fff;
-      background-color: #000;
-      color: #fff;
-    }
-  }
-
-  button{
-    display: block;
-    width: 100%;
-    padding: .5rem;
-    border-radius: .5rem;
-    background-color: #fff;
-    color: #000;
-    cursor: pointer;
   }
 }

@@ -4,7 +4,9 @@ import { useLogin } from "@src/store/store";
 const Login = () => {
   const setLogin = useLogin((state:any) => state.setLogin);
   const setUsername = useLogin((state:any) => state.setUsername);
-  const setPassword = useLogin((state:any) => state.setPassword); 
+  const setPassword = useLogin((state:any) => state.setPassword);
+  
+  
 
   return (
     <div className="login-container">

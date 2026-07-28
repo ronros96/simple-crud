@@ -1,10 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300..700;1,300..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist+Pixel&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 @import "tailwindcss";
 
 :root{
-  --roboto: "Roboto", Arial, Helvetica, sans-serif;
-  --cormorant: "Cormorant", serif;
+  --pixel:  "Geist Pixel", sans-serif;
+  --open-sans: "Open Sans", sans-serif;
 
   --base-font-size:16px;
   --font-sm: clamp(0.7rem, -0.05vi + 0.71rem, 0.67rem);
@@ -23,14 +22,18 @@
 
   --ease:cubic-bezier(.81,.14,.53,.74);
 
-  --text-default:#333333;
-  --bg1:#fff7f8;
-  --bg2:#B9C4CA;
+  --text-default:#fff;
+  --frame-bg:#101010;
+  --bg1:#242121;
+  --bg2:#1C1B1B;
   --lgray:#979397;
   --dgray:#2D2D2D;
   --white:#FFF;
   --black:#000;
-  --ghost:#ffffff20;
+  --ghost:#ffffff55;
+  --link:#5a8cc2;
+  --button-bg:#85a2cc;
+  --button-hover:#a6c8ec;
 }
 
 *{
@@ -43,28 +46,29 @@
 html,
 body{
   position: relative;
-  font-family: var(--roboto);
+  font-family: var(--open-sans);
   font-size: var(--font-base);
+  font-optical-sizing: auto;
   color: var(--text-default);
 }
 
 main{
   min-width: 100svw;
   min-height: 100svh;
-  background-color: var(--black);
+  background-color: var(--bg1);
 }
 
 h1,h2,h3,h4,h5,h6{
   margin-top: var(--gap);
   margin-bottom: var(--gap2x);
-  font-family: var(--cormorant);
+  font-family: var(--pixel);
   font-weight: 400;
   color: inherit;
   line-height: 1;
   span{
     font-size: 70%;
     font-weight: 200;
-    font-family: var(--roboto);
+    font-family: var(--open-sans);
   }
 }
 
@@ -75,6 +79,7 @@ p,a{
   font-weight: 400;
   color: inherit;
   line-height: 1.2;
+  font-variation-settings: "wdth" 100;
 }
 
 em,u{
@@ -82,9 +87,16 @@ em,u{
   font-weight: inherit;
   font-style: italic;
 }
+
 u{
   font-style: normal;
   text-decoration: underline;
+}
+
+label{
+  font-size: inherit;
+  font-weight: 300;
+
 }
 
 h1,
@@ -117,4 +129,46 @@ main{
   width: 100%;
   height: auto;
   isolation: isolate;
+}
+
+.form-group{
+  display: block;
+  width: 100%;
+  margin-bottom: 1rem;
+
+  label{
+    display: block;
+    margin-bottom: .5rem;
+  }
+
+  input{
+    display: block;
+    width: 100%;
+    padding: .5rem;
+    border-radius: .5rem;
+    border: 1px solid var(--dgray);
+    background-color: var(--black);
+    color: #fff;
+    &:focus{
+      outline: none;
+      border-color: var(--ghost);
+    }
+  }
+}
+
+button{
+  display: block;
+  width: 100%;
+  padding: .5rem;
+  border-radius: .5rem;
+  border: 1px solid var(--dgray);
+  background-color: var(--button-bg);
+  font-family: var(--pixel);
+  font-weight: 500;
+  color: var(--white);
+  cursor: pointer;
+
+  &:hover{
+    background-color: var(--button-hover);
+  }
 }
