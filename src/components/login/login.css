@@ -1,13 +1,17 @@
+@import "tailwindcss";
+
 .login-container{
-  display: block;
-  max-width: 25rem;
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch; 
   margin: 0 auto;
-  padding: 1rem;
   border-radius: .5rem;
   background-color: var(--frame-bg);
 
-  form{
-    display: block;
-    width: 100%;
-  }
+}
+
+.login-form,
+.login-content{
+  padding: 1rem;
+  width: 24rem;
 }

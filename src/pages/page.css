@@ -1,3 +1,10 @@
 section{
-  color: var(--white);
+  color: var(--text-default);
+}
+
+.container{
+  padding: 2rem;
+  width: auto;
+  background-color: var(--frame-bg);
+  border-radius: 10px;
 }
