@@ -1,6 +1,7 @@
 import './login.css';
 import { useState } from "react"
-import { useLogin } from "@src/store/store";
+import clsx from 'clsx';
+import { useLogin, useSignIn } from "@src/store/store";
 import {
   Field,
   FieldDescription,
@@ -12,7 +13,7 @@ import {
   InputGroupInput,
 } from "@components/ui/input-group"
 import { Button } from "@components/ui/button"
-import { Eye, EyeOff } from "lucide-react"
+import { Eye, EyeOff, ChevronDown } from "lucide-react"
 
 const Login = () => {
   const setLogin = useLogin((state:any) => state.setLogin);
@@ -21,24 +22,28 @@ const Login = () => {
   const setUsername = useLogin((state:any) => state.setUsername);
   const setPassword = useLogin((state:any) => state.setPassword);
 
-  const [showPassword, setShowPassword] = useState(false)
+  const setSignIn = useSignIn((state:any) => state.setSignIn);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showHidden, setShowHidden] = useState(false);
+
   const clearForm = () => {
     setShowPassword(false);
     setUsername("");
     setPassword("");
   }
   
-  
   return (
     <div className="login-container">
       <form className="login-form">
-        
+
         <Field className="form-group">
           <FieldLabel htmlFor="username">Username</FieldLabel>
           <InputGroup>
             <InputGroupInput
               id="username"
               type="text"
+              name="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Enter username"
@@ -52,6 +57,7 @@ const Login = () => {
             <InputGroupInput
               id="password"
               type={showPassword ? "text" : "password"}
+              name="password"
               placeholder="Enter password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -90,20 +96,29 @@ const Login = () => {
       <div className="login-content">
         <h2 className="header-5">Hello There!</h2>
         <p>This is a simple <strong>Library Catalogue System</strong>. Just to show how I develop CRUD type system using React JS.</p>
-        <p>
-          <strong>If you want to enter as an Admin</strong><br/>
-          Username: Admin<br/>
-          Password: admin<br/>
-        </p>
-        <p>
-          <strong>If you want to enter as an Librarian</strong><br/>
-          Username: Librarian<br/>
-          Password: books<br/>
-        </p>
+        <div 
+          className="show-content"
+          onClick={() => setShowHidden(!showHidden)}
+        >
+          {showHidden ? 'Hide' : 'Show'}{' '}other credentials
+          <ChevronDown className={clsx({'rotate-180':showHidden})}/> 
+        </div>
+        <div className={clsx('hidden-content',{'show':showHidden})} >
+          <p>
+            <strong>If you want to enter as an Admin</strong><br/>
+            Username: Admin<br/>
+            Password: admin<br/>
+          </p>
+          <p>
+            <strong>If you want to enter as an Librarian</strong><br/>
+            Username: Librarian<br/>
+            Password: books<br/>
+          </p>
+        </div>
         <p><strong>
-          To be a Patron click SIGN-IN<br/>
-        </strong></p>
-        <Button>Sign In</Button>
+            Click SIGN-IN to be a Patron<br/>
+          </strong></p>
+        <Button onClick={() => setSignIn(true)}>Sign In</Button>
       </div>
     </div>
   )

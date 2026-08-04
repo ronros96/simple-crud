@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+.signin-container{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap:var(--gap) var(--gap2x);
+  justify-content: start;
+  align-items: stretch; 
+  margin: 0 auto;
+  border-radius: .5rem;
+  background-color: var(--frame-bg);
+
+  @media screen and (min-width: 680px) {
+    grid-template-columns: 1fr 1px 1fr;
+  }
+
+  .full-width{
+    grid-column: 1 / -1;
+  }
+
+  .divider-horizontal{
+    margin-bottom: 0;
+  }
+}
+
+.signin-form{
+  padding: var(--gap) 0;
+  width: 100%;
+  
+  @media screen and (min-width: 680px) {
+    width: 24rem;
+  }
+  
+  ul li{
+    font-size: var(--text-sm);
+  }
+}

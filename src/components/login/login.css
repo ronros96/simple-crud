@@ -2,16 +2,60 @@
 
 .login-container{
   display: flex;
-  justify-content: flex-start;
-  align-items: stretch; 
+  flex-direction: column;
+  gap:var(--gap2x);
   margin: 0 auto;
-  border-radius: .5rem;
   background-color: var(--frame-bg);
 
+  @media screen and (min-width: 680px) {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap:0;
+    align-items: stretch; 
+    border-radius: .5rem;
+  }
 }
 
 .login-form,
 .login-content{
-  padding: 1rem;
-  width: 24rem;
+  width: 100%;
+
+  @media screen and (min-width: 680px) {
+    padding: 1rem;
+    width: 24rem;
+  }
+
+  .hidden-content{
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .3s var(--ease);
+    
+    &.show{
+      max-height: 100svh;
+    }
+
+    @media screen and (min-width: 680px) {
+      max-height: 100%;
+      overflow: initial;
+    }
+  }
+
+  .show-content{
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    gap: .5rem;
+    cursor: pointer;
+    color: var(--link);
+
+    svg{
+      transform: rotate(0deg);
+      transition: transform .3s var(--ease);
+    }
+
+    @media screen and (min-width: 680px) {
+      display: none;
+    }
+  }
 }
+

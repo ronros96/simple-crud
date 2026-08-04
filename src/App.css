@@ -99,8 +99,11 @@ body{
 }
 
 main{
-  min-width: 100svw;
+  position: relative;
+  width: 100%;
   min-height: 100svh;
+  height: auto;
+  isolation: isolate;
   background-color: var(--main-bg);
 }
 
@@ -119,7 +122,6 @@ h1,h2,h3,h4,h5,h6{
 }
 
 p,a{
-  display: inline-block;
   margin-bottom: 1rem;
   font-family: inherit;
   font-size: inherit;
@@ -137,6 +139,17 @@ a{
   }
 }
 
+ul{
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-left: .5rem;
+  padding-left: 1rem;
+  li{
+    list-style-type: disc;
+    
+  }
+}
+
 em,u{
   font-size: inherit;
   font-weight: inherit;
@@ -151,6 +164,7 @@ u{
 label{
   font-size: inherit;
   font-weight: 400;
+  gap:0;
   text-transform: uppercase;
 }
 
@@ -179,22 +193,20 @@ h6,
   font-size: var(--font-base);
 }
 
-main{
-  position: relative;
-  width: 100%;
-  height: auto;
-  isolation: isolate;
-}
-
 .form-group{
   width: 100%;
-  margin-bottom: 2rem;
-  gap:var(--gap);
+  margin-bottom: 1.5rem;
+  gap:var(--gapHalf) var(--gap);
+
+  .form-group{
+    margin-bottom: 0;
+  }
 
   label{
     text-transform: uppercase;
   }
 
+  textarea,
   [data-slot=input-group]{
     width: 100%;
     min-height: 2.5rem;
@@ -207,6 +219,11 @@ main{
       outline: none;
       border-color: var(--dgray);
     }
+  }
+
+  textarea{
+    height: 6rem;
+    resize: vertical;
   }
 
   &:last-child{
@@ -255,13 +272,26 @@ button.small.stroke{
 .divider-vertical,
 .divider-horizontal{
   flex-shrink: 0;
-  width: 1px;
+  height: 1px;
+  width: 100%;
   background-color: var(--dgray);
 }
 
+.divider-vertical{
+  @media screen and (min-width: 680px) {
+    height: initial;
+    width: 1px;
+  }
+}
+
 .divider-horizontal{
+  margin-bottom: var(--gap);
   height: 1px;
   width: 100%;
+}
+
+.important{
+  color: var(--important);
 }
 
 .dark {

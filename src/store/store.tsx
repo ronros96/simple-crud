@@ -13,3 +13,8 @@ export const useLogin = create((set) => ({
   setUsername: (state:any) => set({username:state}),
   setPassword: (state:any) => set({password:state}),
 }));
+
+export const useSignIn = create((set) => ({
+  isSignedIn: false,
+  setSignIn: (state:any) => set({isSignedIn:state}),
+}));

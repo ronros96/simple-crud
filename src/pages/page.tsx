@@ -1,20 +1,31 @@
 import './page.css';
 import Login from '@components/login/login';
+import { useLogin, useSignIn } from "@src/store/store";
 
-import { useLogin } from "@src/store/store";
+import SignIn from '@components/sign-in/sign-in';
 
 const Page = () =>{
-  const isLogged =  useLogin((state:any) => state.isLogged);
 
+  const isLogged =  useLogin((state:any) => state.isLogged);
+  const isSignedIn =  useSignIn((state:any) => state.isSignedIn);
 
   return(
     <section className='container'>
       {
         !isLogged ? (
-          <>
-            <h1 className='header-4 mb-1'>User Login</h1>
-            <Login/>
-          </>
+          !isSignedIn ? (
+            <>
+              <h1 className='header-4'>User Login</h1>
+              <div className='divider-horizontal'></div>
+              <Login/>
+            </>
+          ) : (
+            <>
+              <h1 className='header-4'>Sign-in</h1>
+              <div className='divider-horizontal'></div>
+              <SignIn/>
+            </>
+          )
         ) : (
           <>
           <aside className='aside-container'></aside>
