@@ -12,7 +12,7 @@ const Page = () =>{
       {
         !isLogged ? (
           <>
-            <h1 className='header-5 mb-1'>User Login</h1>
+            <h1 className='header-4 mb-1'>User Login</h1>
             <Login/>
           </>
         ) : (

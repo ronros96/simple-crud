@@ -1,61 +1,109 @@
 import './login.css';
+import { useState } from "react"
 import { useLogin } from "@src/store/store";
+import {
+  Field,
+  FieldDescription,
+  FieldLabel,
+} from "@components/ui/field";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@components/ui/input-group"
+import { Button } from "@components/ui/button"
+import { Eye, EyeOff } from "lucide-react"
 
 const Login = () => {
   const setLogin = useLogin((state:any) => state.setLogin);
+  const username = useLogin((state:any) => state.username);
+  const password = useLogin((state:any) => state.password);
   const setUsername = useLogin((state:any) => state.setUsername);
   const setPassword = useLogin((state:any) => state.setPassword);
-  
-  
 
+  const [showPassword, setShowPassword] = useState(false)
+  const clearForm = () => {
+    setShowPassword(false);
+    setUsername("");
+    setPassword("");
+  }
+  
+  
   return (
     <div className="login-container">
       <form className="login-form">
-        <div className="form-group">
-          <label className="form-label" htmlFor="username">Username</label>
-          <input 
-            id="username" 
-            type="text" 
-            aria-required="true" 
-            aria-invalid="false" 
-            aria-label="Username" />
-        </div>
+        
+        <Field className="form-group">
+          <FieldLabel htmlFor="username">Username</FieldLabel>
+          <InputGroup>
+            <InputGroupInput
+              id="username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter username"
+            />
+          </InputGroup>
+        </Field>
 
-        <div className="form-group">
-          <label className="form-label" htmlFor="password">Password</label>
-          <input 
-            id="password" 
-            type="password" 
-            aria-required="true" 
-            aria-invalid="false" 
-            aria-label="Password" />
-        </div>
-
-        <a href="#" className="forgot-password">Forgot Password?</a>
+        <Field className="form-group">
+          <FieldLabel htmlFor="password">Password</FieldLabel>
+          <InputGroup>
+            <InputGroupInput
+              id="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <InputGroupAddon align="inline-end">
+              <Button
+                className="icon"
+                onClick={() => setShowPassword(!showPassword)}
+                size="icon"
+                type="button"
+                variant="ghost"
+              >
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4 text-muted-foreground" />
+                ) : (
+                  <Eye className="h-4 w-4 text-muted-foreground" />
+                )}
+              </Button>
+            </InputGroupAddon>
+          </InputGroup>
+          <FieldDescription>
+              <a href="#" className="forgot-password">Forgot Password?</a>
+            </FieldDescription>
+        </Field>
 
         <div className="form-group grid grid-cols-2">
-          <button type="submit">Login</button>
-          <button className="stroke">Cancel</button>
+          <Button type="submit">Login</Button>
+          <Button 
+            className="stroke" 
+            onClick={clearForm}>
+            Cancel
+          </Button>
         </div>
       </form>
       <div className="divider-vertical"></div>
       <div className="login-content">
         <h2 className="header-5">Hello There!</h2>
         <p>This is a simple <strong>Library Catalogue System</strong>. Just to show how I develop CRUD type system using React JS.</p>
-        <p><strong>
-          If you want to enter as an Admin<br/>
+        <p>
+          <strong>If you want to enter as an Admin</strong><br/>
           Username: Admin<br/>
           Password: admin<br/>
-        </strong></p>
-        <p><strong>
-          If you want to enter as an Librarian<br/>
+        </p>
+        <p>
+          <strong>If you want to enter as an Librarian</strong><br/>
           Username: Librarian<br/>
           Password: books<br/>
-        </strong></p>
+        </p>
         <p><strong>
           To be a Patron click SIGN-IN<br/>
         </strong></p>
-        <button>Sign In</button>
+        <Button>Sign In</Button>
       </div>
     </div>
   )
