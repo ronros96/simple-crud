@@ -1,6 +1,6 @@
 import './sign-in.css';
-import { useState } from "react"
-import { useLogin } from "@src/store/store";
+import { useEffect, useState } from "react"
+import { useSignIn } from "@src/store/store";
 import {
   Field,
   FieldLabel,
@@ -10,25 +10,67 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@components/ui/input-group"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@components/ui/dialog"
 import { Button } from "@components/ui/button"
 import { Textarea } from "@components/ui/textarea"
+import { Label } from "@components/ui/label"
+import { Checkbox } from "@components/ui/checkbox"
 import { Eye, EyeOff } from "lucide-react"
 
 const SignIn = () => {
-  const username = useLogin((state:any) => state.username);
-  const password = useLogin((state:any) => state.password);
-  const setUsername = useLogin((state:any) => state.setUsername);
-  const setPassword = useLogin((state:any) => state.setPassword);
+  const [showPassword, setShowPassword] = useState(false);
 
-  const [showPassword, setShowPassword] = useState(false)
-  const clearForm = () => {
-    setShowPassword(false);
-    setUsername("");
-    setPassword("");
+  const username = useSignIn((state:any) => state.username);
+  const password = useSignIn((state:any) => state.password);
+  const firstname = useSignIn((state:any) => state.firstname);
+  const lastname = useSignIn((state:any) => state.lastname);
+  const mobile = useSignIn((state:any) => state.mobile);
+  const email = useSignIn((state:any) => state.email);
+  const address = useSignIn((state:any) => state.address);
+  const terms = useSignIn((state:any) => state.terms);
+  const setSignIn = useSignIn((state:any) => state.setSignIn);
+  const setProfile = useSignIn((state:any) => state.setProfile);
+
+  type UsernameRules = {
+    characters: string,
+    spaces: string,
+  }
+
+  const validateUsername = (username: string):UsernameRules => {
+    return {
+      characters: username.length > 0 ? 
+        username.length >= 5 ? 'good' : 'err' : '',
+      spaces: username.length > 0 ?
+       !/\s/.test(username) ? 'good' : 'err' : '',
+    }
   }
   
+  
+  const clearForm = () => {
+    setSignIn(false)
+  }
+
+  const closeForm = () => {
+    clearForm();
+    setSignIn(false)
+  }
+
+  useEffect(()=>{
+    console.log(username.length)
+  },[]);
+
   return (
     <>
+      <title>{`${import.meta.env.VITE_APP_TITLE} | Sign-In`}</title>
       <p className="important">
         <strong>* Required</strong><br/>
         <em>All accounts created will expire within a month.</em>
@@ -39,36 +81,27 @@ const SignIn = () => {
             <p><strong>Please make sure to follow certain rules on creating an account.</strong></p>
             <Field className="form-group">
               <FieldLabel htmlFor="username">Username<span className="important">*</span>:</FieldLabel>
-              <ul>
-                <li>Must be more than 5 characters</li>
-                <li>No spaces use underscore instead “_”</li>
-              </ul>
               <InputGroup>
                 <InputGroupInput
                   id="username"
                   type="text"
                   name="username"
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={(e) => setProfile({username:e.target.value})}
                   placeholder="Enter username"
                   aria-required="true"
                 />
               </InputGroup>
+              <ul className='rules'>
+                <li className={validateUsername(username).characters} >Must be more than 5 characters</li>
+                <li className={validateUsername(username).spaces}>No spaces use underscore instead “_”</li>
+              </ul>
             </Field>
+
+            <div className="divider-horizontal"></div>
 
             <Field className="form-group">
               <FieldLabel htmlFor="password">Password<span className="important">*</span>:</FieldLabel>
-              <ul>
-                <li>Must be more than 10 characters.</li>
-                <li>There should be at least:</li>
-                <ul>
-                  <li>1 capital letter</li>
-                  <li>1 small letter</li>
-                  <li>1 number</li>
-                  <li>1 special character</li>
-                </ul>
-                <li>No spaces</li>
-              </ul>
               <InputGroup>
                 <InputGroupInput
                   id="password"
@@ -76,7 +109,7 @@ const SignIn = () => {
                   name="password"
                   placeholder="Enter password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => setProfile({password:e.target.value})}
                   aria-required="true"
                 />
                 <InputGroupAddon align="inline-end">
@@ -95,13 +128,22 @@ const SignIn = () => {
                   </Button>
                 </InputGroupAddon>
               </InputGroup>
+              <ul>
+                <li>Must be more than 10 characters.</li>
+                <li>There should be at least:</li>
+                <ul>
+                  <li>1 capital letter</li>
+                  <li>1 small letter</li>
+                  <li>1 number</li>
+                  <li>1 special character</li>
+                </ul>
+                <li>No spaces</li>
+              </ul>
             </Field>
           </div>
-
-          <div className="divider-vertical"></div>
           
           <div className="signin-form">
-            <p><strong>This is for Demo purposes only, please refrain to use real information.</strong></p>
+            <p><strong>This is for Demo purposes only, please refrain to use real information, and be wholesome &#128522;</strong></p>
             
             <div className="form-group grid grid-cols-2">
               <Field className="form-group">
@@ -109,7 +151,9 @@ const SignIn = () => {
                 <InputGroup>
                   <InputGroupInput
                     id="firstName"
-                    name="firstName"
+                    name="firstname"
+                    value={firstname}
+                    onChange={(e) => setProfile({firstname:e.target.value})}
                     type="text"
                     aria-required="true"
                   />
@@ -120,7 +164,9 @@ const SignIn = () => {
                 <InputGroup>
                   <InputGroupInput
                     id="lastName"
-                    name="lastName"
+                    name="lastname"
+                    value={lastname}
+                    onChange={(e) => setProfile({lastname:e.target.value})}
                     type="text"
                     aria-required="true"
                   />
@@ -134,9 +180,10 @@ const SignIn = () => {
                 <InputGroupInput
                   id="mobile"
                   name="mobile"
+                  value={mobile}
+                  onChange={(e) => setProfile({mobile:e.target.value})}
                   type="text"
                   aria-required="true"
-                  aria-telephone="true"
                 />
               </InputGroup>
             </Field>
@@ -147,9 +194,10 @@ const SignIn = () => {
                 <InputGroupInput
                   id="email"
                   name="email"
+                  value={email}
+                  onChange={(e) => setProfile({email:e.target.value})}
                   type="text"
                   aria-required="true"
-                  aria-email="true"
                 />
               </InputGroup>
             </Field>
@@ -159,21 +207,58 @@ const SignIn = () => {
               <Textarea 
                 id="address" 
                 name="address" 
+                value={address}
+                onChange={(e) => setProfile({address:e.target.value})}
                 aria-required="true"
-                aria-address="true"
               />
             </Field>
           </div>
-          
-          <div className="divider-horizontal full-width"></div>
 
           <div className="form-group full-width flex justify-end">
-            <Button type="submit">Login</Button>
-            <Button 
-              className="stroke" 
-              onClick={clearForm}>
-              Cancel
-            </Button>
+            <Field orientation="horizontal">
+              <Checkbox 
+                id="terms-checkbox" 
+                name="terms"
+                checked={terms}
+                onCheckedChange={(value) => setProfile({terms:!!value})}
+                aria-required="true"
+              />
+              <Label htmlFor="terms-checkbox" className='normal text-sm'>
+                By signing up you agree to our
+                <Dialog>
+                  <DialogTrigger render={<Button variant="outline" className="link-only px-[.25rem]">terms and conditions</Button>} />
+                  <DialogContent className="modal sm all-centered">
+                    <DialogHeader>
+                      <DialogTitle>What Terms and Conditions!?</DialogTitle>
+                      <DialogDescription>
+                        <img src="meme-1.png"/>
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                      <DialogClose render={<Button variant="outline" className="stroke" >Agreed!</Button>} />
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </Label>
+            </Field>
+            <Button type="submit">Register</Button>
+            <Dialog>
+              <DialogTrigger render={<Button variant="outline" className="stroke">Cancel</Button>} />
+              <DialogContent className="modal sm all-centered">
+                <DialogHeader>
+                  <DialogTitle>Are you sure?</DialogTitle>
+                  <DialogDescription>
+                    
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <Button className="sm" onClick={clearForm}>Clear Form</Button>
+                  <div className='divider-vertical'></div>
+                  <Button className="stroke sm" onClick={closeForm}>Yes</Button>
+                  <DialogClose render={<Button variant="outline" className="stroke sm" >No</Button>} />
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </form>

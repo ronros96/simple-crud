@@ -4,6 +4,7 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/outfit";
 @import "@fontsource-variable/geist-mono";
+@import "@components/ui/ui.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -83,8 +84,6 @@
 }
 
 *{
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
   font-size: var(--base-font-size);
 }
@@ -161,13 +160,6 @@ u{
   text-decoration: underline;
 }
 
-label{
-  font-size: inherit;
-  font-weight: 400;
-  gap:0;
-  text-transform: uppercase;
-}
-
 h1,
 .header-1{
   font-size: var(--font-xxxl);
@@ -192,102 +184,8 @@ h6,
 .header-6{
   font-size: var(--font-base);
 }
-
-.form-group{
-  width: 100%;
-  margin-bottom: 1.5rem;
-  gap:var(--gapHalf) var(--gap);
-
-  .form-group{
-    margin-bottom: 0;
-  }
-
-  label{
-    text-transform: uppercase;
-  }
-
-  textarea,
-  [data-slot=input-group]{
-    width: 100%;
-    min-height: 2.5rem;
-    padding: .5rem;
-    border-radius: .5rem;
-    border: 1px solid var(--dgray);
-    background-color: inherit;
-    color: var(--text-default);
-    &:focus{
-      outline: none;
-      border-color: var(--dgray);
-    }
-  }
-
-  textarea{
-    height: 6rem;
-    resize: vertical;
-  }
-
-  &:last-child{
-    margin-bottom: 0;
-  }
-}
-
-button:not(.icon),
-button.stroke,
-button.small,
-button.small.stroke{
-  display: block;
-  width: auto;
-  height: auto;
-  padding: .5rem 3rem;
-  border-radius: 10px;
-  border: 1px solid var(--button);
-  background-color: var(--button);
-  font-family: var(--open-sans);
-  font-weight: 700;
-  font-size: inherit;
-  text-transform: uppercase;
-  color: var(--white);
-  cursor: pointer;
-
-  transition: background-color .3s var(--ease);
-
-  &:hover{
-    background-color: var(--button-hover);
-  }
-}
-
-button.stroke,
-button.small.stroke{
-  background-color: transparent;
-  border:solid 2px var(--button);
-  color: light-dark(#85A2CC, var(--white));
-}
-
-button.small,
-button.small.stroke{
-  text-transform: none;
-  padding: .25rem 1.2rem;
-}
-
-.divider-vertical,
-.divider-horizontal{
-  flex-shrink: 0;
-  height: 1px;
-  width: 100%;
-  background-color: var(--dgray);
-}
-
-.divider-vertical{
-  @media screen and (min-width: 680px) {
-    height: initial;
-    width: 1px;
-  }
-}
-
-.divider-horizontal{
-  margin-bottom: var(--gap);
-  height: 1px;
-  width: 100%;
+.text-sm{
+  font-size: var(--font-sm);
 }
 
 .important{

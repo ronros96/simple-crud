@@ -11,15 +11,11 @@
   background-color: var(--frame-bg);
 
   @media screen and (min-width: 680px) {
-    grid-template-columns: 1fr 1px 1fr;
+    grid-template-columns: 1fr 1fr;
   }
 
   .full-width{
     grid-column: 1 / -1;
-  }
-
-  .divider-horizontal{
-    margin-bottom: 0;
   }
 }
 
@@ -34,4 +30,12 @@
   ul li{
     font-size: var(--text-sm);
   }
+}
+
+.rules .good{
+  color: var(--green);
+}
+
+.rules .err{
+  color: var(--error);
 }
