@@ -1,10 +1,10 @@
 import './App.css';
-import Page from '@page/page';
+import Layout from '@layout/layout';
 
 function App() {
   return (
     <main className='flex items-center justify-center flex-col'>
-      <Page/>
+      <Layout/>
     </main>
   )
 }

@@ -111,7 +111,7 @@ h1,h2,h3,h4,h5,h6{
   font-family: var(--pixel);
   font-weight: 400;
   text-transform: uppercase;
-  color: inherit;
+  color: var(--text-default);
   line-height: 1;
   span{
     font-size: 70%;
@@ -125,7 +125,7 @@ p,a{
   font-family: inherit;
   font-size: inherit;
   font-weight: 400;
-  color: inherit;
+  color: var(--text-default);
   line-height: 1.5;
   font-variation-settings: "wdth" 100;
 }
@@ -145,7 +145,7 @@ ul{
   padding-left: 1rem;
   li{
     list-style-type: disc;
-    
+    color: var(--text-default);
   }
 }
 

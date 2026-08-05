@@ -1,6 +1,6 @@
-import './sign-in.css';
-import { useEffect, useState } from "react"
-import { useSignIn } from "@src/store/store";
+import './profile.css';
+import { useState } from "react"
+import { useProfile } from "@src/store/store";
 import {
   Field,
   FieldLabel,
@@ -24,49 +24,108 @@ import { Button } from "@components/ui/button"
 import { Textarea } from "@components/ui/textarea"
 import { Label } from "@components/ui/label"
 import { Checkbox } from "@components/ui/checkbox"
+import { PhoneInput } from "@components/ui/phone"
 import { Eye, EyeOff } from "lucide-react"
 
-const SignIn = () => {
+const Profile = () => {
   const [showPassword, setShowPassword] = useState(false);
 
-  const username = useSignIn((state:any) => state.username);
-  const password = useSignIn((state:any) => state.password);
-  const firstname = useSignIn((state:any) => state.firstname);
-  const lastname = useSignIn((state:any) => state.lastname);
-  const mobile = useSignIn((state:any) => state.mobile);
-  const email = useSignIn((state:any) => state.email);
-  const address = useSignIn((state:any) => state.address);
-  const terms = useSignIn((state:any) => state.terms);
-  const setSignIn = useSignIn((state:any) => state.setSignIn);
-  const setProfile = useSignIn((state:any) => state.setProfile);
+  const isSignedIn = useProfile((state:any) => state.isSignedIn);
+  const username = useProfile((state:any) => state.username);
+  const password = useProfile((state:any) => state.password);
+  const firstname = useProfile((state:any) => state.firstname);
+  const lastname = useProfile((state:any) => state.lastname);
+  const mobile = useProfile((state:any) => state.mobile);
+  const email = useProfile((state:any) => state.email);
+  const address = useProfile((state:any) => state.address);
+  const terms = useProfile((state:any) => state.terms);
+  const booklimit = useProfile((state:any) => state.booklimit);
+  const role = useProfile((state:any) => state.role);
+  const active = useProfile((state:any) => state.active);
+  const created = useProfile((state:any) => state.created);
+  const setSignIn = useProfile((state:any) => state.setSignIn);
+  const setProfile = useProfile((state:any) => state.setProfile);
 
   type UsernameRules = {
     characters: string,
     spaces: string,
+    valid: boolean,
   }
 
   const validateUsername = (username: string):UsernameRules => {
+    const chr = username.length > 0 ? 
+        username.length >= 5 ? 'good' : 'err' : '';
+    const spc = username.length > 0 ?
+       !/\s/.test(username) ? 'good' : 'err' : '';
+
     return {
-      characters: username.length > 0 ? 
-        username.length >= 5 ? 'good' : 'err' : '',
-      spaces: username.length > 0 ?
-       !/\s/.test(username) ? 'good' : 'err' : '',
+      characters: chr,
+      spaces: spc,
+      valid: chr == 'good' && spc == 'good', 
     }
   }
-  
-  
+
+  type PasswordRules = {
+    characters: string,
+    capital: string,
+    small:string,
+    number:string,
+    special:string,
+    spaces: string,
+    valid:boolean,
+  }
+
+  const validatePassword = (password: string):PasswordRules => {
+    const chr = password.length > 0 ? 
+        password.length >= 10 ? 'good' : 'err' : '';
+    const cap = password.length > 0 ? 
+        /[A-Z]/.test(password) ? 'good' : 'err' : '';
+    const sml = password.length > 0 ? 
+        /[a-z]/.test(password) ? 'good' : 'err' : '';
+    const num = password.length > 0 ? 
+        /\d/.test(password) ? 'good' : 'err' : '';
+    const spe = password.length > 0 ? 
+        /[!@#$%^&*(),.?":{}|<>_-]/.test(password) ? 'good' : 'err' : '';
+    const spc = password.length > 0 ?
+       !/\s/.test(password) ? 'good' : 'err' : '';
+
+    return {
+      characters: chr,
+      capital: cap,
+      small: sml,
+      number: num,
+      special: spe,
+      spaces: spc,
+      valid: chr == 'good' && cap == 'good' && sml == 'good' && num == 'good' && spe == 'good' && spc == 'good', 
+    }
+  }
+
+
   const clearForm = () => {
-    setSignIn(false)
+    setProfile({
+      username:'',
+      password:'',
+      firstname:'',
+      lastname:'',
+      mobile:'',
+      email:'',
+      address:'',
+      terms:false,
+      booklimit:0,
+      role:0,
+      active: false,
+    })
   }
 
   const closeForm = () => {
     clearForm();
-    setSignIn(false)
+    isSignedIn && setSignIn(false);
   }
 
-  useEffect(()=>{
-    console.log(username.length)
-  },[]);
+  const submitForm = (e:any) =>{
+    e.preventDefault;
+    
+  }
 
   return (
     <>
@@ -75,7 +134,7 @@ const SignIn = () => {
         <strong>* Required</strong><br/>
         <em>All accounts created will expire within a month.</em>
       </p>
-      <form>
+      <form action={submitForm}>
         <div className="signin-container">
           <div className="signin-form">
             <p><strong>Please make sure to follow certain rules on creating an account.</strong></p>
@@ -128,16 +187,16 @@ const SignIn = () => {
                   </Button>
                 </InputGroupAddon>
               </InputGroup>
-              <ul>
-                <li>Must be more than 10 characters.</li>
+              <ul className='rules'>
+                <li className={validatePassword(password).characters}>Must be more than 10 characters.</li>
                 <li>There should be at least:</li>
                 <ul>
-                  <li>1 capital letter</li>
-                  <li>1 small letter</li>
-                  <li>1 number</li>
-                  <li>1 special character</li>
+                  <li className={validatePassword(password).capital}>1 capital letter</li>
+                  <li className={validatePassword(password).small}>1 small letter</li>
+                  <li className={validatePassword(password).number}>1 number</li>
+                  <li className={validatePassword(password).special}>1 special character</li>
                 </ul>
-                <li>No spaces</li>
+                <li className={validatePassword(password).spaces}>No spaces</li>
               </ul>
             </Field>
           </div>
@@ -177,11 +236,11 @@ const SignIn = () => {
             <Field className="form-group">
               <FieldLabel htmlFor="mobile">Mobile Number<span className="important">*</span>:</FieldLabel>
               <InputGroup>
-                <InputGroupInput
+                <PhoneInput
                   id="mobile"
                   name="mobile"
                   value={mobile}
-                  onChange={(e) => setProfile({mobile:e.target.value})}
+                  onChange={(value) => setProfile({mobile:value})}
                   type="text"
                   aria-required="true"
                 />
@@ -235,7 +294,7 @@ const SignIn = () => {
                       </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
-                      <DialogClose render={<Button variant="outline" className="stroke" >Agreed!</Button>} />
+                      <DialogClose render={<Button variant="outline" className="stroke sm" >Agreed!</Button>} />
                     </DialogFooter>
                   </DialogContent>
                 </Dialog>
@@ -247,14 +306,14 @@ const SignIn = () => {
               <DialogContent className="modal sm all-centered">
                 <DialogHeader>
                   <DialogTitle>Are you sure?</DialogTitle>
-                  <DialogDescription>
-                    
+                  <DialogDescription className="text-center">
+                    Some of your updates will be gone.
                   </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
-                  <Button className="sm" onClick={clearForm}>Clear Form</Button>
+                  <DialogClose render={<Button variant="outline" className="sm" onClick={clearForm}>Clear Form</Button>} />
                   <div className='divider-vertical'></div>
-                  <Button className="stroke sm" onClick={closeForm}>Yes</Button>
+                  <Button className="stroke sm" onClick={closeForm}>Yes, Back to login</Button>
                   <DialogClose render={<Button variant="outline" className="stroke sm" >No</Button>} />
                 </DialogFooter>
               </DialogContent>
@@ -265,4 +324,4 @@ const SignIn = () => {
     </>
   )
 }
-export default SignIn;
+export default Profile;

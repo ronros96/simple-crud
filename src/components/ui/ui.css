@@ -1,3 +1,7 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
 .form-group{
   width: 100%;
   margin-bottom: 1.5rem;
@@ -37,11 +41,36 @@ textarea,
     outline: none;
     border-color: var(--dgray);
   }
+
+  input{
+    font-size:var(--text-base);
+  }
 }
 
 textarea{
   height: 6rem;
   resize: vertical;
+  font-size:var(--text-base);
+}
+
+.phone-input{
+  width: 100%;
+  &.PhoneInput--focus input{
+    box-shadow: none;
+  }
+  input{
+    padding: 0;
+    border: none;
+    background: transparent;
+  }
+  [data-slot=popover-trigger] span{
+    background-color: var(--dgray);
+  }
+}
+
+[data-slot=field]:has(.phone-input.PhoneInput--focus) [data-slot=input-group]{
+  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, rgb(255,255,255,.2));
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 
 /* TICKERS */
@@ -153,7 +182,27 @@ button.text-only{
   } 
 }
 
-/* Tooltip */
+/* POPOVER */
+[data-slot=popover-content]{
+  background-color: var(--secondary-bg);
+
+  [data-slot=command]{
+    background-color: var(--secondary-bg);
+  }
+
+  [data-slot=command-item]{
+    background-color: var(--secondary-bg);
+    transition: background-color .3s var(--ease);
+    &[data-selected=true]{
+      background-color: var(--link);
+    }
+    *{
+      color: var(--text-default);
+    }
+  }
+} 
+
+/* TOOLTIP */
 [data-slot=tooltip-content]{
   background-color: var(--pop-up);
   p{

@@ -1,13 +1,13 @@
 import './page.css';
 import Login from '@components/login/login';
-import { useLogin, useSignIn } from "@src/store/store";
+import { useLogin, useProfile } from "@src/store/store";
 
-import SignIn from '@components/sign-in/sign-in';
+import Profile from '@src/components/profile/profile';
 
 const Page = () =>{
 
   const isLogged =  useLogin((state:any) => state.isLogged);
-  const isSignedIn =  useSignIn((state:any) => state.isSignedIn);
+  const isSignedIn =  useProfile((state:any) => state.isSignedIn);
 
   return(
     <section className='container'>
@@ -23,14 +23,11 @@ const Page = () =>{
             <>
               <h1 className='header-4'>Sign-in</h1>
               <div className='divider-horizontal'></div>
-              <SignIn/>
+              <Profile/>
             </>
           )
         ) : (
-          <>
-          <aside className='aside-container'></aside>
           <div className='main-container'></div>
-          </> 
         )
       }
        

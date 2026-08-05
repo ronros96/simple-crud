@@ -1,7 +1,7 @@
 import './login.css';
 import { useState } from "react"
 import clsx from 'clsx';
-import { useLogin, useSignIn } from "@src/store/store";
+import { useLogin, useProfile } from "@src/store/store";
 import {
   Field,
   FieldDescription,
@@ -27,7 +27,7 @@ const Login = () => {
   const setUsername = useLogin((state:any) => state.setUsername);
   const setPassword = useLogin((state:any) => state.setPassword);
 
-  const setSignIn = useSignIn((state:any) => state.setSignIn);
+  const setSignIn = useProfile((state:any) => state.setSignIn);
 
   const [showPassword, setShowPassword] = useState(false);
   const [showHidden, setShowHidden] = useState(false);
