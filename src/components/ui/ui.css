@@ -47,6 +47,11 @@ textarea,
   }
 }
 
+[data-slot=field].error{
+  label{color: var(--error);}
+  [data-slot=input-group]{border-color: var(--error);}
+}
+
 textarea{
   height: 6rem;
   resize: vertical;
@@ -230,4 +235,29 @@ button.text-only{
   margin-bottom: var(--gap);
   height: 1px;
   width: 100%;
+}
+
+/* Rules */
+ul.rules li{
+  font-size: var(--font-sm);
+  &.good{
+    color: var(--green);
+  }
+  &.err{
+    color: var(--error);
+  }
+} 
+
+/* Error */
+.err-msg{
+  display:none;
+  margin-top: 1rem;
+  padding: .5rem 1rem;
+  width: 100%;
+  text-align: center;
+  background-color: var(--error);
+  border-radius: 10px;
+  &.show{
+    display: block;
+  }
 }

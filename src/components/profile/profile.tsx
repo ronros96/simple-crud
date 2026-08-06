@@ -1,4 +1,5 @@
 import './profile.css';
+import clsx from 'clsx';
 import { useState } from "react"
 import { useProfile } from "@src/store/store";
 import {
@@ -27,8 +28,12 @@ import { Checkbox } from "@components/ui/checkbox"
 import { PhoneInput } from "@components/ui/phone"
 import { Eye, EyeOff } from "lucide-react"
 
+import {checkAllFields, showRequirements} from "@lib/helper"
+import {ProfileFields} from "@lib/fields"
+
 const Profile = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [errors,setErrors] = useState({});
 
   const isSignedIn = useProfile((state:any) => state.isSignedIn);
   const username = useProfile((state:any) => state.username);
@@ -46,61 +51,6 @@ const Profile = () => {
   const setSignIn = useProfile((state:any) => state.setSignIn);
   const setProfile = useProfile((state:any) => state.setProfile);
 
-  type UsernameRules = {
-    characters: string,
-    spaces: string,
-    valid: boolean,
-  }
-
-  const validateUsername = (username: string):UsernameRules => {
-    const chr = username.length > 0 ? 
-        username.length >= 5 ? 'good' : 'err' : '';
-    const spc = username.length > 0 ?
-       !/\s/.test(username) ? 'good' : 'err' : '';
-
-    return {
-      characters: chr,
-      spaces: spc,
-      valid: chr == 'good' && spc == 'good', 
-    }
-  }
-
-  type PasswordRules = {
-    characters: string,
-    capital: string,
-    small:string,
-    number:string,
-    special:string,
-    spaces: string,
-    valid:boolean,
-  }
-
-  const validatePassword = (password: string):PasswordRules => {
-    const chr = password.length > 0 ? 
-        password.length >= 10 ? 'good' : 'err' : '';
-    const cap = password.length > 0 ? 
-        /[A-Z]/.test(password) ? 'good' : 'err' : '';
-    const sml = password.length > 0 ? 
-        /[a-z]/.test(password) ? 'good' : 'err' : '';
-    const num = password.length > 0 ? 
-        /\d/.test(password) ? 'good' : 'err' : '';
-    const spe = password.length > 0 ? 
-        /[!@#$%^&*(),.?":{}|<>_-]/.test(password) ? 'good' : 'err' : '';
-    const spc = password.length > 0 ?
-       !/\s/.test(password) ? 'good' : 'err' : '';
-
-    return {
-      characters: chr,
-      capital: cap,
-      small: sml,
-      number: num,
-      special: spe,
-      spaces: spc,
-      valid: chr == 'good' && cap == 'good' && sml == 'good' && num == 'good' && spe == 'good' && spc == 'good', 
-    }
-  }
-
-
   const clearForm = () => {
     setProfile({
       username:'',
@@ -114,7 +64,7 @@ const Profile = () => {
       booklimit:0,
       role:0,
       active: false,
-    })
+    });
   }
 
   const closeForm = () => {
@@ -125,20 +75,36 @@ const Profile = () => {
   const submitForm = (e:any) =>{
     e.preventDefault;
     
+
+    //selected fields to be submitted.
+    const fields = {
+      username:{value:username,...ProfileFields.username},
+      password:{value:password,...ProfileFields.password},
+    }
+    
+    typeof checkAllFields(fields) === "object" ? setErrors(checkAllFields(fields)) : postForm();
+    console.log(errors)
+  }
+
+  const postForm = () =>{
+    alert()
   }
 
   return (
     <>
       <title>{`${import.meta.env.VITE_APP_TITLE} | Sign-In`}</title>
-      <p className="important">
+      <div className="important">
         <strong>* Required</strong><br/>
         <em>All accounts created will expire within a month.</em>
-      </p>
+        {/* <p className={clsx('err-msg',{'show':Object.values(errors).some(value => value === true)})}>
+          Please fill in all required fields and check the requirements.
+        </p> */}
+      </div>
       <form action={submitForm}>
-        <div className="signin-container">
-          <div className="signin-form">
-            <p><strong>Please make sure to follow certain rules on creating an account.</strong></p>
-            <Field className="form-group">
+        <div className="profile-container">
+          <div className="profile-form">
+            <p><strong>Please make sure to follow certain requirements on creating an account.</strong></p>
+            <Field className={clsx('form-group',{})}>
               <FieldLabel htmlFor="username">Username<span className="important">*</span>:</FieldLabel>
               <InputGroup>
                 <InputGroupInput
@@ -146,14 +112,15 @@ const Profile = () => {
                   type="text"
                   name="username"
                   value={username}
-                  onChange={(e) => setProfile({username:e.target.value})}
+                  onChange={(e) => {
+                    setProfile({username:e.target.value})
+                  }}
                   placeholder="Enter username"
                   aria-required="true"
                 />
               </InputGroup>
               <ul className='rules'>
-                <li className={validateUsername(username).characters} >Must be more than 5 characters</li>
-                <li className={validateUsername(username).spaces}>No spaces use underscore instead “_”</li>
+                {showRequirements(ProfileFields.username,username,true)}
               </ul>
             </Field>
 
@@ -188,20 +155,12 @@ const Profile = () => {
                 </InputGroupAddon>
               </InputGroup>
               <ul className='rules'>
-                <li className={validatePassword(password).characters}>Must be more than 10 characters.</li>
-                <li>There should be at least:</li>
-                <ul>
-                  <li className={validatePassword(password).capital}>1 capital letter</li>
-                  <li className={validatePassword(password).small}>1 small letter</li>
-                  <li className={validatePassword(password).number}>1 number</li>
-                  <li className={validatePassword(password).special}>1 special character</li>
-                </ul>
-                <li className={validatePassword(password).spaces}>No spaces</li>
+                {showRequirements(ProfileFields.password,password,true)}
               </ul>
             </Field>
           </div>
           
-          <div className="signin-form">
+          <div className="profile-form">
             <p><strong>This is for Demo purposes only, please refrain to use real information, and be wholesome &#128522;</strong></p>
             
             <div className="form-group grid grid-cols-2">
@@ -273,7 +232,7 @@ const Profile = () => {
             </Field>
           </div>
 
-          <div className="form-group full-width flex justify-end">
+          <div className="form-group full-width md:flex justify-end">
             <Field orientation="horizontal">
               <Checkbox 
                 id="terms-checkbox" 
@@ -300,24 +259,28 @@ const Profile = () => {
                 </Dialog>
               </Label>
             </Field>
-            <Button type="submit">Register</Button>
-            <Dialog>
-              <DialogTrigger render={<Button variant="outline" className="stroke">Cancel</Button>} />
-              <DialogContent className="modal sm all-centered">
-                <DialogHeader>
-                  <DialogTitle>Are you sure?</DialogTitle>
-                  <DialogDescription className="text-center">
-                    Some of your updates will be gone.
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                  <DialogClose render={<Button variant="outline" className="sm" onClick={clearForm}>Clear Form</Button>} />
-                  <div className='divider-vertical'></div>
-                  <Button className="stroke sm" onClick={closeForm}>Yes, Back to login</Button>
-                  <DialogClose render={<Button variant="outline" className="stroke sm" >No</Button>} />
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+
+            <div className='grid grid-cols-2 gap-4 w-full mt-[1rem] md:mt-0'>
+              <Button type="submit">Register</Button>
+              <Dialog>
+                <DialogTrigger render={<Button variant="outline" className="stroke">Cancel</Button>} />
+                <DialogContent className="modal sm all-centered">
+                  <DialogHeader>
+                    <DialogTitle>Are you sure?</DialogTitle>
+                    <DialogDescription className="text-center">
+                      Some of your updates will be gone.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <DialogClose render={<Button variant="outline" className="sm" onClick={clearForm}>Clear Form</Button>} />
+                    <div className='divider-vertical'></div>
+                    <Button className="stroke sm" onClick={closeForm}>Yes, Back to login</Button>
+                    <DialogClose render={<Button variant="outline" className="stroke sm" >No</Button>} />
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+            
           </div>
         </div>
       </form>

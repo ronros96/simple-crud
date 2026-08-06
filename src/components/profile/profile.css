@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-.signin-container{
+.profile-container{
   display: grid;
   grid-template-columns: 1fr;
   gap:var(--gap) var(--gap2x);
@@ -19,23 +19,16 @@
   }
 }
 
-.signin-form{
+.profile-form{
   padding: var(--gap) 0;
   width: 100%;
   
   @media screen and (min-width: 680px) {
-    width: 24rem;
+    max-width: 24rem;
+    width: 100%;
   }
   
   ul li{
     font-size: var(--text-sm);
   }
-}
-
-.rules .good{
-  color: var(--green);
-}
-
-.rules .err{
-  color: var(--error);
 }
