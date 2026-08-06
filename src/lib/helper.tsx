@@ -1,46 +1,16 @@
 import type { ReactNode } from "react";
+import type {FieldType, FieldRules, owner} from "@src/fields/type";
 
 /*
-  Error Handler:
-  @param {string} value     =>  field value
-  @param {string} fieldType =>  'any' (accepts any kind of characters)
-                                  'alphanum' (accepts alpha-numberic only) 
-                                  'alpha' (accepts letters only)
-                                  'num' (accepts numbers only)
-                                  ** spaces will be determined if 'spaces' in the fieldRules is set on false
-  @param {record} fieldRules:{
-                    characters  {number}  => minimum characters - defualt 0 means accepts null or empty, also > 0 means this field is required
-                    spaces      {boolean} => defualt true, false means no spaces
-                    capital     {number}  => minimum capital letters needed, default: 0
-                    small       {number}  => minimum small letters needed, default: 0
-                    number      {number}  => minimum numbers needed, default: 0
-                    special     {number}  => minimum special characters needed, default: 0
-                    email       {boolean} => default false, true means field is a email
-                  }
-  
-  @returns  =>  'empty' = means field is still empty/null
-                'good' = all fieldRule/s are fullfilled, 
-                errors[] = indicate what fieldRule/s have an error.
-                example error: 
-                password: {
-                  errors: ["capital", "special"]
-                }
+
+  Error Handler Helper
+  see fields/fields.ts for params
+
 */
-
-type FieldType = "any" | "alphanum" | "alpha" | "num";
-
-type FieldRules = {
-  characters?: number;
-  spaces?: boolean;
-  capital?: number;
-  small?: number;
-  number?: number;
-  special?: number;
-  email?: boolean;
-};
 
 type Field = {
   value: any;
+  owner?: owner;
   fieldType?: FieldType;
   fieldRules: FieldRules;
 }
@@ -49,6 +19,7 @@ type Fields = Record<
   string,
   {
     value: string;
+    owner: owner;
     fieldType?: FieldType;
     fieldRules: FieldRules;
   }
@@ -64,9 +35,11 @@ type ValidationResult =
 /* Error handler */    
 const validateField = (field: Field): ValidationResult => {
   const value = field.value ?? "";
+  const owner = field.owner ?? ['admin','guest'];
   const rules = field.fieldRules;
 
   // default values
+  const required = rules.required ?? false;
   const minChars = rules.characters ?? 0;
   const allowSpaces = rules.spaces ?? true;
   const minCapital = rules.capital ?? 0;
@@ -82,14 +55,9 @@ const validateField = (field: Field): ValidationResult => {
   }
   const errors: string[] = [];
 
-  // Character length
-  if (value.length < minChars) {
-    errors.push("characters");
-  }
-
-  // Spaces
-  if (!allowSpaces && /\s/.test(value)) {
-    errors.push("spaces");
+  //required
+  if (required && value.trim() === "") {
+    errors.push("required");
   }
 
   // Type checking
@@ -111,6 +79,34 @@ const validateField = (field: Field): ValidationResult => {
         errors.push("alphanum");
       }
       break;
+
+    case "bool":
+      if (parseInt(value) <= 0 && required) {
+        errors.push("bool");
+      }
+      break;
+
+    case "date":
+      if (!/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(value)) {
+        errors.push("date");
+      }
+      break;
+      
+    case "datetime":
+      if (!/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]) (0\d|1\d|2[0-3]):[0-5]\d:[0-5]\d$/.test(value)) {
+        errors.push("datetime");
+      }
+      break;
+  }
+
+  // Character length
+  if (value.length < minChars) {
+    errors.push("characters");
+  }
+
+  // Spaces
+  if (!allowSpaces && /\s/.test(value)) {
+    errors.push("spaces");
   }
 
   // Email
@@ -271,6 +267,7 @@ const validateFields = (fields: Fields) => {
   Object.entries(fields).forEach(([name, field]) => {
     result[name] = validateField({
       value: field.value,
+      owner: field.owner,
       fieldType: field.fieldType,
       fieldRules: field.fieldRules,
     });

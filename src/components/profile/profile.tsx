@@ -29,13 +29,12 @@ import { PhoneInput } from "@components/ui/phone"
 import { Eye, EyeOff } from "lucide-react"
 
 import {checkAllFields, showRequirements} from "@lib/helper"
-import {ProfileFields} from "@lib/fields"
+import {ProfileFields} from "@src/fields/fields"
 
 const Profile = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errors,setErrors] = useState({});
 
-  const isSignedIn = useProfile((state:any) => state.isSignedIn);
   const username = useProfile((state:any) => state.username);
   const password = useProfile((state:any) => state.password);
   const firstname = useProfile((state:any) => state.firstname);
@@ -48,8 +47,10 @@ const Profile = () => {
   const role = useProfile((state:any) => state.role);
   const active = useProfile((state:any) => state.active);
   const created = useProfile((state:any) => state.created);
-  const setSignIn = useProfile((state:any) => state.setSignIn);
   const setProfile = useProfile((state:any) => state.setProfile);
+
+  const isSignedIn = useProfile((state:any) => state.isSignedIn);
+  const setSignIn = useProfile((state:any) => state.setSignIn);
 
   const clearForm = () => {
     setProfile({
@@ -77,10 +78,14 @@ const Profile = () => {
     
 
     //selected fields to be submitted.
-    const fields = {
-      username:{value:username,...ProfileFields.username},
-      password:{value:password,...ProfileFields.password},
+    const values = {
+      username,
+      password,
+      firstname,
+      lastname,
+      mobile
     }
+    const fields = {...values,...ProfileFields}
     
     typeof checkAllFields(fields) === "object" ? setErrors(checkAllFields(fields)) : postForm();
     console.log(errors)
