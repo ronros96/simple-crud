@@ -4,6 +4,7 @@ import type {Fields} from './type';
 
 export const ProfileFields:Fields = {
   username:{
+    value:'',
     fieldType:'alphanum', 
     fieldRules:{
       required:true,
@@ -12,6 +13,7 @@ export const ProfileFields:Fields = {
     }
   },
   password:{
+    value:'',
     fieldType:'any', 
     fieldRules:{
       required:true,
@@ -24,18 +26,21 @@ export const ProfileFields:Fields = {
     }
   },
   firstname:{
+    value:'',
     fieldType:'alpha',
     fieldRules:{
       required:true,
     }
   },
   lastname:{
+    value:'',
     fieldType:'alpha',
     fieldRules:{
       required:true,
     }
   },
   mobile:{
+    value:'',
     fieldType:'num',
     fieldRules:{
       required:true,
@@ -43,6 +48,7 @@ export const ProfileFields:Fields = {
     }
   },
   email:{
+    value:'',
     fieldType:'any',
     fieldRules:{
       required:true,
@@ -50,18 +56,21 @@ export const ProfileFields:Fields = {
     }
   },
   address:{
+    value:'',
     fieldType:'any',
     fieldRules:{
       required:true,
     }
   },
   terms:{
+    value:'',
     fieldType:'bool',
     fieldRules:{
       required:true,
     }
   },
   booklimit:{
+    value:'',
     owner:['admin'],
     fieldType:'num',
     fieldRules:{
@@ -69,6 +78,7 @@ export const ProfileFields:Fields = {
     }
   },
   role:{
+    value:'',
     owner:['admin'],
     fieldType:'num',
     fieldRules:{
@@ -76,6 +86,7 @@ export const ProfileFields:Fields = {
     }
   },
   active:{
+    value:'',
     owner:['admin'],
     fieldType:'bool',
     fieldRules:{
@@ -83,6 +94,7 @@ export const ProfileFields:Fields = {
     }
   },
   created:{
+    value:'',
     fieldType:'date',
     fieldRules:{}
   }

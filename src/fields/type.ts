@@ -1,5 +1,5 @@
 /*  
-  Data field requirements:
+  Data fields types:
 
   @param {string} value     =>  field value
   
@@ -15,6 +15,15 @@
                                 ** spaces will be determined if 'spaces' in the fieldRules is set on false
   
   @param {string[]} owner   =>  determines which role who can administer this kind of field (default: ['admin','guest'])
+                                ________________________________________________
+                                Legend:   0-deny 1-full, 2-self, 
+                                ------------------------------------------------
+                                Roles:    Create  Read  Update  Delete  Transact
+                                admin     1       1     1       1       0
+                                librarian 0       1     0       0       1
+                                patron    0       2     2       0       2
+                                guest     2       0     0       0       0
+                                ------------------------------------------------
   
   @param {record} fieldRules:{
                     required    {boolean} => if field is required (default: false)
@@ -36,7 +45,7 @@
                   errors: ["capital", "special"]
                 }
 */
-export type owner = ["admin" | "librarian" | "patron" | "guest" ];
+export type owner = string[]
 
 export type FieldType = "any" | "alphanum" | "alpha" | "num" | "bool" | "date" | "datetime";
 
@@ -54,6 +63,7 @@ export type FieldRules = {
 export type Fields = Record<
   string,
   {
+    value: any;
     owner?:owner;
     fieldType?: FieldType;
     fieldRules: FieldRules;

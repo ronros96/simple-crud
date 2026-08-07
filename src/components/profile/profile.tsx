@@ -1,7 +1,7 @@
 import './profile.css';
 import clsx from 'clsx';
 import { useState } from "react"
-import { useProfile } from "@src/store/store";
+import { useErrors, useProfile, useRole } from "@src/store/store";
 import {
   Field,
   FieldLabel,
@@ -33,8 +33,7 @@ import {ProfileFields} from "@src/fields/fields"
 
 const Profile = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [errors,setErrors] = useState({});
-
+  //fields
   const username = useProfile((state:any) => state.username);
   const password = useProfile((state:any) => state.password);
   const firstname = useProfile((state:any) => state.firstname);
@@ -48,9 +47,13 @@ const Profile = () => {
   const active = useProfile((state:any) => state.active);
   const created = useProfile((state:any) => state.created);
   const setProfile = useProfile((state:any) => state.setProfile);
-
+  //status logged
   const isSignedIn = useProfile((state:any) => state.isSignedIn);
   const setSignIn = useProfile((state:any) => state.setSignIn);
+  const roleLogged = useRole((state:any) => state.roleLogged);
+  //errors
+  const errors = useErrors((state:any) => state.errors);
+  const setErrors = useErrors((state:any) => state.setErrors);
 
   const clearForm = () => {
     setProfile({
@@ -76,19 +79,35 @@ const Profile = () => {
   const submitForm = (e:any) =>{
     e.preventDefault;
     
-
     //selected fields to be submitted.
-    const values = {
+    const state = {
       username,
       password,
       firstname,
       lastname,
-      mobile
+      mobile,
+      email,
+      address,
+      terms,
+      booklimit,
+      role,
+      active
     }
-    const fields = {...values,...ProfileFields}
+    //insert state values to ProfileFields value
+    const fields = Object.fromEntries(
+      Object.entries(ProfileFields).map(([key, field]) => [
+        key,
+        {
+          ...field,
+          value: state[key as keyof typeof state],
+        },
+      ])
+    );
     
-    typeof checkAllFields(fields) === "object" ? setErrors(checkAllFields(fields)) : postForm();
-    console.log(errors)
+    const result = checkAllFields(fields);  
+    setErrors([]);
+    typeof result === "object" ? setErrors(result) : postForm();
+    console.log(result)
   }
 
   const postForm = () =>{
@@ -124,9 +143,12 @@ const Profile = () => {
                   aria-required="true"
                 />
               </InputGroup>
-              <ul className='rules'>
-                {showRequirements(ProfileFields.username,username,true)}
-              </ul>
+              {showRequirements(
+                ProfileFields.username,
+                username,
+                true,
+                ["You can only use period / underscore ( . _ ) for spacing"]
+              )}
             </Field>
 
             <div className="divider-horizontal"></div>
@@ -159,9 +181,7 @@ const Profile = () => {
                   </Button>
                 </InputGroupAddon>
               </InputGroup>
-              <ul className='rules'>
-                {showRequirements(ProfileFields.password,password,true)}
-              </ul>
+              {showRequirements(ProfileFields.password,password,true)}
             </Field>
           </div>
           
@@ -181,6 +201,7 @@ const Profile = () => {
                     aria-required="true"
                   />
                 </InputGroup>
+                {showRequirements(ProfileFields.firstname,firstname,false)}
               </Field>
               <Field className="form-group">
                 <FieldLabel htmlFor="lastName">Last Name<span className="important">*</span>:</FieldLabel>

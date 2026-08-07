@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type {FieldType, FieldRules, owner} from "@src/fields/type";
+import type {Fields ,FieldType, FieldRules, owner} from "@src/fields/type";
 
 /*
 
@@ -15,16 +15,6 @@ type Field = {
   fieldRules: FieldRules;
 }
 
-type Fields = Record<
-  string,
-  {
-    value: string;
-    owner: owner;
-    fieldType?: FieldType;
-    fieldRules: FieldRules;
-  }
->;
-
 type ValidationResult =
   | "empty"
   | "good"
@@ -32,10 +22,17 @@ type ValidationResult =
       errors: string[];
     };
 
-/* Error handler */    
-const validateField = (field: Field): ValidationResult => {
+/* 
+  Error handler 
+  @param Field
+  @param init => if validation is just initial (for onchange func) or final (for submit func) (defualt:false)
+*/    
+const validateField = (
+  field: Field,
+  init: boolean,
+): ValidationResult => {
   const value = field.value ?? "";
-  const owner = field.owner ?? ['admin','guest'];
+  const owner = field.owner ?? ['admin,1,1,1,1,0','guest,2,0,0,0,0'];
   const rules = field.fieldRules;
 
   // default values
@@ -50,16 +47,64 @@ const validateField = (field: Field): ValidationResult => {
   const type = field.fieldType ?? "any";
 
   // Empty value
-  if (value.trim() === "") {
+  if (typeof value === "string" && value.trim() === "" && init) {
     return "empty";
   }
   const errors: string[] = [];
 
   //required
-  if (required && value.trim() === "") {
-    errors.push("required");
+  if(required && !init){
+    //string
+    if (typeof value === "string" && value.trim() === "") {
+      errors.push("required");
+    }
+    //single boolean
+    else if(!value){
+      errors.push("required");
+    }
+    //multiple booleans
+    else{
+      
+    }
   }
 
+  // Character length
+  if (value.length < minChars) {
+    errors.push("characters");
+  }
+
+  // Spaces
+  if (!allowSpaces && /\s/.test(value)) {
+    errors.push("spaces");
+  }
+
+  // Email
+  if (
+    email &&
+    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value)
+  ) {
+    errors.push("email");
+  }
+
+  // Count required characters
+  if(typeof value === "string"){
+    if ((value.match(/[A-Z]/g) ?? []).length < minCapital) {
+      errors.push("capital");
+    }
+
+    if ((value.match(/[a-z]/g) ?? []).length < minSmall) {
+      errors.push("small");
+    }
+
+    if ((value.match(/[0-9]/g) ?? []).length < minNumber) {
+      errors.push("number");
+    }
+
+    if ((value.match(/[^A-Za-z0-9\s]/g) ?? []).length < minSpecial) {
+      errors.push("special");
+    }
+  }
+  
   // Type checking
   switch (type) {
     case "alpha":
@@ -99,41 +144,6 @@ const validateField = (field: Field): ValidationResult => {
       break;
   }
 
-  // Character length
-  if (value.length < minChars) {
-    errors.push("characters");
-  }
-
-  // Spaces
-  if (!allowSpaces && /\s/.test(value)) {
-    errors.push("spaces");
-  }
-
-  // Email
-  if (
-    email &&
-    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value)
-  ) {
-    errors.push("email");
-  }
-
-  // Count required characters
-  if ((value.match(/[A-Z]/g) ?? []).length < minCapital) {
-    errors.push("capital");
-  }
-
-  if ((value.match(/[a-z]/g) ?? []).length < minSmall) {
-    errors.push("small");
-  }
-
-  if ((value.match(/[0-9]/g) ?? []).length < minNumber) {
-    errors.push("number");
-  }
-
-  if ((value.match(/[^A-Za-z0-9\s]/g) ?? []).length < minSpecial) {
-    errors.push("special");
-  }
-
   return errors.length ? { errors } : "good";
 };
 
@@ -152,19 +162,19 @@ const validateOnChange = (
   return validateField({
     ...field,
     value,
-  });
+  },true);
 };
 
 export const showRequirements = (
   field: FieldConfig,
   value: string,
   displayInitialIy?: boolean,
+  insert?: string[],
 ): ReactNode => {
   const rules = field.fieldRules;
   const requirementItems = [];
   const result = validateOnChange(field,value);
   const display = displayInitialIy ?? false;
-  let html:any;
   const getClass = (name: string) => {
     if (result === "empty") return "";
     if (result === "good") return "good";
@@ -172,14 +182,14 @@ export const showRequirements = (
   };
 
   if ((rules.characters ?? 0) > 0) {
-    html = <li
+    requirementItems.push(
+      <li
         key="characters"
         className={getClass("characters")}
       >
         Must be more than {rules.characters} characters.
       </li>
-    
-    display && requirementItems.push(html);
+    );
   }
 
   const subRequirements = [];
@@ -257,7 +267,17 @@ export const showRequirements = (
     );
   }
 
-  return <>{requirementItems}</>;
+  insert && insert?.map((text,i)=>{
+    requirementItems.push(
+      <li key={`insert-${i}`}>
+        {text}
+      </li>
+    )
+  })
+
+  return display ? 
+    <ul className='rules'>{requirementItems}</ul> : 
+    typeof value === "object" && <ul className='rules'>{requirementItems}</ul>;
 };
 
 /* Checking multiple fields for Submit */
@@ -270,7 +290,7 @@ const validateFields = (fields: Fields) => {
       owner: field.owner,
       fieldType: field.fieldType,
       fieldRules: field.fieldRules,
-    });
+    },false);
   });
 
   return result;

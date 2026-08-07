@@ -1,7 +1,20 @@
 import { create } from "zustand";
 
 // LOG IN
-export const useLogin = create((set) => ({
+type Login = {
+  isLogged: boolean;
+  username: string;
+  password: string;
+
+}
+
+type LoginStore = Login & {
+  setLogin: (Login: Required<Login>) => void;
+  setUsername: (Login: Required<Login>) => void;
+  setPassword: (Login: Required<Login>) => void;
+};
+
+export const useLogin = create<LoginStore>((set) => ({
   isLogged: false,
   username: '',
   password: '',
@@ -10,7 +23,21 @@ export const useLogin = create((set) => ({
   setPassword: (state:any) => set({password:state}),
 }));
 
-// SIGN IN
+// ROLES
+type Roles = {
+  roleLogged: string;
+}
+
+type RoleStore = Roles & {
+  setRole: (Login: Required<Login>) => void;
+};
+
+export const useRole = create<RoleStore>((set) => ({
+  roleLogged: 'guest',
+  setRole:(state:any) => set({roleLogged:state}),
+}));
+
+// PROFILE
 type Profile = {
   isSignedIn: boolean;
   isUpdate: boolean;
@@ -26,6 +53,7 @@ type Profile = {
   role:number; // 0-patron, 1-librarian, 2-admin
   active: boolean;
   created: null;
+
 };
 
 type ProfileStore = Profile & {
@@ -55,5 +83,18 @@ export const useProfile  = create<ProfileStore>((set) => ({
       ...state,
       ...profile,
     })),
+}));
 
+// ERRORS
+type Errors = {
+  errors: string[];
+}
+
+type ErrorStore = Errors & {
+  setErrors: (error: Partial<Errors>) => void;
+};
+
+export const useErrors = create<ErrorStore>((set) => ({
+  errors:[],
+  setErrors: (state:any) => set({errors:state})
 }));
