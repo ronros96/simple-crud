@@ -7,6 +7,16 @@
   margin-bottom: 1.5rem;
   gap:var(--gapHalf) var(--gap);
 
+  &.error{
+    label{color: var(--error);}
+    textarea,
+    [data-slot=input-group],
+    span[role=checkbox],
+    [data-slot=select-trigger]
+    {border-color: var(--error);}
+    
+  }
+
   .form-group{
     margin-bottom: 0;
   }
@@ -28,7 +38,8 @@ label{
 
 /* INPUT and TEXTAREA */
 textarea,
-[data-slot=input-group]{
+[data-slot=input-group],
+[data-slot=select-trigger]{
   width: 100%;
   min-height: 2.5rem;
   padding: .5rem;
@@ -45,11 +56,6 @@ textarea,
   input{
     font-size:var(--text-base);
   }
-}
-
-[data-slot=field].error{
-  label{color: var(--error);}
-  [data-slot=input-group]{border-color: var(--error);}
 }
 
 textarea{
@@ -83,12 +89,24 @@ span[role=checkbox][aria-checked=true]{
   background-color: var(--button);
 }
 
+[data-slot=field]:has([data-slot=checkbox]){
+  flex-wrap: wrap;
+  align-items: flex-start;
+  label{
+    width: calc(100% - (var(--spacing) * 6));
+  }
+  label:has([data-slot=dialog-trigger]){
+    display: inline;
+  }
+} 
+
 /* BUTTONS */
 button:not(
   .icon,
   .text-only,
   .link-only,
-  [data-slot=dialog-close]
+  [data-slot=dialog-close],
+  [data-slot=select-trigger]
 ),
 button.stroke,
 button.sm,
@@ -129,6 +147,7 @@ button.sm.stroke{
 
 button.text-only,
 button.link-only{
+  height: auto;
   font-size: inherit;
   font-weight: inherit;
   text-transform: none;
@@ -237,18 +256,20 @@ button.text-only{
   width: 100%;
 }
 
-/* Rules */
-ul.rules li{
-  font-size: var(--font-sm);
-  &.good{
-    color: var(--green);
-  }
-  &.err{
-    color: var(--error);
+/* RULES */
+ul.rules{
+  li{
+    font-size: var(--font-sm);
+    &.good{
+      color: var(--green);
+    }
+    &.err{
+      color: var(--error);
+    }
   }
 } 
 
-/* Error */
+/* ERRORS */
 .err-msg{
   display:none;
   margin-top: 1rem;

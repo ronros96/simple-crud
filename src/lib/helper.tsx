@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type {Fields ,FieldType, FieldRules, owner} from "@src/fields/type";
+import { useRole } from "@src/store/store";
 
 /*
 
@@ -32,8 +33,10 @@ const validateField = (
   init: boolean,
 ): ValidationResult => {
   const value = field.value ?? "";
-  const owner = field.owner ?? ['admin,1,1,1,1,0','guest,2,0,0,0,0'];
+  const owner = useRole.getState().roleLogged;;
   const rules = field.fieldRules;
+
+  console.log(owner)
 
   // default values
   const required = rules.required ?? false;
@@ -59,7 +62,8 @@ const validateField = (
       errors.push("required");
     }
     //single boolean
-    else if(!value){
+    
+    if(!value){
       errors.push("required");
     }
     //multiple booleans
@@ -67,6 +71,7 @@ const validateField = (
       
     }
   }
+    // console.log(errors,field)
 
   // Character length
   if (value.length < minChars) {
@@ -119,6 +124,12 @@ const validateField = (
       }
       break;
 
+    case "mobile":
+      if (!/^(\+\d{1,3}[- ]?)?\d{10}$/.test(value)) {
+        errors.push("numberOnly");
+      }
+      break;
+
     case "alphanum":
       if (!/^[A-Za-z0-9]+$/.test(value)) {
         errors.push("alphanum");
@@ -143,16 +154,20 @@ const validateField = (
       }
       break;
   }
+  console.log(errors,field)
 
   return errors.length ? { errors } : "good";
 };
 
 /* 
   Checking single field for Input validation 
-  @param field {record} => FieldConfig (see fields.ts)
-  @param value {string} => field value
-  @param displayInitialIy {boolean} => if requirement/s should be shown or not, if 'false' once error takes place the requirement will show up (default: false).  
-*/
+  @param field            {record}    => FieldConfig (see fields.ts)
+  @param value            {string}    => field value
+  @param displayInitialIy {boolean}   => if requirement/s should be shown or not, if 'false' once error takes place the requirement will show up (default: false).  
+  @param insert           {string[]}  => insert message at the bottom of the list.
+  @title                  {string}    => this will be used for certain message/s instead of field's name.
+
+  */
 type FieldConfig = Omit<Field, "value">;
 
 const validateOnChange = (
@@ -170,16 +185,30 @@ export const showRequirements = (
   value: string,
   displayInitialIy?: boolean,
   insert?: string[],
+  title?: string,
 ): ReactNode => {
+  const fieldType = field.fieldType;
   const rules = field.fieldRules;
   const requirementItems = [];
-  const result = validateOnChange(field,value);
   const display = displayInitialIy ?? false;
+  const result =  validateOnChange(field,value);
   const getClass = (name: string) => {
     if (result === "empty") return "";
     if (result === "good") return "good";
     return result.errors.includes(name) ? "err" : value.length > 0 ? "good" : "";
   };
+
+  //for required tickers (checkbox / radio)
+  if(fieldType === 'bool' && rules.required){
+    requirementItems.push(
+      <li
+        key="agree"
+        className={getClass("required")}
+      >
+        You must agree to the {title} before proceeding.
+      </li>
+    );
+  }
 
   if ((rules.characters ?? 0) > 0) {
     requirementItems.push(
@@ -277,11 +306,27 @@ export const showRequirements = (
 
   return display ? 
     <ul className='rules'>{requirementItems}</ul> : 
-    typeof value === "object" && <ul className='rules'>{requirementItems}</ul>;
+    typeof result === "object" && <ul className='rules'>{requirementItems}</ul>
+};
+
+/* 
+  field group error indicator 
+  @param  error {obj}  => error state
+  @param  target {any} => target field
+  @return {boolean}    => true = there's an error.    
+*/
+
+
+export const fieldError = (
+  error: Record<string, any>[],
+  target: any
+) => {
+  return error[target]?.errors ? true : false;
 };
 
 /* Checking multiple fields for Submit */
-const validateFields = (fields: Fields) => {
+const validateFields = (
+  fields: Fields) => {
   const result: Record<string, ValidationResult> = {};
 
   Object.entries(fields).forEach(([name, field]) => {
@@ -297,7 +342,7 @@ const validateFields = (fields: Fields) => {
 };
 
 export const checkAllFields = (
-  fields: Fields
+  fields: Fields,
 ): Object => {
   const result = validateFields(fields);
 

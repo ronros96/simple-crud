@@ -7,6 +7,7 @@
                                 'alphanum' (accepts alpha-numberic only) 
                                 'alpha' (accepts letters only)
                                 'num' (accepts numbers only)
+                                'mobile' (accepts 10+ digits mobile number)
                                 'bool' (accepts binary | binary[])  - for tick boxes like checkbox / radio
                                                                     - if required single entity: it only accepts 'true' value
                                                                     - if required multiple entity: at least one entity must be 'true'
@@ -15,15 +16,6 @@
                                 ** spaces will be determined if 'spaces' in the fieldRules is set on false
   
   @param {string[]} owner   =>  determines which role who can administer this kind of field (default: ['admin','guest'])
-                                ________________________________________________
-                                Legend:   0-deny 1-full, 2-self, 
-                                ------------------------------------------------
-                                Roles:    Create  Read  Update  Delete  Transact
-                                admin     1       1     1       1       0
-                                librarian 0       1     0       0       1
-                                patron    0       2     2       0       2
-                                guest     2       0     0       0       0
-                                ------------------------------------------------
   
   @param {record} fieldRules:{
                     required    {boolean} => if field is required (default: false)
@@ -47,7 +39,7 @@
 */
 export type owner = string[]
 
-export type FieldType = "any" | "alphanum" | "alpha" | "num" | "bool" | "date" | "datetime";
+export type FieldType = "any" | "alphanum" | "alpha" | "num" | "mobile" | "bool" | "date" | "datetime";
 
 export type FieldRules = {
   required?: boolean;

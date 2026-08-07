@@ -41,10 +41,10 @@ export const ProfileFields:Fields = {
   },
   mobile:{
     value:'',
-    fieldType:'num',
+    fieldType:'mobile',
     fieldRules:{
       required:true,
-      characters:8,
+      characters:10,
     }
   },
   email:{
@@ -71,7 +71,7 @@ export const ProfileFields:Fields = {
   },
   booklimit:{
     value:'',
-    owner:['admin'],
+    owner:['admin','librarian','patron'],
     fieldType:'num',
     fieldRules:{
       required:true,
@@ -79,22 +79,21 @@ export const ProfileFields:Fields = {
   },
   role:{
     value:'',
-    owner:['admin'],
-    fieldType:'num',
+    owner:['admin','librarian','patron'],
+    fieldType:'alpha',
     fieldRules:{
       required:true,
     }
   },
   active:{
     value:'',
-    owner:['admin'],
+    owner:['admin','librarian'],
     fieldType:'bool',
-    fieldRules:{
-      required:true,
-    }
+    fieldRules:{}
   },
   created:{
     value:'',
+    owner:['admin','patron'],
     fieldType:'date',
     fieldRules:{}
   }

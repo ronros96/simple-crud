@@ -24,17 +24,46 @@ export const useLogin = create<LoginStore>((set) => ({
 }));
 
 // ROLES
-type Roles = {
-  roleLogged: string;
-}
+/*
+  Static role settings:
+  ___________________________________________________
+  Legend:     0-deny 1-full, 2-partial, 
+  ---------------------------------------------------
+  Roles:      Create  Read  Update  Delete  Transact
+  admin       1       1     1       1       0
+  librarian   0       2     0       0       1
+  patron      0       2     2       0       2
+  guest       2       0     0       0       0
+  ---------------------------------------------------
+*/
 
-type RoleStore = Roles & {
-  setRole: (Login: Required<Login>) => void;
+type RolesMap = {
+  admin: number[];
+  librarian: number[];
+  patron: number[];
+  guest: number[];
 };
 
+type RoleStore = {
+  roles: RolesMap;
+  roleLogged: number[];
+  setRole: (role: keyof RolesMap) => void;
+};
+
+const roles:RolesMap = {
+  admin: [1, 1, 1, 1, 0],
+  librarian: [0, 2, 0, 0, 1],
+  patron: [0, 2, 2, 0, 2],
+  guest: [2, 0, 0, 0, 0],
+}
+
 export const useRole = create<RoleStore>((set) => ({
-  roleLogged: 'guest',
-  setRole:(state:any) => set({roleLogged:state}),
+  roles:roles,
+  roleLogged: roles.admin, // guest
+  setRole: (role) =>
+    set((state) => ({
+      roleLogged: state.roles[role],
+    })),
 }));
 
 // PROFILE
