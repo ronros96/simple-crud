@@ -60,8 +60,6 @@ const Profile = () => {
   //status logged
   const formType = useProfile((state:any) => state.formType);
   const setFormType = useProfile((state:any) => state.setFormType);
-  const roles = useRole((state:any) => state.roles);
-  const roleLogged = useRole((state:any) => state.roleLogged);
   //errors
   const errors = useErrors((state:any) => state.errors);
   const setErrors = useErrors((state:any) => state.setErrors);
@@ -383,6 +381,8 @@ const Profile = () => {
             <div className='grid grid-cols-2 gap-4 w-full mt-[1rem] md:mt-0'>
               {formType === 'sign-in' &&
               <Button type="submit">Register</Button>}
+              {formType === 'update' &&
+              <Button type="submit">Update</Button>}
               <Dialog>
                 <DialogTrigger render={<Button variant="outline" className="stroke">Cancel</Button>} />
                 <DialogContent className="modal sm all-centered">
