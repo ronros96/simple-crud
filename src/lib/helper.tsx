@@ -1,17 +1,10 @@
 import type { ReactNode } from "react";
-import type {Fields ,FieldType, FieldRules, owner} from "@src/fields/type";
+import type {Fields ,FieldType, FieldRules, Owner, RolesMap} from "@src/fields/type";
 import { useRole } from "@src/store/store";
-
-/*
-
-  Error Handler Helper
-  see fields/fields.ts for params
-
-*/
 
 type Field = {
   value: any;
-  owner?: owner;
+  owner?: Owner;
   fieldType?: FieldType;
   fieldRules: FieldRules;
 }
@@ -24,19 +17,16 @@ type ValidationResult =
     };
 
 /* 
-  Error handler 
-  @param Field
-  @param init => if validation is just initial (for onchange func) or final (for submit func) (defualt:false)
+  Validate per field
+  @param field  {Field}   => see fields/fields.ts 
+  @param init   {boolean} => if validation is just initial (for onchange func) or final (for submit func) (defualt:false)
 */    
 const validateField = (
   field: Field,
   init: boolean,
 ): ValidationResult => {
   const value = field.value ?? "";
-  const owner = useRole.getState().roleLogged;;
   const rules = field.fieldRules;
-
-  console.log(owner)
 
   // default values
   const required = rules.required ?? false;
@@ -71,7 +61,6 @@ const validateField = (
       
     }
   }
-    // console.log(errors,field)
 
   // Character length
   if (value.length < minChars) {
@@ -154,13 +143,15 @@ const validateField = (
       }
       break;
   }
-  console.log(errors,field)
 
   return errors.length ? { errors } : "good";
 };
 
 /* 
-  Checking single field for Input validation 
+  OnChange validation
+  if displayInitialIy is true it will show which requirements are valid/not.
+  else is show certain requirements once it triggered false like: email input, etc.
+
   @param field            {record}    => FieldConfig (see fields.ts)
   @param value            {string}    => field value
   @param displayInitialIy {boolean}   => if requirement/s should be shown or not, if 'false' once error takes place the requirement will show up (default: false).  
@@ -310,13 +301,13 @@ export const showRequirements = (
 };
 
 /* 
-  field group error indicator 
+  Submit Error Handler:
+  Check for last pass if all fields are valid.
+  
   @param  error {obj}  => error state
   @param  target {any} => target field
   @return {boolean}    => true = there's an error.    
 */
-
-
 export const fieldError = (
   error: Record<string, any>[],
   target: any
@@ -350,3 +341,27 @@ export const checkAllFields = (
     (validation) => validation === "good"
   ) ? true : result;
 };
+
+/* 
+Role orginazer:
+Check if certain field needs to be shown base on current owner.
+
+@param  fields {Fields} => list of Fields
+@param  target {string} => target field
+@return {string}        => 'view' | 'full' | false'
+*/
+
+type FieldOrginizerReturn = string | boolean;
+
+export const FieldOrginizer = (
+  fields:Fields,
+  target:string
+):FieldOrginizerReturn =>{
+  const currentOwner = useRole.getState().roleLogged;
+
+  if(fields[target].owner){
+    return fields[target].owner?.[currentOwner] ? fields[target].owner?.[currentOwner] : false
+  }else{
+    return true;
+  }
+}

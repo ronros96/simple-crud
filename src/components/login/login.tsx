@@ -27,7 +27,7 @@ const Login = () => {
   const setUsername = useLogin((state:any) => state.setUsername);
   const setPassword = useLogin((state:any) => state.setPassword);
 
-  const setSignIn = useProfile((state:any) => state.setSignIn);
+  const setFormType = useProfile((state:any) => state.setFormType);
 
   const [showPassword, setShowPassword] = useState(false);
   const [showHidden, setShowHidden] = useState(false);
@@ -131,7 +131,7 @@ const Login = () => {
           <p><strong>
               Click SIGN-IN to be a Patron<br/>
             </strong></p>
-          <Button onClick={() => setSignIn(true)}>Sign In</Button>
+          <Button onClick={() => setFormType('sign-in')}>Sign In</Button>
         </div>
       </div>
     </>

@@ -71,7 +71,11 @@ export const ProfileFields:Fields = {
   },
   booklimit:{
     value:'',
-    owner:['admin','librarian','patron'],
+    owner:{
+      'admin':'full',
+      'librarian':'read',
+      'patron':'read'
+    },
     fieldType:'num',
     fieldRules:{
       required:true,
@@ -79,7 +83,10 @@ export const ProfileFields:Fields = {
   },
   role:{
     value:'',
-    owner:['admin','librarian','patron'],
+    owner:{
+      'admin':'full',
+      'patron':'read'
+    },
     fieldType:'alpha',
     fieldRules:{
       required:true,
@@ -87,15 +94,20 @@ export const ProfileFields:Fields = {
   },
   active:{
     value:'',
-    owner:['admin','librarian'],
+    owner:{
+      'admin':'full'
+    },
     fieldType:'bool',
     fieldRules:{}
   },
   created:{
     value:'',
-    owner:['admin','patron'],
+    owner:{
+      'admin':'full',
+      'patron':'read'
+    },
     fieldType:'date',
     fieldRules:{}
-  }
+  },
 }
 

@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import type {RolesMap} from "@src/fields/type";
 
 // LOG IN
 type Login = {
@@ -27,49 +28,28 @@ export const useLogin = create<LoginStore>((set) => ({
 /*
   Static role settings:
   ___________________________________________________
-  Legend:     0-deny 1-full, 2-partial, 
+  Legend:  0-deny 1-full, 2-partial, 
   ---------------------------------------------------
-  Roles:      Create  Read  Update  Delete  Transact
-  admin       1       1     1       1       0
-  librarian   0       2     0       0       1
-  patron      0       2     2       0       2
-  guest       2       0     0       0       0
+  Roles:  [Create  Read  Update  Delete]
   ---------------------------------------------------
 */
 
-type RolesMap = {
-  admin: number[];
-  librarian: number[];
-  patron: number[];
-  guest: number[];
-};
+
+type Roles = 'guest' | 'admin' | 'librarian' | 'patrom';
 
 type RoleStore = {
-  roles: RolesMap;
-  roleLogged: number[];
-  setRole: (role: keyof RolesMap) => void;
+  roleLogged:Roles;
+  setRole: (RoleStore: Roles) => void;
 };
 
-const roles:RolesMap = {
-  admin: [1, 1, 1, 1, 0],
-  librarian: [0, 2, 0, 0, 1],
-  patron: [0, 2, 2, 0, 2],
-  guest: [2, 0, 0, 0, 0],
-}
-
 export const useRole = create<RoleStore>((set) => ({
-  roles:roles,
-  roleLogged: roles.admin, // guest
-  setRole: (role) =>
-    set((state) => ({
-      roleLogged: state.roles[role],
-    })),
+  roleLogged: 'guest',
+  setRole: (state:any) => set({roleLogged:state}),
 }));
 
 // PROFILE
 type Profile = {
-  isSignedIn: boolean;
-  isUpdate: boolean;
+  formType: string;
   username: string;
   password: string;
   firstname: string;
@@ -86,12 +66,12 @@ type Profile = {
 };
 
 type ProfileStore = Profile & {
+  setFormType: (profile: Profile) => void;
   setProfile: (profile: Partial<Profile>) => void;
 };
 
 export const useProfile  = create<ProfileStore>((set) => ({
-  isSignedIn: false,
-  isUpdate: false,
+  formType: '',
   username: "",
   password: "",
   firstname: "",
@@ -105,8 +85,7 @@ export const useProfile  = create<ProfileStore>((set) => ({
   active: false,
   created: null,
 
-  setSignIn: (state:any) => set({isSignedIn:state}),
-  setUpdate: (state:any) => set({isSignedIn:state}),
+  setFormType: (state:any) => set({formType:state}),
   setProfile: (profile) =>
     set((state) => ({
       ...state,

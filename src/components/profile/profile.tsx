@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useErrors, useProfile, useRole } from "@src/store/store";
 import {
   Field,
+  FieldGroup,
   FieldLabel,
 } from "@components/ui/field";
 import {
@@ -36,8 +37,8 @@ import { Label } from "@components/ui/label"
 import { Checkbox } from "@components/ui/checkbox"
 import { PhoneInput } from "@components/ui/phone"
 import { Eye, EyeOff } from "lucide-react"
-
-import {checkAllFields, showRequirements, fieldError} from "@lib/helper"
+// helpers
+import {checkAllFields, showRequirements, fieldError, FieldOrginizer} from "@lib/helper"
 import {ProfileFields} from "@src/fields/fields"
 
 const Profile = () => {
@@ -57,8 +58,8 @@ const Profile = () => {
   const created = useProfile((state:any) => state.created);
   const setProfile = useProfile((state:any) => state.setProfile);
   //status logged
-  const isSignedIn = useProfile((state:any) => state.isSignedIn);
-  const setSignIn = useProfile((state:any) => state.setSignIn);
+  const formType = useProfile((state:any) => state.formType);
+  const setFormType = useProfile((state:any) => state.setFormType);
   const roles = useRole((state:any) => state.roles);
   const roleLogged = useRole((state:any) => state.roleLogged);
   //errors
@@ -96,7 +97,7 @@ const Profile = () => {
 
   const closeForm = () => {
     clearForm();
-    isSignedIn && setSignIn(false);
+    setFormType('');
   }
 
   const submitForm = (e:any) =>{
@@ -129,13 +130,11 @@ const Profile = () => {
     
     const result = checkAllFields(fields);  
     typeof result === "object" ? setErrors(result) : postForm();
-    console.log(roleLogged)
   }
 
   const postForm = () =>{
     alert()
   }
-
   return (
     <>
       <title>{`${import.meta.env.VITE_APP_TITLE} | Sign-In`}</title>
@@ -150,6 +149,7 @@ const Profile = () => {
         <div className="profile-container">
           <div className="profile-form">
             <p><strong>Please make sure to follow certain requirements on creating an account.</strong></p>
+            {FieldOrginizer(ProfileFields,'username') &&
             <Field className={clsx('form-group',{'error':fieldError(errors,'username')})}>
               <FieldLabel htmlFor="username">Username<span className="important">*</span>:</FieldLabel>
               <InputGroup>
@@ -170,10 +170,11 @@ const Profile = () => {
                 true,
                 ["You can only use period / underscore ( . _ ) for spacing"]
               )}
-            </Field>
+            </Field>}
 
             <div className="divider-horizontal"></div>
 
+            {FieldOrginizer(ProfileFields,'password') &&
             <Field className={clsx('form-group',{'error':fieldError(errors,'password')})}>
               <FieldLabel htmlFor="password">Password<span className="important">*</span>:</FieldLabel>
               <InputGroup>
@@ -202,18 +203,19 @@ const Profile = () => {
                 </InputGroupAddon>
               </InputGroup>
               {showRequirements(ProfileFields.password,password,true)}
-            </Field>
+            </Field>}
             
             <div className="form-group grid grid-cols-2">
+              {FieldOrginizer(ProfileFields,'role') &&
               <Field className={clsx('form-group',{'error':fieldError(errors,'role')})}>
                 <FieldLabel htmlFor="role">Role<span className="important">*</span>:</FieldLabel>
                 <Select items={roleList} id="role">
                   <SelectTrigger className="w-full max-w-48">
                     <SelectValue  placeholder="choose" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="select-content">
                     <SelectGroup>
-                      <SelectLabel>Roles:</SelectLabel>
+                      <SelectLabel>Roles</SelectLabel>
                       {roleList.map((item) => (
                         <SelectItem key={item.value} value={item.value}>
                           {item.label}
@@ -222,17 +224,18 @@ const Profile = () => {
                     </SelectGroup>
                   </SelectContent>
                 </Select>
-              </Field>
-
+              </Field>}
+              
+              {FieldOrginizer(ProfileFields,'booklimit') &&
               <Field className={clsx('form-group',{'error':fieldError(errors,'booklimit')})}>
                 <FieldLabel htmlFor="booklimit">Book Limit<span className="important">*</span>:</FieldLabel>
                 <Select items={tierList} id="booklimit">
                   <SelectTrigger className="w-full max-w-48">
                     <SelectValue placeholder="choose"/>
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="select-content">
                     <SelectGroup>
-                      <SelectLabel>Tier:</SelectLabel>
+                      <SelectLabel>Book limit:</SelectLabel>
                       {tierList.map((item) => (
                         <SelectItem key={item.value} value={item.value}>
                           {item.label}
@@ -241,7 +244,7 @@ const Profile = () => {
                     </SelectGroup>
                   </SelectContent>
                 </Select>
-              </Field>
+              </Field>}
             </div>
           </div>
           
@@ -249,11 +252,12 @@ const Profile = () => {
             <p><strong>This is for Demo purposes only, please refrain to use real information, and be wholesome &#128522;</strong></p>
             
             <div className="form-group grid grid-cols-2">
+              {FieldOrginizer(ProfileFields,'firstname') &&
               <Field className={clsx('form-group',{'error':fieldError(errors,'firstname')})}>
-                <FieldLabel htmlFor="firstName">First Name<span className="important">*</span>:</FieldLabel>
+                <FieldLabel htmlFor="firstname">First Name<span className="important">*</span>:</FieldLabel>
                 <InputGroup>
                   <InputGroupInput
-                    id="firstName"
+                    id="firstname"
                     name="firstname"
                     value={firstname}
                     onChange={(e) => setProfile({firstname:e.target.value})}
@@ -261,12 +265,13 @@ const Profile = () => {
                     aria-required="true"
                   />
                 </InputGroup>
-              </Field>
+              </Field>}
+              {FieldOrginizer(ProfileFields,'lastname') &&
               <Field className={clsx('form-group',{'error':fieldError(errors,'lastname')})}>
-                <FieldLabel htmlFor="lastName">Last Name<span className="important">*</span>:</FieldLabel>
+                <FieldLabel htmlFor="lastname">Last Name<span className="important">*</span>:</FieldLabel>
                 <InputGroup>
                   <InputGroupInput
-                    id="lastName"
+                    id="lastname"
                     name="lastname"
                     value={lastname}
                     onChange={(e) => setProfile({lastname:e.target.value})}
@@ -274,9 +279,10 @@ const Profile = () => {
                     aria-required="true"
                   />
                 </InputGroup>
-              </Field>
+              </Field>}
             </div>
             
+            {FieldOrginizer(ProfileFields,'mobile') &&
             <Field className={clsx('form-group',{'error':fieldError(errors,'mobile')})}>
               <FieldLabel htmlFor="mobile">Mobile Number<span className="important">*</span>:</FieldLabel>
               <InputGroup>
@@ -290,8 +296,9 @@ const Profile = () => {
                 />
               </InputGroup>
               {showRequirements(ProfileFields.mobile,mobile,false)}
-            </Field>
+            </Field>}
 
+            {FieldOrginizer(ProfileFields,'email') &&
             <Field className={clsx('form-group',{'error':fieldError(errors,'email')})}>
               <FieldLabel htmlFor="email">Email Address<span className="important">*</span>:</FieldLabel>
               <InputGroup>
@@ -305,8 +312,9 @@ const Profile = () => {
                 />
               </InputGroup>
               {showRequirements(ProfileFields.email,email,false)}
-            </Field>
+            </Field>}
 
+            {FieldOrginizer(ProfileFields,'address') &&
             <Field className={clsx('form-group',{'error':fieldError(errors,'address')})}>
               <FieldLabel htmlFor="address">Residential Address<span className="important">*</span>:</FieldLabel>
               <Textarea 
@@ -316,21 +324,22 @@ const Profile = () => {
                 onChange={(e) => setProfile({address:e.target.value})}
                 aria-required="true"
               />
-            </Field>
+            </Field>}
           </div>
 
           <div className={clsx('form-group full-width md:flex justify-end',{'error':fieldError(errors,'terms')})}>
-            <div className="form-group grid">
+            <FieldGroup className="form-group grid">
+              {FieldOrginizer(ProfileFields,'terms') &&
               <Field orientation="horizontal">
                 <Checkbox 
-                  id="terms-checkbox" 
+                  id="terms" 
                   name="terms"
                   title="Terms and Condition"
                   checked={terms}
                   onCheckedChange={(value) => setProfile({terms:!!value})}
                   aria-required="true"
                 />
-                <Label htmlFor="terms-checkbox" className='normal text-sm'>
+                <Label htmlFor="terms" className='normal text-sm'>
                   By signing up you agree to our
                   <Dialog>
                     <DialogTrigger render={<Button variant="outline" className="link-only px-[.25rem]">terms and conditions</Button>} />
@@ -354,24 +363,26 @@ const Profile = () => {
                   [],
                   'Terms and Condition'
                 )}
-              </Field>
+              </Field>}
 
+              {FieldOrginizer(ProfileFields,'active') &&
               <Field orientation="horizontal">
                 <Checkbox 
-                  id="terms-checkbox" 
+                  id="active" 
                   name="active"
-                  checked={terms}
+                  checked={active}
                   onCheckedChange={(value) => setProfile({active:!!value})}
                 />
-                <Label htmlFor="terms-checkbox" className='normal text-sm'>
+                <Label htmlFor="active" className='text-sm uppercase'>
                   Active
                 </Label>
-              </Field>
-            </div>
+              </Field>}
+            </FieldGroup>
               
 
             <div className='grid grid-cols-2 gap-4 w-full mt-[1rem] md:mt-0'>
-              <Button type="submit">Register</Button>
+              {formType === 'sign-in' &&
+              <Button type="submit">Register</Button>}
               <Dialog>
                 <DialogTrigger render={<Button variant="outline" className="stroke">Cancel</Button>} />
                 <DialogContent className="modal sm all-centered">

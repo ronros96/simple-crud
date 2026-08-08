@@ -37,7 +37,7 @@
                   errors: ["capital", "special"]
                 }
 */
-export type owner = string[]
+export type Owner = Record<string,string>
 
 export type FieldType = "any" | "alphanum" | "alpha" | "num" | "mobile" | "bool" | "date" | "datetime";
 
@@ -56,8 +56,15 @@ export type Fields = Record<
   string,
   {
     value: any;
-    owner?:owner;
+    owner?:Owner;
     fieldType?: FieldType;
     fieldRules: FieldRules;
   }
 >;
+
+export type RolesMap = {
+  admin: number[];
+  librarian: number[];
+  patron: number[];
+  guest: number[];
+};

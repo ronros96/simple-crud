@@ -79,9 +79,33 @@ textarea{
   }
 }
 
+/*mobile*/
 [data-slot=field]:has(.phone-input.PhoneInput--focus) [data-slot=input-group]{
   --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, rgb(255,255,255,.2));
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+/*select*/
+[data-slot=select-value][data-placeholder]{
+  color: var(--lgray);
+  font-style: italic;
+}
+
+.select-content{
+  color: var(--text-default);
+  background-color: var(--secondary-bg);
+
+  [data-slot=select-scroll-up-button],
+  [data-slot=select-scroll-down-button]{
+    box-shadow: 0 .25rem .5rem #00000088;
+    background-color: var(--secondary-bg);
+  }
+  [data-slot=select-scroll-down-button]{
+    box-shadow: 0 -.25rem .5rem #00000088;
+  }
+}
+
+[data-slot=select-item]:hover{
+  background-color: var(--button);
 }
 
 /* TICKERS */
@@ -91,7 +115,7 @@ span[role=checkbox][aria-checked=true]{
 
 [data-slot=field]:has([data-slot=checkbox]){
   flex-wrap: wrap;
-  align-items: flex-start;
+  align-items: center;
   label{
     width: calc(100% - (var(--spacing) * 6));
   }
