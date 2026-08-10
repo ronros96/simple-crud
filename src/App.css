@@ -12,7 +12,7 @@
   --pixel:  "Geist Pixel", sans-serif;
   --open-sans: "Open Sans", sans-serif;
 
-  --base-font-size:14px;
+  --base-font-size:12px;
   --font-sm: clamp(0.7rem, -0.05vi + 0.71rem, 0.67rem);
   --font-base: clamp(0.88rem, 0.2vi + 0.82rem, 1rem);
   --font-md: clamp(1.09rem, 0.65vi + 0.93rem, 1.5rem);

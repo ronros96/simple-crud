@@ -32,7 +32,8 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showHidden, setShowHidden] = useState(false);
 
-  const clearForm = () => {
+  const clearForm = (e:any) => {
+    e.preventDefault;
     setShowPassword(false);
     setUsername("");
     setPassword("");
@@ -41,8 +42,26 @@ const Login = () => {
   return (
     <>
       <title>{`${import.meta.env.VITE_APP_TITLE} | User Login`}</title>
-      <div className="login-container">
-        <form className="login-form">
+      <div className="login-container">        
+        <div className="login-content">
+          <h2 className='header-5'>
+          <Tooltip>
+            <TooltipTrigger delay={300} render={<Button variant="outline" className="text-only p-0">Hello There!</Button>} />
+            <TooltipContent>
+              <p>General Kenobi!</p>
+            </TooltipContent>
+          </Tooltip>
+          </h2>
+          <p>This is just a simple profile CRUD.<br/>Just to showcase my development skills in type of system using React JS.</p>
+          <p>
+            <strong>Still no account yet?</strong><br/>Let’s start by signing-in:<br/>
+          </p>
+          <Button onClick={() => setFormType('sign-in')}>Let Me Sign-In!</Button>
+        </div>
+
+        <div className="divider-vertical"></div>
+        
+                <form className="login-form">
           <Field className="form-group">
             <FieldLabel htmlFor="username">Username</FieldLabel>
             <InputGroup>
@@ -98,41 +117,6 @@ const Login = () => {
             </Button>
           </div>
         </form>
-        <div className="divider-vertical"></div>
-        <div className="login-content">
-          <h2 className='header-5'>
-          <Tooltip>
-            <TooltipTrigger render={<Button variant="outline" className="text-only p-0">Hello There!</Button>} />
-            <TooltipContent>
-              <p>General Kenobi!</p>
-            </TooltipContent>
-          </Tooltip>
-          </h2>
-          <p>This is a simple <strong>Library System</strong>. Just to showcase how I develop CRUD type system using React JS.</p>
-          <div 
-            className="show-content"
-            onClick={() => setShowHidden(!showHidden)}
-          >
-            {showHidden ? 'Hide' : 'Show'}{' '}other credentials
-            <ChevronDown className={clsx({'rotate-180':showHidden})}/> 
-          </div>
-          <div className={clsx('hidden-content',{'show':showHidden})} >
-            <p>
-              <strong>If you want to enter as an Admin</strong><br/>
-              Username: Admin<br/>
-              Password: admin<br/>
-            </p>
-            <p>
-              <strong>If you want to enter as an Librarian</strong><br/>
-              Username: Librarian<br/>
-              Password: books<br/>
-            </p>
-          </div>
-          <p><strong>
-              Click SIGN-IN to be a Patron<br/>
-            </strong></p>
-          <Button onClick={() => setFormType('sign-in')}>Sign In</Button>
-        </div>
       </div>
     </>
     

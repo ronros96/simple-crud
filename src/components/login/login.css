@@ -10,7 +10,7 @@
   @media screen and (min-width: 680px) {
     flex-direction: row;
     justify-content: flex-start;
-    gap:0;
+    gap:var(--gap);
     align-items: stretch; 
     border-radius: .5rem;
   }
