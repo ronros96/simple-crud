@@ -43,6 +43,7 @@ export type FieldType = "any" | "alphanum" | "alpha" | "num" | "mobile" | "bool"
 
 export type FieldRules = {
   required?: boolean;
+  unique?: boolean;
   characters?: number;
   spaces?: boolean;
   capital?: number;

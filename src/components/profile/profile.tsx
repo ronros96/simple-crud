@@ -1,7 +1,7 @@
 import './profile.css';
 import clsx from 'clsx';
 import { useState } from "react"
-import { useErrors, useProfile, useRole } from "@src/store/store";
+import { useErrors, useProfile } from "@src/store/store";
 import {
   Field,
   FieldGroup,
@@ -38,8 +38,9 @@ import { Checkbox } from "@components/ui/checkbox"
 import { PhoneInput } from "@components/ui/phone"
 import { Eye, EyeOff } from "lucide-react"
 // helpers
-import {checkAllFields, showRequirements, fieldError, FieldOrginizer} from "@lib/helper"
-import {ProfileFields} from "@src/fields/fields"
+import {checkAllFields, showRequirements, fieldError, FieldOrginizer} from "@src/lib/helpers/field"
+import {ProfileFields} from "@src/fields/profile"
+import { useGetUser,useGetUsers } from '@hooks/Profile';
 
 const Profile = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -127,12 +128,14 @@ const Profile = () => {
     );
     
     const result = checkAllFields(fields);  
-    typeof result === "object" ? setErrors(result) : postForm();
+    typeof result === "object" ? setErrors(result) : null;
   }
 
-  const postForm = () =>{
-    alert()
-  }
+  /*check username if avail */
+  const {
+    data: existingUser,
+  } = useGetUser(username);
+
   return (
     <>
       <title>{`${import.meta.env.VITE_APP_TITLE} | Sign-In`}</title>
@@ -165,8 +168,11 @@ const Profile = () => {
               {showRequirements(
                 ProfileFields.username,
                 username,
-                true,
-                ["You can only use period / underscore ( . _ ) for spacing"]
+                {
+                  displayInit:true,
+                  insert:["You can only use period / underscore ( . _ ) for spacing"],
+                  unique: existingUser ? "Username alreay existed":"",
+                }
               )}
             </Field>}
 
@@ -200,7 +206,13 @@ const Profile = () => {
                   </Button>
                 </InputGroupAddon>
               </InputGroup>
-              {showRequirements(ProfileFields.password,password,true)}
+              {showRequirements(
+                ProfileFields.password,
+                password,
+                {
+                  displayInit:true,
+                }
+              )}
             </Field>}
             
             <div className="form-group grid grid-cols-2">
@@ -293,7 +305,6 @@ const Profile = () => {
                   aria-required="true"
                 />
               </InputGroup>
-              {showRequirements(ProfileFields.mobile,mobile,false)}
             </Field>}
 
             {FieldOrginizer(ProfileFields,'email') &&
@@ -309,7 +320,7 @@ const Profile = () => {
                   aria-required="true"
                 />
               </InputGroup>
-              {showRequirements(ProfileFields.email,email,false)}
+              {showRequirements(ProfileFields.email,email)}
             </Field>}
 
             {FieldOrginizer(ProfileFields,'address') &&
@@ -357,9 +368,9 @@ const Profile = () => {
                 {showRequirements(
                   ProfileFields.terms,
                   terms,
-                  false,
-                  [],
-                  'Terms and Condition'
+                  {
+                    insert:['Terms and Condition']
+                  }
                 )}
               </Field>}
 

@@ -1,6 +1,7 @@
 import './login.css';
 import { useState } from "react"
 import clsx from 'clsx';
+import  idleFace from './idleFace.svg';
 import { useLogin, useProfile } from "@src/store/store";
 import {
   Field,
@@ -18,7 +19,7 @@ import {
   TooltipTrigger,
 } from "@components/ui/tooltip"
 import { Button } from "@components/ui/button"
-import { Eye, EyeOff, ChevronDown } from "lucide-react"
+import { Eye, EyeOff } from "lucide-react"
 
 const Login = () => {
   // const setLogin = useLogin((state:any) => state.setLogin);
@@ -26,11 +27,8 @@ const Login = () => {
   const password = useLogin((state:any) => state.password);
   const setUsername = useLogin((state:any) => state.setUsername);
   const setPassword = useLogin((state:any) => state.setPassword);
-
   const setFormType = useProfile((state:any) => state.setFormType);
-
   const [showPassword, setShowPassword] = useState(false);
-  const [showHidden, setShowHidden] = useState(false);
 
   const clearForm = (e:any) => {
     e.preventDefault;
@@ -53,6 +51,12 @@ const Login = () => {
           </Tooltip>
           </h2>
           <p>This is just a simple profile CRUD.<br/>Just to showcase my development skills in type of system using React JS.</p>
+          <object 
+            type="image/svg+xml" 
+            data={idleFace} 
+            className="w-full bg-transparent"
+          >
+          </object>
           <p>
             <strong>Still no account yet?</strong><br/>Let’s start by signing-in:<br/>
           </p>

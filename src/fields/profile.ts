@@ -8,6 +8,7 @@ export const ProfileFields:Fields = {
     fieldType:'alphanum', 
     fieldRules:{
       required:true,
+      unique:true,
       characters:5,
       spaces:false
     }

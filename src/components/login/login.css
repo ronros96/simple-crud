@@ -59,3 +59,13 @@
   }
 }
 
+object svg{
+  fill:none;
+  background: transparent;
+}
+
+object {
+  fill:none;
+  background: transparent;
+}
+

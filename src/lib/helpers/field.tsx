@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type {Fields ,FieldType, FieldRules, Owner, RolesMap} from "@src/fields/type";
+import type {Fields ,FieldType, FieldRules, Owner} from "@src/fields/type";
 import { useRole } from "@src/store/store";
 
 type Field = {
@@ -20,6 +20,7 @@ type ValidationResult =
   Validate per field
   @param field  {Field}   => see fields/fields.ts 
   @param init   {boolean} => if validation is just initial (for onchange func) or final (for submit func) (defualt:false)
+  
 */    
 const validateField = (
   field: Field,
@@ -30,6 +31,7 @@ const validateField = (
 
   // default values
   const required = rules.required ?? false;
+  const unique = rules.unique ?? false;
   const minChars = rules.characters ?? 0;
   const allowSpaces = rules.spaces ?? true;
   const minCapital = rules.capital ?? 0;
@@ -52,7 +54,6 @@ const validateField = (
       errors.push("required");
     }
     //single boolean
-    
     if(!value){
       errors.push("required");
     }
@@ -60,6 +61,11 @@ const validateField = (
     else{
       
     }
+  }
+
+  //unique
+  if(unique && value.length > 0){
+   
   }
 
   // Character length
@@ -152,11 +158,16 @@ const validateField = (
   if displayInitialIy is true it will show which requirements are valid/not.
   else is show certain requirements once it triggered false like: email input, etc.
 
-  @param field            {record}    => FieldConfig (see fields.ts)
-  @param value            {string}    => field value
-  @param displayInitialIy {boolean}   => if requirement/s should be shown or not, if 'false' once error takes place the requirement will show up (default: false).  
-  @param insert           {string[]}  => insert message at the bottom of the list.
-  @title                  {string}    => this will be used for certain message/s instead of field's name.
+  @param field            {record}           => FieldConfig (see fields.ts)
+  @param value            {string}           => field value
+  @params settings        {partial records} 
+  {
+    displayInitialIy      {boolean}          => if requirement/s should be shown or not, if 'false' once error takes place the requirement will show up (default: false).  
+    insert                {string[]}         => insert message at the bottom of the list.
+    title                 {string}           => this will be used for certain message/s instead of field's name.
+    unique                {string}           => (required if field detected is unique) message needed 
+  }
+
 
   */
 type FieldConfig = Omit<Field, "value">;
@@ -174,21 +185,30 @@ const validateOnChange = (
 export const showRequirements = (
   field: FieldConfig,
   value: string,
-  displayInitialIy?: boolean,
-  insert?: string[],
-  title?: string,
+  settings?:{
+    displayInit?: boolean,
+    insert?: string[],
+    title?: string,
+    unique?: string,
+  },
+
 ): ReactNode => {
   const fieldType = field.fieldType;
   const rules = field.fieldRules;
   const requirementItems = [];
-  const display = displayInitialIy ?? false;
-  const result =  validateOnChange(field,value);
+  const display = settings?.displayInit ?? false;
+  const insert = settings?.insert ?? false;
+  const title = settings?.title ?? "";
+  const isUnique = settings?.unique ?? null;
+  const uniqueMsg = isUnique ?? "";
+  rules.unique && isUnique === null && console.error('Field type is unique, insert handler function that will determine wheter the field is available or not')
+
+  const result =  isUnique ? validateOnChange(field,value) : validateOnChange(field,uniqueMsg);
   const getClass = (name: string) => {
     if (result === "empty") return "";
     if (result === "good") return "good";
     return result.errors.includes(name) ? "err" : value.length > 0 ? "good" : "";
   };
-
   //for required tickers (checkbox / radio)
   if(fieldType === 'bool' && rules.required){
     requirementItems.push(
@@ -201,6 +221,7 @@ export const showRequirements = (
     );
   }
 
+  //min of characters
   if ((rules.characters ?? 0) > 0) {
     requirementItems.push(
       <li
@@ -212,8 +233,20 @@ export const showRequirements = (
     );
   }
 
+  if (rules.unique) {
+    requirementItems.push(
+      <li
+        key="unique"
+        className={getClass("unique")}
+      >
+        Must be unique
+      </li>
+    );
+  }
+
   const subRequirements = [];
 
+  //min of capital
   if ((rules.capital ?? 0) > 0) {
     subRequirements.push(
       <li
@@ -225,6 +258,7 @@ export const showRequirements = (
     );
   }
 
+  //min of small
   if ((rules.small ?? 0) > 0) {
     subRequirements.push(
       <li
@@ -236,6 +270,7 @@ export const showRequirements = (
     );
   }
 
+  //min of number
   if ((rules.number ?? 0) > 0) {
     subRequirements.push(
       <li
@@ -247,6 +282,7 @@ export const showRequirements = (
     );
   }
 
+  //min of special char
   if ((rules.special ?? 0) > 0) {
     subRequirements.push(
       <li
@@ -258,6 +294,7 @@ export const showRequirements = (
     );
   }
 
+  //show sub-requirements
   if (subRequirements.length) {
     requirementItems.push(
       <li key="title">There should be at least:</li>,
@@ -265,6 +302,7 @@ export const showRequirements = (
     );
   }
 
+  //no spaces
   if (rules.spaces === false) {
     requirementItems.push(
       <li
@@ -276,6 +314,7 @@ export const showRequirements = (
     );
   }
 
+  //email input required
   if (rules.email) {
     requirementItems.push(
       <li
@@ -287,6 +326,7 @@ export const showRequirements = (
     );
   }
 
+  //rendering all requirements
   insert && insert?.map((text,i)=>{
     requirementItems.push(
       <li key={`insert-${i}`}>
