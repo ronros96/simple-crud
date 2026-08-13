@@ -1,8 +1,7 @@
 import './login.css';
-import { useState } from "react"
 import clsx from 'clsx';
-import  idleFace from './idleFace.svg';
-import { useLogin, useProfile } from "@src/store/store";
+import { useEffect, useState } from "react"
+//ui
 import {
   Field,
   FieldDescription,
@@ -20,21 +19,82 @@ import {
 } from "@components/ui/tooltip"
 import { Button } from "@components/ui/button"
 import { Eye, EyeOff } from "lucide-react"
+//state
+import { useLogin, useProfile, useErrors } from "@src/store/store";
+//hooks
+import { useGetUsers, usePutUser } from '@hooks/Profile';
+import type { User } from '@src/api/profile';
 
 const Login = () => {
-  // const setLogin = useLogin((state:any) => state.setLogin);
+  interface FormState {
+    username: string;
+    password: string;
+  }
+
+  //states
   const username = useLogin((state:any) => state.username);
-  const password = useLogin((state:any) => state.password);
   const setUsername = useLogin((state:any) => state.setUsername);
-  const setPassword = useLogin((state:any) => state.setPassword);
+  const setLogin = useLogin((state:any) => state.setLogin);
   const setFormType = useProfile((state:any) => state.setFormType);
   const [showPassword, setShowPassword] = useState(false);
+  const [form, setForm] = useState<FormState>({ username: "", password: "" });
+  //errors
+  const errors = useErrors((state:any) => state.errors);
+  const setErrors = useErrors((state:any) => state.setErrors);
+  
 
   const clearForm = (e:any) => {
     e.preventDefault;
     setShowPassword(false);
-    setUsername("");
-    setPassword("");
+    setErrors('');
+    setForm({ username: "", password: "" })
+  }
+
+  //login functions
+  const {data: allUsers} = useGetUsers();
+  const putUser = usePutUser();
+
+  const login = (e:any) =>{
+    const formData = new FormData(e.target);
+    const formProps = Object.fromEntries(formData);
+
+    if(formProps.username && formProps.password){
+      setForm((prev) => ({ ...prev, ...formProps }));
+      checkLogin(formProps.username,formProps.password)
+    }else{
+      clearForm
+      setErrors('err');
+    }
+
+  }
+
+  const checkLogin = (
+    username:any,
+    password:any
+  ) => {
+    const match = Object(allUsers).find(
+      (u:any) => u.username === username.trim() && u.password === password
+    );
+
+    if(match){
+      setLogin(true);
+      putUser.mutate({
+        username: username,
+        user: {
+          ...match,
+          logged: new Date(),
+        },
+      });
+      const toLocal = {
+        'username':username,
+        'datetime':new Date()
+      }
+      localStorage.setItem('setLogged',JSON.stringify(toLocal));
+    }else{
+      console.log("pak")
+      setForm({ username: "", password: "" })
+      setErrors('err');
+    }
   }
   
   return (
@@ -50,22 +110,28 @@ const Login = () => {
             </TooltipContent>
           </Tooltip>
           </h2>
-          <p>This is just a simple profile CRUD.<br/>Just to showcase my development skills in type of system using React JS.</p>
-          <object 
-            type="image/svg+xml" 
-            data={idleFace} 
-            className="w-full bg-transparent"
-          >
-          </object>
           <p>
-            <strong>Still no account yet?</strong><br/>Let’s start by signing-in:<br/>
+            This project uses a mock API, so all login and authentication features are implemented for prototype purposes only.
+          </p>
+          <p>
+            The main focus of the project is to showcase my front-end development skills, particularly in building a CRUD application using React JS. It demonstrates how I structure API requests, manage application state, handle form validation and errors, and create a responsive user interface for interacting with RESTful API data.
+          </p>
+          <p>
+            <strong>Don't have an account yet?</strong><br/>Let’s start by signing-in:<br/>
           </p>
           <Button onClick={() => setFormType('sign-in')}>Let Me Sign-In!</Button>
         </div>
 
         <div className="divider-vertical"></div>
         
-                <form className="login-form">
+        <form 
+          className="login-form" 
+          onSubmit={login} 
+          action={(e:any)=>{e.preventDefault}}
+        >
+          <p className={clsx('err-msg',{'show':Object.values(errors).some(value => value !== 'good')})}>
+            Invalid username and/or password.
+          </p>
           <Field className="form-group">
             <FieldLabel htmlFor="username">Username</FieldLabel>
             <InputGroup>
@@ -73,8 +139,8 @@ const Login = () => {
                 id="username"
                 type="text"
                 name="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={form.username}
+                onChange={(e)=>setForm({...form,username:e.target.value})}
                 placeholder="Enter username"
               />
             </InputGroup>
@@ -87,9 +153,9 @@ const Login = () => {
                 id="password"
                 type={showPassword ? "text" : "password"}
                 name="password"
+                value={form.password}
+                onChange={(e)=>setForm({...form,password:e.target.value})}
                 placeholder="Enter password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
               />
               <InputGroupAddon align="inline-end">
                 <Button

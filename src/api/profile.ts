@@ -6,9 +6,8 @@ export type User = {
   firstname: string;
   lastname: string;
   role: string;
+  logged?: Date;
 };
-
-
 
 export type CreateUser = Omit<User, "username"> & {
   username: string;
@@ -20,41 +19,40 @@ async function request<T>(
   url: string,
   options?: RequestInit
 ): Promise<T> {
-  const response = await fetch(url, {
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-    ...options,
-  });
-  console.log(response,url);
+    const response = await fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+      },
+      ...options,
+    });
+    
+    if (!response.ok) {
+      let message = `Request failed with status ${response.status}`;
 
-  if (!response.ok) {
-    let message = `Request failed with status ${response.status}`;
+      try {
+        const error = await response.json();
 
-    try {
-      const error = await response.json();
-
-      if (typeof error === "string") {
-        message = error;
-      } else if (error?.message) {
-        message = error.message;
+        if (typeof error === "string") {
+          message = error;
+        } else if (error?.message) {
+          message = error.message;
+        }
+      } catch {
+        // Response wasn't JSON
       }
-    } catch {
-      // Response wasn't JSON
+
+      throw new Error(message);
     }
 
-    throw new Error(message);
-  }
+    // DELETE may return an empty response
+    if (response.status === 204) {
+      return undefined as T;
+    }
 
-  // DELETE may return an empty response
-  if (response.status === 204) {
-    return undefined as T;
-  }
+    const text = await response.text();
 
-  const text = await response.text();
-
-  return text ? JSON.parse(text) : (undefined as T);
+    return text ? JSON.parse(text) : (undefined as T);
 }
 
 /* GET ALL */

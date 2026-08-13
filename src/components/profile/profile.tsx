@@ -1,7 +1,7 @@
 import './profile.css';
 import clsx from 'clsx';
 import { useState } from "react"
-import { useErrors, useProfile } from "@src/store/store";
+//ui
 import {
   Field,
   FieldGroup,
@@ -37,10 +37,13 @@ import { Label } from "@components/ui/label"
 import { Checkbox } from "@components/ui/checkbox"
 import { PhoneInput } from "@components/ui/phone"
 import { Eye, EyeOff } from "lucide-react"
+//state
+import { useErrors, useProfile } from "@src/store/store";
 // helpers
 import {checkAllFields, showRequirements, fieldError, FieldOrginizer} from "@src/lib/helpers/field"
 import {ProfileFields} from "@src/fields/profile"
-import { useGetUser,useGetUsers } from '@hooks/Profile';
+//hooks
+import { useGetUser } from '@hooks/Profile';
 
 const Profile = () => {
   const [showPassword, setShowPassword] = useState(false);
