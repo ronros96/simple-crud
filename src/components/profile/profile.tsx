@@ -144,7 +144,6 @@ const Profile = () => {
       <title>{`${import.meta.env.VITE_APP_TITLE} | Sign-In`}</title>
       <div className="important">
         <strong>* Required</strong><br/>
-        <em>All accounts created will expire within a month.</em>
         <p className={clsx('err-msg',{'show':Object.values(errors).some(value => value !== 'good')})}>
           Please fill in all required fields and check the requirements.
         </p>
