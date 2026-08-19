@@ -62,15 +62,18 @@ type Profile = {
   role:number; // 0-patron, 1-librarian, 2-admin
   active: boolean;
   created: null;
-
 };
 
+
 type ProfileStore = Profile & {
+  Users:Partial<Profile>;
   setFormType: (profile: Profile) => void;
   setProfile: (profile: Partial<Profile>) => void;
+  setUsers: (profile: Profile) => void;
 };
 
 export const useProfile  = create<ProfileStore>((set) => ({
+  Users:{},
   formType: '',
   username: "",
   password: "",
@@ -91,6 +94,7 @@ export const useProfile  = create<ProfileStore>((set) => ({
       ...state,
       ...profile,
     })),
+  setUsers: (state:any) => set({Users:state}),
 }));
 
 // ERRORS

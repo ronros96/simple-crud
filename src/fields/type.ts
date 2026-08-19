@@ -37,13 +37,15 @@
                   errors: ["capital", "special"]
                 }
 */
+type uniqueType = "profile"
+
 export type Owner = Record<string,string>
 
 export type FieldType = "any" | "alphanum" | "alpha" | "num" | "mobile" | "bool" | "date" | "datetime";
 
 export type FieldRules = {
   required?: boolean;
-  unique?: boolean;
+  unique?: uniqueType | boolean;
   characters?: number;
   spaces?: boolean;
   capital?: number;

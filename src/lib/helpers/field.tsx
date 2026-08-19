@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type {Fields ,FieldType, FieldRules, Owner} from "@src/fields/type";
-import { useRole } from "@src/store/store";
+import { useRole, useProfile } from "@src/store/store";
 
 type Field = {
   value: any;
@@ -15,6 +15,7 @@ type ValidationResult =
   | {
       errors: string[];
     };
+    
 
 /* 
   Validate per field
@@ -54,8 +55,8 @@ const validateField = (
       errors.push("required");
     }
     //single boolean
-    if(!value){
-      errors.push("required");
+    if(typeof value === "boolean" && !value){
+      errors.push("agree");
     }
     //multiple booleans
     else{
@@ -64,8 +65,14 @@ const validateField = (
   }
 
   //unique
-  if(unique && value.length > 0){
-   
+  const allUsers = useProfile.getState().Users;
+  if(unique && Object.keys(allUsers).length > 0){
+    const match = Object(allUsers).find(
+      (u:any) => u.username === value.trim()
+    );
+    if(match){
+      errors.push("unique");
+    }
   }
 
   // Character length
@@ -126,7 +133,7 @@ const validateField = (
       break;
 
     case "alphanum":
-      if (!/^[A-Za-z0-9]+$/.test(value)) {
+      if (!/^[A-Za-z0-9._]+$/.test(value)) {
         errors.push("alphanum");
       }
       break;
@@ -149,7 +156,6 @@ const validateField = (
       }
       break;
   }
-
   return errors.length ? { errors } : "good";
 };
 
@@ -174,7 +180,7 @@ type FieldConfig = Omit<Field, "value">;
 
 const validateOnChange = (
   field: FieldConfig,
-  value: string
+  value: string | boolean
 ) => {
   return validateField({
     ...field,
@@ -189,7 +195,7 @@ export const showRequirements = (
     displayInit?: boolean,
     insert?: string[],
     title?: string,
-    unique?: string,
+    unique?: boolean | string,
   },
 
 ): ReactNode => {
@@ -199,14 +205,14 @@ export const showRequirements = (
   const display = settings?.displayInit ?? false;
   const insert = settings?.insert ?? false;
   const title = settings?.title ?? "";
-  const isUnique = settings?.unique ?? null;
-  const uniqueMsg = isUnique ?? "";
+  const isUnique = settings?.unique ?? false;
   rules.unique && isUnique === null && console.error('Field type is unique, insert handler function that will determine wheter the field is available or not')
 
-  const result =  isUnique ? validateOnChange(field,value) : validateOnChange(field,uniqueMsg);
+  const result =  validateOnChange(field,value);
   const getClass = (name: string) => {
     if (result === "empty") return "";
     if (result === "good") return "good";
+    console.log(result.errors.includes(name),name)
     return result.errors.includes(name) ? "err" : value.length > 0 ? "good" : "";
   };
   //for required tickers (checkbox / radio)
@@ -214,7 +220,7 @@ export const showRequirements = (
     requirementItems.push(
       <li
         key="agree"
-        className={getClass("required")}
+        className={getClass("agree")}
       >
         You must agree to the {title} before proceeding.
       </li>
@@ -234,12 +240,18 @@ export const showRequirements = (
   }
 
   if (rules.unique) {
+    let uniqueMsg:string = "";
+    switch(isUnique){
+      case 'profile':
+        uniqueMsg = "Username already exist"
+      break;
+    }
     requirementItems.push(
       <li
         key="unique"
         className={getClass("unique")}
       >
-        Must be unique
+        {uniqueMsg !== "" && getClass("unique") === "err" ? uniqueMsg : "Must be unique"}
       </li>
     );
   }

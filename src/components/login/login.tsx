@@ -91,7 +91,6 @@ const Login = () => {
       }
       localStorage.setItem('setLogged',JSON.stringify(toLocal));
     }else{
-      console.log("pak")
       setForm({ username: "", password: "" })
       setErrors('err');
     }

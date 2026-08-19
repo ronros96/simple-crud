@@ -1,6 +1,6 @@
 import './profile.css';
 import clsx from 'clsx';
-import { useState } from "react"
+import { useEffect, useState } from "react"
 //ui
 import {
   Field,
@@ -43,7 +43,7 @@ import { useErrors, useProfile } from "@src/store/store";
 import {checkAllFields, showRequirements, fieldError, FieldOrginizer} from "@src/lib/helpers/field"
 import {ProfileFields} from "@src/fields/profile"
 //hooks
-import { useGetUser } from '@hooks/Profile';
+import { useGetUsers, usePutUser } from '@hooks/Profile';
 
 const Profile = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -61,6 +61,8 @@ const Profile = () => {
   const active = useProfile((state:any) => state.active);
   const created = useProfile((state:any) => state.created);
   const setProfile = useProfile((state:any) => state.setProfile);
+  const Users = useProfile((state:any) => state.Users);
+  const setUsers = useProfile((state:any) => state.setUsers);
   //status logged
   const formType = useProfile((state:any) => state.formType);
   const setFormType = useProfile((state:any) => state.setFormType);
@@ -135,9 +137,11 @@ const Profile = () => {
   }
 
   /*check username if avail */
-  const {
-    data: existingUser,
-  } = useGetUser(username);
+  const {data: allUsers} = useGetUsers();
+
+  useEffect(()=>{
+    setUsers(allUsers)
+  },[Users])
 
   return (
     <>
@@ -173,7 +177,7 @@ const Profile = () => {
                 {
                   displayInit:true,
                   insert:["You can only use period / underscore ( . _ ) for spacing"],
-                  unique: existingUser ? "Username alreay existed":"",
+                  unique: "profile",
                 }
               )}
             </Field>}
@@ -322,7 +326,12 @@ const Profile = () => {
                   aria-required="true"
                 />
               </InputGroup>
-              {showRequirements(ProfileFields.email,email)}
+              {showRequirements(
+                ProfileFields.email,
+                email,
+                {
+                  displayInit:fieldError(errors,'email')
+                })}
             </Field>}
 
             {FieldOrginizer(ProfileFields,'address') &&
@@ -371,7 +380,8 @@ const Profile = () => {
                   ProfileFields.terms,
                   terms,
                   {
-                    insert:['Terms and Condition']
+                    title:"Terms and Condition",
+                    displayInit:fieldError(errors,'terms')
                   }
                 )}
               </Field>}

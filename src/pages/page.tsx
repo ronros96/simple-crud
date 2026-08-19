@@ -67,10 +67,10 @@ const Page = () =>{
         ) : (
           <div className='main-container'>
             <h1>WELCOME!</h1>
+            <button onClick={()=>{setLogin(false)}}>Log out</button>
           </div>
         )
       }
-       
     </section>
   )
 }
