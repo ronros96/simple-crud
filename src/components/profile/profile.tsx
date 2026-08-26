@@ -22,15 +22,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@components/ui/dialog"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@components/ui/select"
 import { Button } from "@components/ui/button"
 import { Textarea } from "@components/ui/textarea"
 import { Label } from "@components/ui/label"
@@ -56,10 +47,7 @@ const Profile = () => {
   const email = useProfile((state:any) => state.email);
   const address = useProfile((state:any) => state.address);
   const terms = useProfile((state:any) => state.terms);
-  const booklimit = useProfile((state:any) => state.booklimit);
-  const role = useProfile((state:any) => state.role);
   const active = useProfile((state:any) => state.active);
-  const created = useProfile((state:any) => state.created);
   const setProfile = useProfile((state:any) => state.setProfile);
   const Users = useProfile((state:any) => state.Users);
   const setUsers = useProfile((state:any) => state.setUsers);
@@ -70,17 +58,6 @@ const Profile = () => {
   const errors = useErrors((state:any) => state.errors);
   const setErrors = useErrors((state:any) => state.setErrors);
 
-  const roleList = [
-    { label: "Administrator", value: 'admin' },
-    { label: "Librarian", value: 'librarian' },
-    { label: "Patron", value: 'patron' },
-  ]
-
-  const tierList = [
-    { label: "Standard (5)", value: 5 },
-    { label: "Scholar (8)", value: 8 },
-    { label: "Loyalty (10)", value: 10 },
-  ]
 
   const clearForm = () => {
     setProfile({
@@ -117,8 +94,6 @@ const Profile = () => {
       email,
       address,
       terms,
-      booklimit,
-      role,
       active
     }
     //insert state values to ProfileFields value
@@ -132,8 +107,14 @@ const Profile = () => {
       ])
     );
     
-    const result = checkAllFields(fields);  
-    typeof result === "object" ? setErrors(result) : null;
+    const result = checkAllFields(fields,'trigger');  
+    // console.log(result)
+    if(Object.values(result).every(value => value === "good")){
+      alert();
+    }else{
+      console.log(result)
+      setErrors(result);
+    };
   }
 
   /*check username if avail */
@@ -175,7 +156,7 @@ const Profile = () => {
                 ProfileFields.username,
                 username,
                 {
-                  displayInit:true,
+                  display:"init",
                   insert:["You can only use period / underscore ( . _ ) for spacing"],
                   unique: "profile",
                 }
@@ -216,52 +197,10 @@ const Profile = () => {
                 ProfileFields.password,
                 password,
                 {
-                  displayInit:true,
+                  display:"init",
                 }
               )}
             </Field>}
-            
-            <div className="form-group grid grid-cols-2">
-              {FieldOrginizer(ProfileFields,'role') &&
-              <Field className={clsx('form-group',{'error':fieldError(errors,'role')})}>
-                <FieldLabel htmlFor="role">Role<span className="important">*</span>:</FieldLabel>
-                <Select items={roleList} id="role">
-                  <SelectTrigger className="w-full max-w-48">
-                    <SelectValue  placeholder="choose" />
-                  </SelectTrigger>
-                  <SelectContent className="select-content">
-                    <SelectGroup>
-                      <SelectLabel>Roles</SelectLabel>
-                      {roleList.map((item) => (
-                        <SelectItem key={item.value} value={item.value}>
-                          {item.label}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </Field>}
-              
-              {FieldOrginizer(ProfileFields,'booklimit') &&
-              <Field className={clsx('form-group',{'error':fieldError(errors,'booklimit')})}>
-                <FieldLabel htmlFor="booklimit">Book Limit<span className="important">*</span>:</FieldLabel>
-                <Select items={tierList} id="booklimit">
-                  <SelectTrigger className="w-full max-w-48">
-                    <SelectValue placeholder="choose"/>
-                  </SelectTrigger>
-                  <SelectContent className="select-content">
-                    <SelectGroup>
-                      <SelectLabel>Book limit:</SelectLabel>
-                      {tierList.map((item) => (
-                        <SelectItem key={item.value} value={item.value}>
-                          {item.label}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </Field>}
-            </div>
           </div>
           
           <div className="profile-form">
@@ -330,7 +269,7 @@ const Profile = () => {
                 ProfileFields.email,
                 email,
                 {
-                  displayInit:fieldError(errors,'email')
+                  display:"trigger"
                 })}
             </Field>}
 
@@ -381,7 +320,7 @@ const Profile = () => {
                   terms,
                   {
                     title:"Terms and Condition",
-                    displayInit:fieldError(errors,'terms')
+                    display:fieldError(errors,'terms') ? "trigger" : "init"
                   }
                 )}
               </Field>}

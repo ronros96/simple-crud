@@ -5,6 +5,8 @@ export type User = {
   password: string;
   firstname: string;
   lastname: string;
+  mobile: string;
+  address: string;
   role: string;
   logged?: Date;
 };

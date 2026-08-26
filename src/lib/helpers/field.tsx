@@ -10,11 +10,14 @@ type Field = {
 }
 
 type ValidationResult =
-  | "empty"
-  | "good"
-  | {
-      errors: string[];
-    };
+  "empty" | "good" | "none" |
+  {
+    errors: string[];
+  };
+
+type Display = 
+  "init" | "trigger" | "none"
+  
     
 
 /* 
@@ -25,7 +28,7 @@ type ValidationResult =
 */    
 const validateField = (
   field: Field,
-  init: boolean,
+  display: Display,
 ): ValidationResult => {
   const value = field.value ?? "";
   const rules = field.fieldRules;
@@ -43,13 +46,18 @@ const validateField = (
   const type = field.fieldType ?? "any";
 
   // Empty value
-  if (typeof value === "string" && value.trim() === "" && init) {
+  if (typeof value === "string" && value.trim() === "" && display === 'init') {
     return "empty";
   }
+
+  if (typeof value === "boolean" && display === 'init') {
+    return "none";
+  }
+
   const errors: string[] = [];
 
   //required
-  if(required && !init){
+  if(required && display === 'trigger'){
     //string
     if (typeof value === "string" && value.trim() === "") {
       errors.push("required");
@@ -76,7 +84,7 @@ const validateField = (
   }
 
   // Character length
-  if (value.length < minChars) {
+  if (value.length < minChars && display !== "init") {
     errors.push("characters");
   }
 
@@ -87,11 +95,14 @@ const validateField = (
 
   // Email
   if (
+    value.length > 0 && 
     email &&
+    display === 'trigger' && 
     !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value)
   ) {
     errors.push("email");
   }
+
 
   // Count required characters
   if(typeof value === "string"){
@@ -180,19 +191,20 @@ type FieldConfig = Omit<Field, "value">;
 
 const validateOnChange = (
   field: FieldConfig,
-  value: string | boolean
+  value: string | boolean,
+  display: Display
 ) => {
   return validateField({
     ...field,
     value,
-  },true);
+  },display);
 };
 
 export const showRequirements = (
   field: FieldConfig,
   value: string,
   settings?:{
-    displayInit?: boolean,
+    display?: Display,
     insert?: string[],
     title?: string,
     unique?: boolean | string,
@@ -202,18 +214,18 @@ export const showRequirements = (
   const fieldType = field.fieldType;
   const rules = field.fieldRules;
   const requirementItems = [];
-  const display = settings?.displayInit ?? false;
+  const display = settings?.display ?? "none";
   const insert = settings?.insert ?? false;
   const title = settings?.title ?? "";
   const isUnique = settings?.unique ?? false;
   rules.unique && isUnique === null && console.error('Field type is unique, insert handler function that will determine wheter the field is available or not')
 
-  const result =  validateOnChange(field,value);
+  const result =  validateOnChange(field,value,display);
   const getClass = (name: string) => {
     if (result === "empty") return "";
     if (result === "good") return "good";
-    console.log(result.errors.includes(name),name)
-    return result.errors.includes(name) ? "err" : value.length > 0 ? "good" : "";
+    if (result === 'none') return "hidden";
+    return result?.errors.includes(name) ? "err" : value.length > 0 ? "good" : "";
   };
   //for required tickers (checkbox / radio)
   if(fieldType === 'bool' && rules.required){
@@ -327,7 +339,7 @@ export const showRequirements = (
   }
 
   //email input required
-  if (rules.email) {
+  if (rules.email && display === 'init' || getClass("email") === 'err' && display === 'trigger') {
     requirementItems.push(
       <li
         key="email"
@@ -369,7 +381,9 @@ export const fieldError = (
 
 /* Checking multiple fields for Submit */
 const validateFields = (
-  fields: Fields) => {
+  fields: Fields,
+  Display: Display
+) => {
   const result: Record<string, ValidationResult> = {};
 
   Object.entries(fields).forEach(([name, field]) => {
@@ -378,7 +392,7 @@ const validateFields = (
       owner: field.owner,
       fieldType: field.fieldType,
       fieldRules: field.fieldRules,
-    },false);
+    },Display);
   });
 
   return result;
@@ -386,8 +400,9 @@ const validateFields = (
 
 export const checkAllFields = (
   fields: Fields,
+  Display: Display
 ): Object => {
-  const result = validateFields(fields);
+  const result = validateFields(fields,Display);
 
   return Object.values(result).every(
     (validation) => validation === "good"
