@@ -56,7 +56,7 @@ type Profile = {
   lastname: string;
   mobile: string;
   email: string;
-  address: string; // for patrons only
+  address: string[];
   terms: boolean;
   booklimit:number; // 0-standard(5), 1-scholar(8), 2-loyalty(10) 
   role:number; // 0-patron, 1-librarian, 2-admin
@@ -81,7 +81,7 @@ export const useProfile  = create<ProfileStore>((set) => ({
   lastname: "",
   mobile: "",
   email: "",
-  address: "",
+  address: [""],
   terms: false,
   booklimit:0,
   role:0,

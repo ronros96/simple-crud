@@ -1,17 +1,31 @@
 import './profile.css';
 import clsx from 'clsx';
 import { useEffect, useState } from "react"
+import { City, Country, State } from "country-state-city";
+import type {IState, ICity} from "country-state-city";
 //ui
 import {
   Field,
+  FieldDescription,
   FieldGroup,
   FieldLabel,
+  FieldLegend,
+  FieldSet,
 } from "@components/ui/field";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@components/ui/input-group"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@components/ui/select"
 import {
   Dialog,
   DialogClose,
@@ -22,6 +36,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@components/ui/dialog"
+import { Input } from "@components/ui/input"
 import { Button } from "@components/ui/button"
 import { Textarea } from "@components/ui/textarea"
 import { Label } from "@components/ui/label"
@@ -37,6 +52,13 @@ import {ProfileFields} from "@src/fields/profile"
 import { useGetUsers, usePutUser } from '@hooks/Profile';
 
 const Profile = () => {
+  let countryData = Country.getAllCountries();
+  const [stateData, setStateData] = useState<IState[]>([]);
+  const [cityData, setCityData] = useState<ICity[]>([]);
+  const [country, setCountry] = useState(countryData[0]);
+  const [state, setState] = useState<IState | null>(null);
+  const [city, setCity] = useState<ICity | null>(null);
+
   const [showPassword, setShowPassword] = useState(false);
   //fields
   const username = useProfile((state:any) => state.username);
@@ -81,6 +103,15 @@ const Profile = () => {
     setFormType('');
   }
 
+  const addressType = ['bldg','street','city','state','country','zip'];
+
+  const setAddress = (
+    value:string,
+    addType:string
+  ) => {
+
+  }
+
   const submitForm = (e:any) =>{
     e.preventDefault;
     
@@ -120,9 +151,24 @@ const Profile = () => {
   /*check username if avail */
   const {data: allUsers} = useGetUsers();
 
+
   useEffect(()=>{
     setUsers(allUsers)
   },[Users])
+
+  useEffect(() => {
+    if(country){
+      setStateData(State.getStatesOfCountry(country?.isoCode));
+      setCityData([])
+    }
+  }, [country]);
+
+  useEffect(() => {
+    if(country && state){
+      setCityData(City.getCitiesOfState(country?.isoCode, state?.isoCode));
+    }
+  }, [state]);
+
 
   return (
     <>
@@ -137,6 +183,37 @@ const Profile = () => {
         <div className="profile-container">
           <div className="profile-form">
             <p><strong>Please make sure to follow certain requirements on creating an account.</strong></p>
+            <div className="form-group grid grid-cols-2">
+              {FieldOrginizer(ProfileFields,'firstname') &&
+              <Field className={clsx('form-group',{'error':fieldError(errors,'firstname')})}>
+                <FieldLabel htmlFor="firstname">First Name<span className="important">*</span>:</FieldLabel>
+                <InputGroup>
+                  <InputGroupInput
+                    id="firstname"
+                    name="firstname"
+                    value={firstname}
+                    onChange={(e) => setProfile({firstname:e.target.value})}
+                    type="text"
+                    aria-required="true"
+                  />
+                </InputGroup>
+              </Field>}
+              {FieldOrginizer(ProfileFields,'lastname') &&
+              <Field className={clsx('form-group',{'error':fieldError(errors,'lastname')})}>
+                <FieldLabel htmlFor="lastname">Last Name<span className="important">*</span>:</FieldLabel>
+                <InputGroup>
+                  <InputGroupInput
+                    id="lastname"
+                    name="lastname"
+                    value={lastname}
+                    onChange={(e) => setProfile({lastname:e.target.value})}
+                    type="text"
+                    aria-required="true"
+                  />
+                </InputGroup>
+              </Field>}
+            </div>
+            
             {FieldOrginizer(ProfileFields,'username') &&
             <Field className={clsx('form-group',{'error':fieldError(errors,'username')})}>
               <FieldLabel htmlFor="username">Username<span className="important">*</span>:</FieldLabel>
@@ -206,36 +283,7 @@ const Profile = () => {
           <div className="profile-form">
             <p><strong>This is for Demo purposes only, please refrain to use real information, and be wholesome &#128522;</strong></p>
             
-            <div className="form-group grid grid-cols-2">
-              {FieldOrginizer(ProfileFields,'firstname') &&
-              <Field className={clsx('form-group',{'error':fieldError(errors,'firstname')})}>
-                <FieldLabel htmlFor="firstname">First Name<span className="important">*</span>:</FieldLabel>
-                <InputGroup>
-                  <InputGroupInput
-                    id="firstname"
-                    name="firstname"
-                    value={firstname}
-                    onChange={(e) => setProfile({firstname:e.target.value})}
-                    type="text"
-                    aria-required="true"
-                  />
-                </InputGroup>
-              </Field>}
-              {FieldOrginizer(ProfileFields,'lastname') &&
-              <Field className={clsx('form-group',{'error':fieldError(errors,'lastname')})}>
-                <FieldLabel htmlFor="lastname">Last Name<span className="important">*</span>:</FieldLabel>
-                <InputGroup>
-                  <InputGroupInput
-                    id="lastname"
-                    name="lastname"
-                    value={lastname}
-                    onChange={(e) => setProfile({lastname:e.target.value})}
-                    type="text"
-                    aria-required="true"
-                  />
-                </InputGroup>
-              </Field>}
-            </div>
+
             
             {FieldOrginizer(ProfileFields,'mobile') &&
             <Field className={clsx('form-group',{'error':fieldError(errors,'mobile')})}>
@@ -274,16 +322,74 @@ const Profile = () => {
             </Field>}
 
             {FieldOrginizer(ProfileFields,'address') &&
-            <Field className={clsx('form-group',{'error':fieldError(errors,'address')})}>
-              <FieldLabel htmlFor="address">Residential Address<span className="important">*</span>:</FieldLabel>
-              <Textarea 
-                id="address" 
-                name="address" 
-                value={address}
-                onChange={(e) => setProfile({address:e.target.value})}
-                aria-required="true"
-              />
-            </Field>}
+            <FieldSet className={clsx('form-group',{'error':fieldError(errors,'address')})}>
+              <FieldLegend>Residential Address<span className="important">*</span>:</FieldLegend>
+              {/* <Field>
+                <FieldLabel htmlFor="address">Residential Address<span className="important">*</span>:</FieldLabel>
+                <Textarea 
+                  id="address" 
+                  name="address" 
+                  value={address}
+                  onChange={(e) => setProfile({address:e.target.value})}
+                  aria-required="true"
+                />
+              </Field> */}
+              <FieldGroup>
+                <FieldLabel htmlFor="country">Country</FieldLabel>
+                <Select id="country" >
+                  <SelectTrigger className="w-full">
+                    <SelectValue  placeholder="Choose Country" />
+                  </SelectTrigger>
+                  <SelectContent className="select-content">
+                    <SelectGroup>
+                      <SelectLabel>Choose Country</SelectLabel>
+                      {countryData.map((item) => (
+                        <SelectItem key={item.isoCode} value={item.name} onClick={()=>{setCountry(item)}}>
+                          {item.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                {stateData.length > 0 && <>
+                <FieldLabel htmlFor="country">State / Region</FieldLabel>
+                <Select id="State" >
+                  <SelectTrigger className="w-full">
+                    <SelectValue  placeholder="Choose State" />
+                  </SelectTrigger>
+                  <SelectContent className="select-content">
+                    <SelectGroup>
+                      <SelectLabel>Choose State</SelectLabel>
+                      {stateData.map((item) => (
+                        <SelectItem key={item.isoCode} value={item.name} onClick={()=>{setState(item)}}>
+                          {item.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                </>}
+                {cityData.length > 0 && <>
+                <FieldLabel htmlFor="country">City / Municipality</FieldLabel>
+                <Select id="City" >
+                  <SelectTrigger className="w-full">
+                    <SelectValue  placeholder="Choose City" />
+                  </SelectTrigger>
+                  <SelectContent className="select-content">
+                    <SelectGroup>
+                      <SelectLabel>Choose City</SelectLabel>
+                      {cityData.map((item) => (
+                        <SelectItem key={item.stateCode} value={item.name} onClick={()=>{setCity(item)}}>
+                          {item.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                </>}
+                
+              </FieldGroup>
+            </FieldSet>}
           </div>
 
           <div className={clsx('form-group full-width md:flex justify-end',{'error':fieldError(errors,'terms')})}>

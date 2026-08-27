@@ -18,8 +18,6 @@ type ValidationResult =
 type Display = 
   "init" | "trigger" | "none"
   
-    
-
 /* 
   Validate per field
   @param field  {Field}   => see fields/fields.ts 
