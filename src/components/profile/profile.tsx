@@ -2,11 +2,10 @@ import './profile.css';
 import clsx from 'clsx';
 import { useEffect, useState } from "react"
 import { City, Country, State } from "country-state-city";
-import type {IState, ICity} from "country-state-city";
+import type {ICountry, IState, ICity} from "country-state-city";
 //ui
 import {
   Field,
-  FieldDescription,
   FieldGroup,
   FieldLabel,
   FieldLegend,
@@ -36,9 +35,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@components/ui/dialog"
-import { Input } from "@components/ui/input"
 import { Button } from "@components/ui/button"
-import { Textarea } from "@components/ui/textarea"
 import { Label } from "@components/ui/label"
 import { Checkbox } from "@components/ui/checkbox"
 import { PhoneInput } from "@components/ui/phone"
@@ -55,9 +52,9 @@ const Profile = () => {
   let countryData = Country.getAllCountries();
   const [stateData, setStateData] = useState<IState[]>([]);
   const [cityData, setCityData] = useState<ICity[]>([]);
-  const [country, setCountry] = useState(countryData[0]);
+  const [country, setCountry] = useState<ICountry | null>(null);
   const [state, setState] = useState<IState | null>(null);
-  const [city, setCity] = useState<ICity | null>(null);
+  const [city, setCity] = useState<ICity | null>(null); 
 
   const [showPassword, setShowPassword] = useState(false);
   //fields
@@ -103,11 +100,8 @@ const Profile = () => {
     setFormType('');
   }
 
-  const addressType = ['bldg','street','city','state','country','zip'];
-
   const setAddress = (
-    value:string,
-    addType:string
+    value:string[],
   ) => {
 
   }
@@ -324,16 +318,6 @@ const Profile = () => {
             {FieldOrginizer(ProfileFields,'address') &&
             <FieldSet className={clsx('form-group',{'error':fieldError(errors,'address')})}>
               <FieldLegend>Residential Address<span className="important">*</span>:</FieldLegend>
-              {/* <Field>
-                <FieldLabel htmlFor="address">Residential Address<span className="important">*</span>:</FieldLabel>
-                <Textarea 
-                  id="address" 
-                  name="address" 
-                  value={address}
-                  onChange={(e) => setProfile({address:e.target.value})}
-                  aria-required="true"
-                />
-              </Field> */}
               <FieldGroup>
                 <FieldLabel htmlFor="country">Country</FieldLabel>
                 <Select id="country" >
@@ -351,9 +335,10 @@ const Profile = () => {
                     </SelectGroup>
                   </SelectContent>
                 </Select>
+
                 {stateData.length > 0 && <>
                 <FieldLabel htmlFor="country">State / Region</FieldLabel>
-                <Select id="State" >
+                <Select id="State">
                   <SelectTrigger className="w-full">
                     <SelectValue  placeholder="Choose State" />
                   </SelectTrigger>
@@ -369,6 +354,7 @@ const Profile = () => {
                   </SelectContent>
                 </Select>
                 </>}
+
                 {cityData.length > 0 && <>
                 <FieldLabel htmlFor="country">City / Municipality</FieldLabel>
                 <Select id="City" >
@@ -387,6 +373,10 @@ const Profile = () => {
                   </SelectContent>
                 </Select>
                 </>}
+
+                {
+                  cityData?.length > 0
+                }
                 
               </FieldGroup>
             </FieldSet>}
