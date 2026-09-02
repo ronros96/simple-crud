@@ -35,6 +35,12 @@ legend{
   &.normal{
     text-transform: none;
   }
+  &.normal-case{
+    text-transform: none;
+  }
+  ul li{
+    text-transform: none;
+  }
 }
 
 fieldset label{
@@ -144,6 +150,7 @@ button.sm.stroke{
   display: block;
   width: auto;
   height: auto;
+  max-width: 20rem;
   padding: .5rem 3rem;
   border-radius: 10px;
   border: 1px solid var(--button);

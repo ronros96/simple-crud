@@ -37,6 +37,8 @@ export const useLogin = create<LoginStore>((set) => ({
 
 type Roles = 'guest' | 'admin' | 'librarian' | 'patrom';
 
+
+
 type RoleStore = {
   roleLogged:Roles;
   setRole: (RoleStore: Roles) => void;
@@ -81,7 +83,7 @@ export const useProfile  = create<ProfileStore>((set) => ({
   lastname: "",
   mobile: "",
   email: "",
-  address: [""],
+  address: [],
   terms: false,
   booklimit:0,
   role:0,

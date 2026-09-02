@@ -61,6 +61,7 @@ export const ProfileFields:Fields = {
     fieldType:'any',
     fieldRules:{
       required:true,
+      address:true,
     }
   },
   terms:{

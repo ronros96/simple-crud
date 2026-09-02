@@ -53,6 +53,7 @@ export type FieldRules = {
   number?: number;
   special?: number;
   email?: boolean;
+  address?: boolean;
 };
 
 export type Fields = Record<

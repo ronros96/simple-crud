@@ -1,30 +1,31 @@
 @import "tailwindcss";
 
 .profile-container{
-  display: grid;
-  grid-template-columns: 1fr;
-  gap:var(--gap) var(--gap2x);
   justify-content: start;
   align-items: stretch; 
   margin: 0 auto;
   border-radius: .5rem;
   background-color: var(--frame-bg);
-
-  @media screen and (min-width: 680px) {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .full-width{
-    grid-column: 1 / -1;
-  }
 }
 
 .profile-form{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap:var(--gap) var(--gap2x);
   padding: var(--gap) 0;
   width: 100%;
+
+  .col-full{
+    grid-column: 1 / -1;
+  }
+
+  &.error label,
+  &.error legend{
+    color: var(--error);
+  }
   
   @media screen and (min-width: 680px) {
-    max-width: 24rem;
+    grid-template-columns: 1fr 1fr;
     width: 100%;
   }
   
@@ -32,3 +33,4 @@
     font-size: var(--text-sm);
   }
 }
+

@@ -41,6 +41,7 @@ const validateField = (
   const minNumber = rules.number ?? 0;
   const minSpecial = rules.special ?? 0;
   const email = rules.email ?? false;
+  const address = rules.address ?? false;
   const type = field.fieldType ?? "any";
 
   // Empty value
@@ -60,6 +61,7 @@ const validateField = (
     if (typeof value === "string" && value.trim() === "") {
       errors.push("required");
     }
+
     //single boolean
     if(typeof value === "boolean" && !value){
       errors.push("agree");
@@ -99,6 +101,13 @@ const validateField = (
     !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value)
   ) {
     errors.push("email");
+  }
+
+  //address
+  if (required && address) {
+    if (value.length === 0 || value.includes("-country-") || value.includes("-state-") || value.includes("-city-") || value.includes("-addressline-")) {
+      errors.push("address");
+    }
   }
 
 
@@ -165,6 +174,7 @@ const validateField = (
       }
       break;
   }
+
   return errors.length ? { errors } : "good";
 };
 
@@ -219,12 +229,16 @@ export const showRequirements = (
   rules.unique && isUnique === null && console.error('Field type is unique, insert handler function that will determine wheter the field is available or not')
 
   const result =  validateOnChange(field,value,display);
+  // console.log(result,fieldType,value,display)
   const getClass = (name: string) => {
     if (result === "empty") return "";
     if (result === "good") return "good";
     if (result === 'none') return "hidden";
     return result?.errors.includes(name) ? "err" : value.length > 0 ? "good" : "";
   };
+
+  console.log(result,value)
+
   //for required tickers (checkbox / radio)
   if(fieldType === 'bool' && rules.required){
     requirementItems.push(
@@ -236,6 +250,28 @@ export const showRequirements = (
       </li>
     );
   }
+
+  if(rules.address && rules.required){
+    if (display === 'init' || getClass("address") === 'err' && display === 'trigger') {
+      requirementItems.push(
+        <>
+          <li
+            key="address"
+            className={getClass("address")}
+          >
+            Enter valid address before proceeding.
+          </li>
+          <li
+            key="address"
+            className={getClass("address")}
+          >
+            Enter at least 1 line of address information.
+          </li>
+        </>
+      );
+    }
+  }
+  
 
   //min of characters
   if ((rules.characters ?? 0) > 0) {
@@ -347,6 +383,7 @@ export const showRequirements = (
       </li>
     );
   }
+
 
   //rendering all requirements
   insert && insert?.map((text,i)=>{

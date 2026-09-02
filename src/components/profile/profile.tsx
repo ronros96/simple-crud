@@ -1,6 +1,6 @@
 import './profile.css';
 import clsx from 'clsx';
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { City, Country, State } from "country-state-city";
 import type {ICountry, IState, ICity} from "country-state-city";
 //ui
@@ -49,13 +49,6 @@ import {ProfileFields} from "@src/fields/profile"
 import { useGetUsers, usePutUser } from '@hooks/Profile';
 
 const Profile = () => {
-  let countryData = Country.getAllCountries();
-  const [stateData, setStateData] = useState<IState[]>([]);
-  const [cityData, setCityData] = useState<ICity[]>([]);
-  const [country, setCountry] = useState<ICountry | null>(null);
-  const [state, setState] = useState<IState | null>(null);
-  const [city, setCity] = useState<ICity | null>(null); 
-
   const [showPassword, setShowPassword] = useState(false);
   //fields
   const username = useProfile((state:any) => state.username);
@@ -65,6 +58,14 @@ const Profile = () => {
   const mobile = useProfile((state:any) => state.mobile);
   const email = useProfile((state:any) => state.email);
   const address = useProfile((state:any) => state.address);
+  let countryData = Country.getAllCountries();
+  const [stateData, setStateData] = useState<IState[]>([]);
+  const [cityData, setCityData] = useState<ICity[]>([]);
+  const [country, setCountry] = useState<ICountry | null>(null);
+  const [state, setState] = useState<IState | null>(null);
+  const [city, setCity] = useState<ICity | null>(null); 
+  const [addressL1,setAddressL1] =  useState("");
+  const [addressL2,setAddressL2] =  useState("");
   const terms = useProfile((state:any) => state.terms);
   const active = useProfile((state:any) => state.active);
   const setProfile = useProfile((state:any) => state.setProfile);
@@ -77,6 +78,9 @@ const Profile = () => {
   const errors = useErrors((state:any) => state.errors);
   const setErrors = useErrors((state:any) => state.setErrors);
 
+  const countryRef = useRef<HTMLElement | null>(null);
+  const stateRef = useRef<HTMLElement | null>(null);
+  const cityRef = useRef<HTMLElement | null>(null);
 
   const clearForm = () => {
     setProfile({
@@ -100,10 +104,29 @@ const Profile = () => {
     setFormType('');
   }
 
-  const setAddress = (
-    value:string[],
-  ) => {
-
+  const fixAddress = () => {
+    let addInputs = [];
+    if(countryRef.current?.innerHTML === "Choose Country"){
+      addInputs.push("-country-");
+    }else{
+      country && addInputs.push(country.name);
+    }
+    if(stateRef.current?.innerHTML === "Choose State"){
+      addInputs.push("-state-");
+    }else{
+      state && addInputs.push(state.name);
+    }
+    if(cityRef.current?.innerHTML === "Choose City"){
+      addInputs.push("-city-");
+    }else{
+      city && addInputs.push(city.name);
+    }
+    if(addressL1 === ""){
+      addInputs.push("-addressline-");
+    }else{
+      addInputs.push(`${addressL1}${" "}${addressL2}`);
+    }
+    setProfile({address: addInputs});
   }
 
   const submitForm = (e:any) =>{
@@ -122,6 +145,7 @@ const Profile = () => {
       active
     }
     //insert state values to ProfileFields value
+    fixAddress();
     const fields = Object.fromEntries(
       Object.entries(ProfileFields).map(([key, field]) => [
         key,
@@ -131,20 +155,17 @@ const Profile = () => {
         },
       ])
     );
-    
-    const result = checkAllFields(fields,'trigger');  
-    // console.log(result)
+    const result = checkAllFields(fields,'trigger');
     if(Object.values(result).every(value => value === "good")){
       alert();
     }else{
-      console.log(result)
       setErrors(result);
     };
+    // console.log(errors)
   }
 
   /*check username if avail */
   const {data: allUsers} = useGetUsers();
-
 
   useEffect(()=>{
     setUsers(allUsers)
@@ -176,37 +197,10 @@ const Profile = () => {
       <form action={submitForm}>
         <div className="profile-container">
           <div className="profile-form">
-            <p><strong>Please make sure to follow certain requirements on creating an account.</strong></p>
-            <div className="form-group grid grid-cols-2">
-              {FieldOrginizer(ProfileFields,'firstname') &&
-              <Field className={clsx('form-group',{'error':fieldError(errors,'firstname')})}>
-                <FieldLabel htmlFor="firstname">First Name<span className="important">*</span>:</FieldLabel>
-                <InputGroup>
-                  <InputGroupInput
-                    id="firstname"
-                    name="firstname"
-                    value={firstname}
-                    onChange={(e) => setProfile({firstname:e.target.value})}
-                    type="text"
-                    aria-required="true"
-                  />
-                </InputGroup>
-              </Field>}
-              {FieldOrginizer(ProfileFields,'lastname') &&
-              <Field className={clsx('form-group',{'error':fieldError(errors,'lastname')})}>
-                <FieldLabel htmlFor="lastname">Last Name<span className="important">*</span>:</FieldLabel>
-                <InputGroup>
-                  <InputGroupInput
-                    id="lastname"
-                    name="lastname"
-                    value={lastname}
-                    onChange={(e) => setProfile({lastname:e.target.value})}
-                    type="text"
-                    aria-required="true"
-                  />
-                </InputGroup>
-              </Field>}
-            </div>
+            <p className='col-full'>
+              <strong>Please make sure to follow certain requirements on creating this account.</strong><br/>
+              <strong>This is for Demo purposes only, please refrain to use real information, and be wholesome &#128522;</strong>
+            </p>
             
             {FieldOrginizer(ProfileFields,'username') &&
             <Field className={clsx('form-group',{'error':fieldError(errors,'username')})}>
@@ -233,8 +227,6 @@ const Profile = () => {
                 }
               )}
             </Field>}
-
-            <div className="divider-horizontal"></div>
 
             {FieldOrginizer(ProfileFields,'password') &&
             <Field className={clsx('form-group',{'error':fieldError(errors,'password')})}>
@@ -272,12 +264,40 @@ const Profile = () => {
                 }
               )}
             </Field>}
+            <div className="divider-horizontal col-full"></div>
           </div>
-          
-          <div className="profile-form">
-            <p><strong>This is for Demo purposes only, please refrain to use real information, and be wholesome &#128522;</strong></p>
-            
 
+          <div className="profile-form">
+            
+            {FieldOrginizer(ProfileFields,'firstname') &&
+            <Field className={clsx('form-group',{'error':fieldError(errors,'firstname')})}>
+              <FieldLabel htmlFor="firstname">First Name<span className="important">*</span>:</FieldLabel>
+              <InputGroup>
+                <InputGroupInput
+                  id="firstname"
+                  name="firstname"
+                  value={firstname}
+                  onChange={(e) => setProfile({firstname:e.target.value})}
+                  type="text"
+                  aria-required="true"
+                />
+              </InputGroup>
+            </Field>}
+
+            {FieldOrginizer(ProfileFields,'lastname') &&
+            <Field className={clsx('form-group',{'error':fieldError(errors,'lastname')})}>
+              <FieldLabel htmlFor="lastname">Last Name<span className="important">*</span>:</FieldLabel>
+              <InputGroup>
+                <InputGroupInput
+                  id="lastname"
+                  name="lastname"
+                  value={lastname}
+                  onChange={(e) => setProfile({lastname:e.target.value})}
+                  type="text"
+                  aria-required="true"
+                />
+              </InputGroup>
+            </Field>}
             
             {FieldOrginizer(ProfileFields,'mobile') &&
             <Field className={clsx('form-group',{'error':fieldError(errors,'mobile')})}>
@@ -312,78 +332,117 @@ const Profile = () => {
                 email,
                 {
                   display:"trigger"
-                })}
+              })}
             </Field>}
+          </div>
 
-            {FieldOrginizer(ProfileFields,'address') &&
-            <FieldSet className={clsx('form-group',{'error':fieldError(errors,'address')})}>
-              <FieldLegend>Residential Address<span className="important">*</span>:</FieldLegend>
+          {FieldOrginizer(ProfileFields,'address') && 
+          <div className={clsx('profile-form',{'error':fieldError(errors,'address')})}>
+            <FieldSet className={clsx('md:grid grid-cols-3 col-full',{'error':fieldError(errors,'address')})}>
+              <FieldLegend>Residential Address<span className="important">*</span>:<br/>
+              {showRequirements(
+                ProfileFields.address,
+                address,
+                {
+                  display:fieldError(errors,'address') ? "trigger" : "none"
+                }
+              )}
+              </FieldLegend>
               <FieldGroup>
                 <FieldLabel htmlFor="country">Country</FieldLabel>
-                <Select id="country" >
-                  <SelectTrigger className="w-full">
-                    <SelectValue  placeholder="Choose Country" />
+                <Select id="country" onValueChange={fixAddress} >
+                  <SelectTrigger className="w-full" >
+                    <SelectValue placeholder="Choose Country" ref={countryRef}/>
                   </SelectTrigger>
                   <SelectContent className="select-content">
                     <SelectGroup>
                       <SelectLabel>Choose Country</SelectLabel>
-                      {countryData.map((item) => (
-                        <SelectItem key={item.isoCode} value={item.name} onClick={()=>{setCountry(item)}}>
+                      {countryData.map((item,i) => (
+                        <SelectItem key={`${item.isoCode}-${i}`} value={item.name} onClick={()=>{setCountry(item)}}>
                           {item.name}
                         </SelectItem>
                       ))}
                     </SelectGroup>
                   </SelectContent>
                 </Select>
+              </FieldGroup>
 
-                {stateData.length > 0 && <>
+              {stateData.length > 0 && 
+              <FieldGroup>
                 <FieldLabel htmlFor="country">State / Region</FieldLabel>
-                <Select id="State">
+                <Select id="State" onValueChange={fixAddress}>
                   <SelectTrigger className="w-full">
-                    <SelectValue  placeholder="Choose State" />
+                    <SelectValue  placeholder="Choose State" ref={stateRef} />
                   </SelectTrigger>
                   <SelectContent className="select-content">
                     <SelectGroup>
                       <SelectLabel>Choose State</SelectLabel>
-                      {stateData.map((item) => (
-                        <SelectItem key={item.isoCode} value={item.name} onClick={()=>{setState(item)}}>
+                      {stateData.map((item,i) => (
+                        <SelectItem key={`${item.isoCode}-${i}`} value={item.name} onClick={()=>{setState(item)}}>
                           {item.name}
                         </SelectItem>
                       ))}
                     </SelectGroup>
                   </SelectContent>
                 </Select>
-                </>}
+              </FieldGroup>}
 
-                {cityData.length > 0 && <>
+              {cityData.length > 0 && 
+              <FieldGroup>
                 <FieldLabel htmlFor="country">City / Municipality</FieldLabel>
                 <Select id="City" >
                   <SelectTrigger className="w-full">
-                    <SelectValue  placeholder="Choose City" />
+                    <SelectValue  placeholder="Choose City" ref={cityRef}/>
                   </SelectTrigger>
                   <SelectContent className="select-content">
                     <SelectGroup>
                       <SelectLabel>Choose City</SelectLabel>
-                      {cityData.map((item) => (
-                        <SelectItem key={item.stateCode} value={item.name} onClick={()=>{setCity(item)}}>
+                      {cityData.map((item,i) => (
+                        <SelectItem key={`${item.stateCode}-${i}`} value={item.name} onClick={()=>{setCity(item)}}>
                           {item.name}
                         </SelectItem>
                       ))}
                     </SelectGroup>
                   </SelectContent>
                 </Select>
-                </>}
+                </FieldGroup>}
+            </FieldSet>
 
-                {
-                  cityData?.length > 0
-                }
-                
-              </FieldGroup>
-            </FieldSet>}
-          </div>
+            <FieldGroup className='col-full mt-2'>
+              <FieldLabel htmlFor="address-1" className="normal-case">Address Line 1: Floor / Building No. / House No. / Block / Lot</FieldLabel>
+              <InputGroup>
+                <InputGroupInput
+                  id="address-1"
+                  name="address-1"
+                  value={addressL1}
+                  onChange={(e) => {
+                    setAddressL1(e.target.value)
+                    fixAddress();
+                  }}
+                  type="text"
+                  aria-required="true"
+                />
+              </InputGroup>
+            </FieldGroup>
 
-          <div className={clsx('form-group full-width md:flex justify-end',{'error':fieldError(errors,'terms')})}>
-            <FieldGroup className="form-group grid">
+            <FieldGroup className='col-full mt-2'>
+              <FieldLabel htmlFor="address-2" className="normal-case">Address Line 2: Street / Village / Town</FieldLabel>
+              <InputGroup>
+                <InputGroupInput
+                  id="address-2"
+                  name="address-2"
+                  value={addressL2}
+                  onChange={(e) => {
+                    setAddressL2(e.target.value)
+                    fixAddress();
+                  }}
+                  type="text"
+                  aria-required="true"
+                />
+              </InputGroup>
+            </FieldGroup>
+
+            <FieldGroup className="grid mt-5 mb-0">
               {FieldOrginizer(ProfileFields,'terms') &&
               <Field orientation="horizontal">
                 <Checkbox 
@@ -420,23 +479,12 @@ const Profile = () => {
                   }
                 )}
               </Field>}
-
-              {FieldOrginizer(ProfileFields,'active') &&
-              <Field orientation="horizontal">
-                <Checkbox 
-                  id="active" 
-                  name="active"
-                  checked={active}
-                  onCheckedChange={(value) => setProfile({active:!!value})}
-                />
-                <Label htmlFor="active" className='text-sm uppercase'>
-                  Active
-                </Label>
-              </Field>}
             </FieldGroup>
-              
+            <div className="divider-horizontal col-full"></div>
+          </div>}
 
-            <div className='grid grid-cols-2 gap-4 w-full mt-[1rem] md:mt-0'>
+          <div className={clsx('field-group',{'error':fieldError(errors,'terms')})}>
+            <div className='flex justify-end gap-5'>
               {formType === 'sign-in' &&
               <Button type="submit">Register</Button>}
               {formType === 'update' &&
