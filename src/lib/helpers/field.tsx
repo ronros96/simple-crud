@@ -84,7 +84,7 @@ const validateField = (
   }
 
   // Character length
-  if (value.length < minChars && display !== "init") {
+  if (value.length < minChars && display === "init") {
     errors.push("characters");
   }
 
@@ -109,7 +109,6 @@ const validateField = (
       errors.push("address");
     }
   }
-
 
   // Count required characters
   if(typeof value === "string"){
@@ -237,8 +236,6 @@ export const showRequirements = (
     return result?.errors.includes(name) ? "err" : value.length > 0 ? "good" : "";
   };
 
-  console.log(result,value)
-
   //for required tickers (checkbox / radio)
   if(fieldType === 'bool' && rules.required){
     requirementItems.push(
@@ -254,21 +251,21 @@ export const showRequirements = (
   if(rules.address && rules.required){
     if (display === 'init' || getClass("address") === 'err' && display === 'trigger') {
       requirementItems.push(
-        <>
-          <li
-            key="address"
-            className={getClass("address")}
-          >
-            Enter valid address before proceeding.
-          </li>
-          <li
-            key="address"
-            className={getClass("address")}
-          >
-            Enter at least 1 line of address information.
-          </li>
-        </>
+        <li
+          key="address-err1"
+          className={getClass("address")}
+        >
+          Enter valid address before proceeding.
+        </li>
       );
+      requirementItems.push(
+        <li
+          key="address-err2"
+          className={getClass("address")}
+        >
+          Enter at least 1 line of address.
+        </li>
+      )
     }
   }
   

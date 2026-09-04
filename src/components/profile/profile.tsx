@@ -46,7 +46,7 @@ import { useErrors, useProfile } from "@src/store/store";
 import {checkAllFields, showRequirements, fieldError, FieldOrginizer} from "@src/lib/helpers/field"
 import {ProfileFields} from "@src/fields/profile"
 //hooks
-import { useGetUsers, usePutUser } from '@hooks/Profile';
+import { useGetUsers, usePutUser, useCreateUser } from '@hooks/Profile';
 
 const Profile = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -109,12 +109,12 @@ const Profile = () => {
     if(countryRef.current?.innerHTML === "Choose Country"){
       addInputs.push("-country-");
     }else{
-      country && addInputs.push(country.name);
+      country && addInputs.push(country.isoCode);
     }
     if(stateRef.current?.innerHTML === "Choose State"){
       addInputs.push("-state-");
     }else{
-      state && addInputs.push(state.name);
+      state && addInputs.push(state.isoCode);
     }
     if(cityRef.current?.innerHTML === "Choose City"){
       addInputs.push("-city-");
@@ -156,12 +156,18 @@ const Profile = () => {
       ])
     );
     const result = checkAllFields(fields,'trigger');
+    setErrors([]);
     if(Object.values(result).every(value => value === "good")){
-      alert();
+      if(formType === 'sign-in'){
+        alert('new')
+        return
+      }else{
+        alert('update')
+      }
     }else{
       setErrors(result);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     };
-    // console.log(errors)
   }
 
   /*check username if avail */
@@ -192,6 +198,9 @@ const Profile = () => {
         <strong>* Required</strong><br/>
         <p className={clsx('err-msg',{'show':Object.values(errors).some(value => value !== 'good')})}>
           Please fill in all required fields and check the requirements.
+        </p>
+        <p className={clsx('err-msg',{'show':Object.values(errors).some(value => value === 'exist')})}>
+          Username already exist, please choose another username.
         </p>
       </div>
       <form action={submitForm}>
