@@ -1,8 +1,8 @@
 import './page.css';
 import { useEffect } from 'react';
 import Login from '@components/login/login';
-import { useLogin, useProfile, } from "@src/store/store";
-import { useGetUser, usePutUser } from '@hooks/Profile';
+import { useLogin, useProfile, useErrors } from "@src/store/store";
+import { useGetUser } from '@hooks/Profile';
 import Profile from '@src/components/profile/profile';
 
 
@@ -12,11 +12,34 @@ const Page = () =>{
   const username = useLogin((state:any) => state.username);
   const setUsername = useLogin((state:any) => state.setUsername);
   const formType =  useProfile((state:any) => state.formType);
+  const setFormType = useProfile((state:any) => state.setFormType);
+  const setProfile = useProfile((state:any) => state.setProfile);
+  const setErrors = useErrors((state:any) => state.setErrors);
   
   const {data: validUser} = useGetUser(username);
 
+  const clearForm = () => {
+    setUsername('');
+    setProfile({
+      username:'',
+      password:'',
+      firstname:'',
+      lastname:'',
+      mobile:'',
+      email:'',
+      address:'',
+      terms:false,
+      booklimit:0,
+      role:0,
+      active: false,
+    });
+    setErrors([])
+  }
+
   const loggedOut = () => {
+    clearForm();
     setLogin(false);
+    setFormType(null);
     localStorage.removeItem('setLogged')
   }
 
@@ -27,7 +50,6 @@ const Page = () =>{
      
     if(loggedObj.username){
       setUsername(loggedObj.username);
-      console.log(validUser,username)
       if(validUser){
         const lastLogged = validUser?.logged && new Date(validUser?.logged);
         const timeDiff = lastLogged ? now.getTime() - lastLogged.getTime() : -1;
@@ -67,7 +89,7 @@ const Page = () =>{
         ) : (
           <div className='main-container'>
             <h1>WELCOME!</h1>
-            <button onClick={()=>{setLogin(false)}}>Log out</button>
+            <button onClick={()=>{loggedOut()}}>Log out</button>
           </div>
         )
       }

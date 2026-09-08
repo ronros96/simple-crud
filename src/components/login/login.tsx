@@ -23,7 +23,6 @@ import { Eye, EyeOff } from "lucide-react"
 import { useLogin, useProfile, useErrors } from "@src/store/store";
 //hooks
 import { useGetUsers, usePutUser } from '@hooks/Profile';
-import type { User } from '@src/api/profile';
 
 const Login = () => {
   interface FormState {
@@ -32,8 +31,6 @@ const Login = () => {
   }
 
   //states
-  const username = useLogin((state:any) => state.username);
-  const setUsername = useLogin((state:any) => state.setUsername);
   const setLogin = useLogin((state:any) => state.setLogin);
   const setFormType = useProfile((state:any) => state.setFormType);
   const [showPassword, setShowPassword] = useState(false);
@@ -173,7 +170,7 @@ const Login = () => {
               </InputGroupAddon>
             </InputGroup>
             <FieldDescription>
-                <a href="#" className="forgot-password">Forgot Password?</a>
+                {/* <a href="#" className="forgot-password">Forgot Password?</a> */}
               </FieldDescription>
           </Field>
 

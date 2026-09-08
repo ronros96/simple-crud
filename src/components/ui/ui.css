@@ -319,3 +319,26 @@ ul.rules{
     display: block;
   }
 }
+
+/* TOAST */
+[data-slot=toast]{
+  background-color: var(--secondary-bg);
+  box-shadow: 0 0 1rem #00000088;
+
+  h2{
+    color: var(--error);
+    font-size: var(--font-base);
+    font-weight: 700;
+  }
+  
+  [data-slot=toast-close]{
+    padding: .25rem;
+    background-color: transparent;
+    border: none;
+  }
+  [data-slot=toast-action]{
+    background-color: transparent;
+    border-color: var(--white);
+  }
+}
+

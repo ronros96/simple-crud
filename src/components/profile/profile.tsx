@@ -39,9 +39,11 @@ import { Button } from "@components/ui/button"
 import { Label } from "@components/ui/label"
 import { Checkbox } from "@components/ui/checkbox"
 import { PhoneInput } from "@components/ui/phone"
+import { toast, Toaster } from "@components/ui/toast"
+
 import { Eye, EyeOff } from "lucide-react"
 //state
-import { useErrors, useProfile } from "@src/store/store";
+import { useErrors, useProfile, useLogin } from "@src/store/store";
 // helpers
 import {checkAllFields, showRequirements, fieldError, FieldOrginizer} from "@src/lib/helpers/field"
 import {ProfileFields} from "@src/fields/profile"
@@ -74,6 +76,8 @@ const Profile = () => {
   //status logged
   const formType = useProfile((state:any) => state.formType);
   const setFormType = useProfile((state:any) => state.setFormType);
+  const setLogin = useLogin((state:any) => state.setLogin);
+  const setUsername = useLogin((state:any) => state.setUsername);
   //errors
   const errors = useErrors((state:any) => state.errors);
   const setErrors = useErrors((state:any) => state.setErrors);
@@ -129,9 +133,25 @@ const Profile = () => {
     setProfile({address: addInputs});
   }
 
-  const submitForm = (e:any) =>{
+  const createUser = useCreateUser();
+
+  const showToastError = (message:string) => {
+    const id = toast.add({
+      title: "Error",
+      description: message,
+      actionProps: {
+        children: "Ok",
+        onClick() {
+          // window.scrollTo({ top: 0, behavior: 'smooth' });
+          toast.close(id)
+        },
+      },
+    })
+  }
+
+
+  const submitForm = async (e:any) =>{
     e.preventDefault;
-    
     //selected fields to be submitted.
     const state = {
       username,
@@ -157,10 +177,30 @@ const Profile = () => {
     );
     const result = checkAllFields(fields,'trigger');
     setErrors([]);
+    
     if(Object.values(result).every(value => value === "good")){
       if(formType === 'sign-in'){
-        usePutUser();
-        return
+        try {
+          await createUser.mutateAsync({
+            username:username,
+            password:password,
+            firstname:firstname,
+            lastname:lastname,
+            mobile:mobile,
+            email:email,
+            address:address,
+            logged: new Date(),
+          });
+          const toLocal = {
+            'username':username,
+            'datetime':new Date()
+          }
+          localStorage.setItem('setLogged',JSON.stringify(toLocal));
+          setUsername(username);
+          setLogin(true);
+        }catch (error:any) {
+          showToastError(error.message);
+        }
       }else{
         alert('update')
       }
@@ -516,10 +556,10 @@ const Profile = () => {
                 </DialogContent>
               </Dialog>
             </div>
-            
           </div>
         </div>
       </form>
+      <Toaster/>
     </>
   )
 }
