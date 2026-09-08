@@ -159,7 +159,7 @@ const Profile = () => {
     setErrors([]);
     if(Object.values(result).every(value => value === "good")){
       if(formType === 'sign-in'){
-        alert('new')
+        usePutUser();
         return
       }else{
         alert('update')
