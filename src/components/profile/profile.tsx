@@ -131,6 +131,7 @@ const Profile = () => {
       addInputs.push(`${addressL1}${" "}${addressL2}`);
     }
     setProfile({address: addInputs});
+    console.log(address,"address")
   }
 
   const createUser = useCreateUser();
@@ -198,6 +199,7 @@ const Profile = () => {
           localStorage.setItem('setLogged',JSON.stringify(toLocal));
           setUsername(username);
           setLogin(true);
+          clearForm();
         }catch (error:any) {
           showToastError(error.message);
         }
@@ -399,7 +401,7 @@ const Profile = () => {
               </FieldLegend>
               <FieldGroup>
                 <FieldLabel htmlFor="country">Country</FieldLabel>
-                <Select id="country" onValueChange={fixAddress} >
+                <Select id="country" onValueChange={fixAddress} autoComplete="new-address">
                   <SelectTrigger className="w-full" >
                     <SelectValue placeholder="Choose Country" ref={countryRef}/>
                   </SelectTrigger>
@@ -419,7 +421,7 @@ const Profile = () => {
               {stateData.length > 0 && 
               <FieldGroup>
                 <FieldLabel htmlFor="country">State / Region</FieldLabel>
-                <Select id="State" onValueChange={fixAddress}>
+                <Select id="State" onValueChange={fixAddress} autoComplete="new-address">
                   <SelectTrigger className="w-full">
                     <SelectValue  placeholder="Choose State" ref={stateRef} />
                   </SelectTrigger>
@@ -439,7 +441,7 @@ const Profile = () => {
               {cityData.length > 0 && 
               <FieldGroup>
                 <FieldLabel htmlFor="country">City / Municipality</FieldLabel>
-                <Select id="City" >
+                <Select id="City" autoComplete="new-address">
                   <SelectTrigger className="w-full">
                     <SelectValue  placeholder="Choose City" ref={cityRef}/>
                   </SelectTrigger>
@@ -470,6 +472,7 @@ const Profile = () => {
                   }}
                   type="text"
                   aria-required="true"
+                  autoComplete="new-address"
                 />
               </InputGroup>
             </FieldGroup>
@@ -487,12 +490,15 @@ const Profile = () => {
                   }}
                   type="text"
                   aria-required="true"
+                  autoComplete="new-address"
                 />
               </InputGroup>
             </FieldGroup>
-
+          </div>}
+          
+          {FieldOrginizer(ProfileFields,'terms') &&
+          <div className={clsx('profile-form',{'error':fieldError(errors,'terms')})}>
             <FieldGroup className="grid mt-5 mb-0">
-              {FieldOrginizer(ProfileFields,'terms') &&
               <Field orientation="horizontal">
                 <Checkbox 
                   id="terms" 
@@ -527,7 +533,7 @@ const Profile = () => {
                     display:fieldError(errors,'terms') ? "trigger" : "init"
                   }
                 )}
-              </Field>}
+              </Field>
             </FieldGroup>
             <div className="divider-horizontal col-full"></div>
           </div>}
@@ -551,7 +557,7 @@ const Profile = () => {
                     <DialogClose render={<Button variant="outline" className="sm" onClick={clearForm}>Clear Form</Button>} />
                     <div className='divider-vertical'></div>
                     <Button className="stroke sm" onClick={closeForm}>Yes, Back to login</Button>
-                    <DialogClose render={<Button variant="outline" className="stroke sm" >No</Button>} />
+                    <DialogClose render={<Button variant="outline" className="stroke sm" >Cancel</Button>} />
                   </DialogFooter>
                 </DialogContent>
               </Dialog>

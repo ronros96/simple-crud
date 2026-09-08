@@ -12,7 +12,7 @@
   display: grid;
   grid-template-columns: 1fr;
   gap:var(--gap) var(--gap2x);
-  padding: var(--gap) 0;
+  padding: 0 0 var(--gap);
   width: 100%;
 
   .col-full{
