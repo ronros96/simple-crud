@@ -40,7 +40,7 @@ const Page = () =>{
           <>
             <title>{`${import.meta.env.VITE_APP_TITLE} | Dashboard`}</title>
             <div className='main-container'>
-
+              
             </div>
           </> 
         )
