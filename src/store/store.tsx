@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import type {RolesMap} from "@src/fields/type";
 
 // LOG IN
 type Login = {

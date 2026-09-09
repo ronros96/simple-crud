@@ -71,4 +71,15 @@ export type RolesMap = {
   librarian: number[];
   patron: number[];
   guest: number[];
-};;
+};
+
+export type User = {
+  username: string;
+  password: string;
+  firstname: string;
+  lastname: string;
+  mobile: string;
+  email: string;
+  address: string;
+  logged?: Date;
+};

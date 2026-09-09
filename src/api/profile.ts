@@ -1,15 +1,6 @@
-const API_URL = import.meta.env.VITE_APP_API_PROFILE;
+import type {User} from '@src/fields/type';
 
-export type User = {
-  username: string;
-  password: string;
-  firstname: string;
-  lastname: string;
-  mobile: string;
-  email: string;
-  address: string;
-  logged?: Date;
-};
+const API_URL = import.meta.env.VITE_APP_API_PROFILE;
 
 export type CreateUser = Omit<User, "username"> & {
   username: string;

@@ -1,6 +1,6 @@
 import './profile.css';
 import clsx from 'clsx';
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useRef } from "react";
 import { City, Country, State } from "country-state-city";
 import type {ICountry, IState, ICity} from "country-state-city";
 //ui
@@ -45,8 +45,9 @@ import { Eye, EyeOff } from "lucide-react"
 //state
 import { useErrors, useProfile, useLogin } from "@src/store/store";
 // helpers
-import {checkAllFields, showRequirements, fieldError, FieldOrginizer} from "@src/lib/helpers/field"
-import {ProfileFields} from "@src/fields/profile"
+import {checkAllFields, showRequirements, fieldError, FieldOrginizer} from "@src/lib/helpers/field";
+import {ProfileFields} from "@src/fields/profile";
+import { clearForm } from "@lib/helpers/user";
 //hooks
 import { useGetUsers, usePutUser, useCreateUser } from '@hooks/Profile';
 
@@ -86,25 +87,8 @@ const Profile = () => {
   const stateRef = useRef<HTMLElement | null>(null);
   const cityRef = useRef<HTMLElement | null>(null);
 
-  const clearForm = () => {
-    setProfile({
-      username:'',
-      password:'',
-      firstname:'',
-      lastname:'',
-      mobile:'',
-      email:'',
-      address:'',
-      terms:false,
-      booklimit:0,
-      role:0,
-      active: false,
-    });
-    setErrors([])
-  }
-
   const closeForm = () => {
-    clearForm();
+    clearForm;
     setFormType('');
   }
 
@@ -235,7 +219,6 @@ const Profile = () => {
 
   return (
     <>
-      <title>{`${import.meta.env.VITE_APP_TITLE} | Sign-In`}</title>
       <div className="important">
         <strong>* Required</strong><br/>
         <p className={clsx('err-msg',{'show':Object.values(errors).some(value => value !== 'good')})}>

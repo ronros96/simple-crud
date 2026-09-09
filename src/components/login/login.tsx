@@ -1,6 +1,6 @@
 import './login.css';
 import clsx from 'clsx';
-import { useEffect, useState } from "react"
+import { useState } from "react"
 //ui
 import {
   Field,
@@ -33,6 +33,8 @@ const Login = () => {
   //states
   const setLogin = useLogin((state:any) => state.setLogin);
   const setFormType = useProfile((state:any) => state.setFormType);
+  const setProfile = useProfile((state:any) => state.setProfile);
+  const un = useProfile((state:any) => state.username);
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState<FormState>({ username: "", password: "" });
   //errors
@@ -82,6 +84,8 @@ const Login = () => {
           logged: new Date(),
         },
       });
+      setProfile({...match})
+      setFormType('dashboard');
       const toLocal = {
         'username':username,
         'datetime':new Date()
@@ -95,7 +99,6 @@ const Login = () => {
   
   return (
     <>
-      <title>{`${import.meta.env.VITE_APP_TITLE} | User Login`}</title>
       <div className="login-container">        
         <div className="login-content">
           <h2 className='header-5'>

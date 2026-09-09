@@ -2,71 +2,19 @@ import './page.css';
 import { useEffect } from 'react';
 import Login from '@components/login/login';
 import { useLogin, useProfile, useErrors } from "@src/store/store";
+import { checkLogged } from "@lib/helpers/user";
 import { useGetUser } from '@hooks/Profile';
 import Profile from '@src/components/profile/profile';
 
 
 const Page = () =>{
-  const setLogin = useLogin((state:any) => state.setLogin);
   const isLogged =  useLogin((state:any) => state.isLogged);
   const username = useLogin((state:any) => state.username);
-  const setUsername = useLogin((state:any) => state.setUsername);
   const formType =  useProfile((state:any) => state.formType);
-  const setFormType = useProfile((state:any) => state.setFormType);
-  const setProfile = useProfile((state:any) => state.setProfile);
-  const setErrors = useErrors((state:any) => state.setErrors);
-  
   const {data: validUser} = useGetUser(username);
 
-  const clearForm = () => {
-    setUsername('');
-    setProfile({
-      username:'',
-      password:'',
-      firstname:'',
-      lastname:'',
-      mobile:'',
-      email:'',
-      address:'',
-      terms:false,
-      booklimit:0,
-      role:0,
-      active: false,
-    });
-    setErrors([])
-  }
-
-  const loggedOut = () => {
-    clearForm();
-    setLogin(false);
-    setFormType(null);
-    localStorage.removeItem('setLogged')
-  }
-
-  const checkLogged = () =>{
-    const isLogged = localStorage.getItem('setLogged') ?? "";
-    const loggedObj = isLogged !== "" && JSON.parse(isLogged);
-    const now = new Date();
-     
-    if(loggedObj.username){
-      setUsername(loggedObj.username);
-      if(validUser){
-        const lastLogged = validUser?.logged && new Date(validUser?.logged);
-        const timeDiff = lastLogged ? now.getTime() - lastLogged.getTime() : -1;
-        const less24Hrs = timeDiff >= 0 && timeDiff <= 24 * 60 * 60 * 1000;
-        if(less24Hrs){
-          setLogin(true);
-        }else{
-          loggedOut()
-        }
-      }
-    }else{
-      loggedOut()
-    }
-  }
-
   useEffect(()=>{
-    checkLogged();
+    checkLogged(validUser);
   },[validUser])
 
   return(
@@ -75,22 +23,26 @@ const Page = () =>{
         !isLogged ? (
           formType === 'sign-in' ? (
             <>
+              <title>{`${import.meta.env.VITE_APP_TITLE} | Sign-In`}</title>
               <h1 className='header-4'>Sign-in</h1>
               <div className='divider-horizontal'></div>
               <Profile/>
             </>
           ) : (
              <>
+              <title>{`${import.meta.env.VITE_APP_TITLE} | Log-in`}</title>
               <h1 className='header-4'>Welcome</h1>
               <div className='divider-horizontal'></div>
               <Login/>
             </>
           )
         ) : (
-          <div className='main-container'>
-            <h1>WELCOME!</h1>
-            <button onClick={()=>{loggedOut()}}>Log out</button>
-          </div>
+          <>
+            <title>{`${import.meta.env.VITE_APP_TITLE} | Dashboard`}</title>
+            <div className='main-container'>
+
+            </div>
+          </> 
         )
       }
     </section>
