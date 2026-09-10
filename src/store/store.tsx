@@ -1,11 +1,21 @@
 import { create } from "zustand";
 
+// THEME
+type ColorScheme = {
+  currentScheme: string;
+}
+
+export const useColorScheme = create<ColorScheme>((set) => ({
+  currentScheme: 'dark',
+  setCurrentScheme: (state:any) => set({currentScheme:state}),
+}));
+
+
 // LOG IN
 type Login = {
   isLogged: boolean;
   username: string;
   password: string;
-
 }
 
 type LoginStore = Login & {
@@ -35,8 +45,6 @@ export const useLogin = create<LoginStore>((set) => ({
 
 
 type Roles = 'guest' | 'admin' | 'librarian' | 'patrom';
-
-
 
 type RoleStore = {
   roleLogged:Roles;

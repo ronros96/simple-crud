@@ -173,7 +173,7 @@ button.stroke,
 button.sm.stroke{
   background-color: transparent;
   border:solid 2px var(--button);
-  color: light-dark(#85A2CC, var(--white));
+  color: var(--button-default);
 }
 
 button.sm,
@@ -210,15 +210,16 @@ button.text-only{
 
 /* MODAL / DIALOG BOX */
 .modal{
-  padding: 2rem;
+  padding: 1rem;
   background-color: var(--frame-bg);
-
+  
   &.sm{
-    max-width: 30rem;
+    max-width: 25rem;
   }
 
   &.all-centered{
     [data-slot=dialog-footer]{
+      flex-wrap: wrap;
       justify-content: center;
     }
 
@@ -240,7 +241,14 @@ button.text-only{
     font-size: var(--font-md);
     color: var(--text-default);
     border-bottom: solid 1px var(--dgray);
-  } 
+  }
+  
+  @media screen and (min-width: 680px) {
+    padding: 2rem;
+    &.sm{
+      max-width: 30rem;
+    }
+  }
 }
 
 /* POPOVER */

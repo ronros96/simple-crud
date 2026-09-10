@@ -30,7 +30,7 @@
   --ease:cubic-bezier(.81,.14,.53,.74);
 
   --text-default:light-dark(#000,#FFF);
-
+  --button-default:light-dark(#85A2CC, #FFF);
   --main-bg:light-dark(#FFFFFF,#242121);
   --secondary-bg:light-dark(#FAF6F2,#1C1B1B);
   --frame-bg:light-dark(#F5EFE9,#101010);
@@ -45,6 +45,15 @@
   --disabled:#404040;
   --warn-text:#FFF588;
   --important:#FD951E;
+
+  .light{
+    --text-default:#000;
+    --button-default:#85A2CC;
+    --main-bg:#FFFFFF;
+    --secondary-bg:#FAF6F2;
+    --frame-bg:#F5EFE9;
+    --dgray:#DAD7CD;
+  }
 
   --white:#FFF;
   --black:#000;

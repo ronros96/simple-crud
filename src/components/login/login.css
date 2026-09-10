@@ -2,7 +2,7 @@
 
 .login-container{
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   gap:var(--gap2x);
   margin: 0 auto;
   background-color: var(--frame-bg);

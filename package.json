@@ -21,7 +21,7 @@
     "cn": "^0.2.6",
     "country-state-city": "^3.2.1",
     "lucide-react": "^1.28.0",
-    "motion": "^12.38.0",
+    "motion": "^12.43.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-phone-number-input": "^3.4.17",

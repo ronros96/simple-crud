@@ -1,7 +1,7 @@
 import './page.css';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Login from '@components/login/login';
-import { useLogin, useProfile, useErrors } from "@src/store/store";
+import { useLogin, useProfile } from "@src/store/store";
 import { checkLogged } from "@lib/helpers/user";
 import { useGetUser } from '@hooks/Profile';
 import Profile from '@src/components/profile/profile';
@@ -14,8 +14,12 @@ const Page = () =>{
   const {data: validUser} = useGetUser(username);
 
   useEffect(()=>{
+    
+  })
+
+  useEffect(()=>{
     checkLogged(validUser);
-  },[validUser])
+  },[validUser]);
 
   return(
     <section className='container'>
@@ -40,7 +44,7 @@ const Page = () =>{
           <>
             <title>{`${import.meta.env.VITE_APP_TITLE} | Dashboard`}</title>
             <div className='main-container'>
-              
+
             </div>
           </> 
         )

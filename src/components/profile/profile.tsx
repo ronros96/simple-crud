@@ -133,8 +133,7 @@ const Profile = () => {
       },
     })
   }
-
-
+  
   const submitForm = async (e:any) =>{
     e.preventDefault;
     //selected fields to be submitted.
@@ -522,7 +521,7 @@ const Profile = () => {
           </div>}
 
           <div className={clsx('field-group',{'error':fieldError(errors,'terms')})}>
-            <div className='flex justify-end gap-5'>
+            <div className='flex justify-center lg:justify-end gap-5'>
               {formType === 'sign-in' &&
               <Button type="submit">Register</Button>}
               {formType === 'update' &&
@@ -536,7 +535,7 @@ const Profile = () => {
                       Some of your updates will be gone.
                     </DialogDescription>
                   </DialogHeader>
-                  <DialogFooter>
+                  <DialogFooter className='items-center flex-col flex-row'>
                     <DialogClose render={<Button variant="outline" className="sm" onClick={clearForm}>Clear Form</Button>} />
                     <div className='divider-vertical'></div>
                     <Button className="stroke sm" onClick={closeForm}>Yes, Back to login</Button>

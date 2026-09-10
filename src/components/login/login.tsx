@@ -34,7 +34,6 @@ const Login = () => {
   const setLogin = useLogin((state:any) => state.setLogin);
   const setFormType = useProfile((state:any) => state.setFormType);
   const setProfile = useProfile((state:any) => state.setProfile);
-  const un = useProfile((state:any) => state.username);
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState<FormState>({ username: "", password: "" });
   //errors
