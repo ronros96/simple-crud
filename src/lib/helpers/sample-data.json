@@ -3,12 +3,13 @@
     "password": "admin123",
     "firstname": "John",
     "lastname": "Doe",
-    "mobile": "1-843-651-7512 x8533",
+    "mobile": "+1-843-651-7512",
     "email": "Maudie.Stoltenberg@yahoo.com",
     "address": [
-      "DM",
-      "MT",
-      "Deionport",
+      "PH",
+      "NCR",
+      "Taguig",
+      "Room 2",
       "Suite 823"
     ],
     "logged": "2026-09-02T06:02:13.180Z",

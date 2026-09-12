@@ -1,11 +1,18 @@
 import './page.css';
-import { useEffect, useState } from 'react';
+import clsx from 'clsx';
+import { useEffect } from 'react';
 import Login from '@components/login/login';
 import { useLogin, useProfile } from "@src/store/store";
 import { checkLogged } from "@lib/helpers/user";
 import { useGetUser } from '@hooks/Profile';
 import Profile from '@src/components/profile/profile';
-
+import Contents from './contents';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@components/ui/tooltip";
+import { Button } from "@components/ui/button"
 
 const Page = () =>{
   const isLogged =  useLogin((state:any) => state.isLogged);
@@ -14,15 +21,11 @@ const Page = () =>{
   const {data: validUser} = useGetUser(username);
 
   useEffect(()=>{
-    
-  })
-
-  useEffect(()=>{
     checkLogged(validUser);
   },[validUser]);
 
   return(
-    <section className='container'>
+    <section className={clsx('container',{'header-margin':isLogged})}>
       {
         !isLogged ? (
           formType === 'sign-in' ? (
@@ -35,19 +38,19 @@ const Page = () =>{
           ) : (
              <>
               <title>{`${import.meta.env.VITE_APP_TITLE} | Log-in`}</title>
-              <h1 className='header-4'>Welcome</h1>
+              <h1 className='header-4'>
+                <Tooltip>
+                <TooltipTrigger delay={300} render={<Button variant="outline" className="text-only p-0">Hello There</Button>} />
+                <TooltipContent>
+                  <p>General Kenobi!</p>
+                </TooltipContent>
+              </Tooltip>
+              </h1>
               <div className='divider-horizontal'></div>
               <Login/>
             </>
           )
-        ) : (
-          <>
-            <title>{`${import.meta.env.VITE_APP_TITLE} | Dashboard`}</title>
-            <div className='main-container'>
-
-            </div>
-          </> 
-        )
+        ) : <Contents/>
       }
     </section>
   )

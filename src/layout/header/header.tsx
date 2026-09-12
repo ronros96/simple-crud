@@ -1,9 +1,16 @@
 import './header.css';
-import { ArrowLeft } from "lucide-react"
-import { motion, useScroll, useTransform } from "motion/react"
+import { useState } from 'react';
 import { useProfile, useLogin } from "@src/store/store";
 import { loggedOut } from "@lib/helpers/user";
 import ColorScheme from "@components/color_scheme/colorScheme";
+
+import { motion, useScroll, useTransform } from "motion/react"
+import { ArrowLeft, SquarePen } from "lucide-react"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@components/ui/popover";
 
 const Header = () => {
   const { scrollY } = useScroll();
@@ -16,6 +23,7 @@ const Header = () => {
     ]
   );
 
+  const [open,setOpen] = useState(false);
   const firstname =  useProfile((state:any) => state.firstname);
   const lastname =  useProfile((state:any) => state.lastname);
   const formType =  useProfile((state:any) => state.formType);
@@ -24,11 +32,16 @@ const Header = () => {
   const firstletter = ((firstname.toLowerCase().charCodeAt(0) - 96) - (lastname.toLowerCase().charCodeAt(0) - 96)) % 10;
   const colornumber = firstletter === 0 ? 1 : firstletter;
   const pbg = `profile-color-${colornumber}`;
+  const showHeader = ['dashboard','update-profile'];
 
-  const nav = (e:any) => {
+  const nav = (e:any,loc:string) => {
     e.preventDefault;
-    if( formType === 'sign-in')
-      setFormType('')
+    setFormType(loc)
+  }
+
+  const profileView = (e:any) => {
+    e.preventDefault;
+    setFormType('update-profile')
   }
 
   return (
@@ -38,12 +51,46 @@ const Header = () => {
       }} 
     >
       {
-        formType === 'dashboard' && isLogged ?
+        showHeader.includes(formType) && isLogged ?
         <div className='header-container'>
           <div className='user-info'>
-            <div className={`profile-icon ${pbg}`}>{firstname[0]}{lastname[0]}</div>
-            <h1 className='header-5'>{firstname} {lastname}</h1>
-            <button className='sm stroke' onClick={()=>{loggedOut()}}>Sign Out</button>
+            {formType === 'update-profile' && 
+            <a 
+              className='back' 
+              href='#'
+              onClick={(e)=>{nav(e,'dashboard')}}
+            >
+              <ArrowLeft size={'1rem'}/>
+              Back
+            </a>}
+            <Popover open={open} onOpenChange={setOpen}>
+              <PopoverTrigger render={
+                <button 
+                  className={`profile-icon ${pbg}`}
+                >{firstname[0]}{lastname[0]}</button>
+              } />
+              <PopoverContent>
+                <div className='popover-user-info'>
+                  <div className='profile'>
+                    <h2 className='header-5'>
+                      {firstname}{' '}{lastname}
+                      <a 
+                        href='#'
+                        onClick={(e:any)=>{
+                          profileView(e)
+                          setOpen(false)
+                        }}>
+                        <SquarePen size={'.8rem'}/>
+                      </a>
+                      <br/>
+                    </h2>
+                  </div>
+                  <div className='bottom'>
+                    <button className='sm stroke' onClick={()=>{loggedOut()}}>Sign Out</button>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
           <div className='theme'>
             <ColorScheme/>
@@ -54,7 +101,7 @@ const Header = () => {
           <a 
             className='back' 
             href='#'
-            onClick={nav}
+            onClick={(e)=>{nav(e,'')}}
           >
             <ArrowLeft size={'1rem'}/>
             Back

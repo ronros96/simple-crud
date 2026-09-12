@@ -27,20 +27,30 @@ header{
 
   .user-info{
     display: flex;
-    gap:var(--gap);
     align-items: center;
     
     .profile-icon{
+      padding: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: var(--gap3x);
-      height: var(--gap3x);
+      width: var(--gap2x);
+      height: var(--gap2x);
       text-transform: uppercase;
       font-family: var(--pixel);
-      font-size: var(--font-md);
+      font-size: var(--font-base);
       border-radius: 100vmax;
-      cursor: pointer;
+      border: solid 2px transparent;
+
+      transition: border-color .2s var(--ease);
+
+      &:hover{
+        border-color: var(--button);
+      }
+
+      @media screen and (min-width: 680px) {
+        cursor: pointer;
+      }
     }
 
     .profile-color-1{
@@ -74,9 +84,10 @@ header{
       background-color: #9169d3;
     }
 
-    h1{
-      margin-bottom: 0;
-      text-transform: none;
+    .back{
+      padding-right: var(--gap);
+      margin-right: var(--gap);
+      border-right: solid 2px var(--dgray);
     }
   }
 
@@ -114,5 +125,34 @@ header{
   .header-container:not(:has(.user-info)){
     background-color: transparent;
   }
+}
+
+
+.popover-user-info{
+  padding: var(--gap);
+  h2{
+    display: flex;
+    gap:.5rem;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0;
+    text-transform: none;
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
+    line-height: .65;
+    button.sm{
+      padding: .25rem .5rem;
+    }
+  }
+
+  .profile{
+     padding-bottom: var(--gap);
+     border-bottom: solid 1px var(--dgray);
+  }
+
+  .bottom{
+    margin-top: var(--gap);
+  }
+
 }
 

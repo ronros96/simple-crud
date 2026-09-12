@@ -12,11 +12,6 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@components/ui/input-group"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@components/ui/tooltip"
 import { Button } from "@components/ui/button"
 import { Eye, EyeOff } from "lucide-react"
 //state
@@ -98,31 +93,8 @@ const Login = () => {
   
   return (
     <>
-      <div className="login-container">        
-        <div className="login-content">
-          <h2 className='header-5'>
-          <Tooltip>
-            <TooltipTrigger delay={300} render={<Button variant="outline" className="text-only p-0">Hello There!</Button>} />
-            <TooltipContent>
-              <p>General Kenobi!</p>
-            </TooltipContent>
-          </Tooltip>
-          </h2>
-          <p>
-            This project uses a mock API, so all login and authentication features are implemented for prototype purposes only.
-          </p>
-          <p>
-            The main focus of the project is to showcase my front-end development skills, particularly in building a CRUD application using React JS. It demonstrates how I structure API requests, manage application state, handle form validation and errors, and create a responsive user interface for interacting with RESTful API data.
-          </p>
-          <p>
-            <strong>Don't have an account yet?</strong><br/>Let’s start by signing-in:<br/>
-          </p>
-          <Button onClick={() => setFormType('sign-in')}>Let Me Sign-In!</Button>
-        </div>
-
-        <div className="divider-vertical"></div>
-        
-        <form 
+      <div className="login-container">
+                <form 
           className="login-form" 
           onSubmit={login} 
           action={(e:any)=>{e.preventDefault}}
@@ -185,6 +157,23 @@ const Login = () => {
             </Button>
           </div>
         </form>
+
+         <div className="divider-vertical"></div>
+
+        <div className="login-content md:flex justify-between flex-col ">
+          <p>
+            This project uses a mock API, so all login and authentication features are implemented for prototype purposes only.
+          </p>
+          {/* <p>
+            The main focus of the project is to showcase my front-end development skills, particularly in building a CRUD application using React JS. It demonstrates how I structure API requests, manage application state, handle form validation and errors, and create a responsive user interface for interacting with RESTful API data.
+          </p> */}
+          <div>
+            <p>
+              <strong>Don't have an account yet?</strong><br/>Let’s start by signing-in:<br/>
+            </p>
+            <Button onClick={() => setFormType('sign-in')}>Let Me Sign-In!</Button>
+          </div>
+        </div>
       </div>
     </>
     

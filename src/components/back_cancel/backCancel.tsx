@@ -9,11 +9,10 @@ import {
   DialogTrigger,
 } from "@components/ui/dialog";
 import { Button } from "@components/ui/button";
-
 import { clearForm } from "@lib/helpers/user";
 import { useProfile } from "@src/store/store";
 
-const BackCancel = () =>{
+const BackCancel = (type:string) =>{
 
   const setFormType = useProfile((state:any) => state.setFormType);
 

@@ -17,3 +17,7 @@ section{
   }
 }
 
+.header-margin{
+  margin-top: var(--gap5x);
+}
+

@@ -41,6 +41,7 @@ export const checkLogged = (validUser:User | undefined) =>{
         useProfile.setState({
           formType:'dashboard',
           username: validUser.username,
+          password: validUser.password,
           firstname: validUser.firstname,
           lastname: validUser.lastname,
           mobile: validUser.mobile,

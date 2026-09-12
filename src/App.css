@@ -26,6 +26,7 @@
   --gap2x: calc(var(--gap) * 2);
   --gap3x: calc(var(--gap) * 3);
   --gap4x: calc(var(--gap) * 4);
+  --gap5x: calc(var(--gap) * 5);
 
   --ease:cubic-bezier(.81,.14,.53,.74);
 
@@ -46,7 +47,7 @@
   --warn-text:#FFF588;
   --important:#FD951E;
 
-  .light{
+  body:has(.light){
     --text-default:#000;
     --button-default:#85A2CC;
     --main-bg:#FFFFFF;

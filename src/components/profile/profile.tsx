@@ -89,33 +89,53 @@ const Profile = () => {
 
   const closeForm = () => {
     clearForm;
-    setFormType('');
+    if(formType === 'update-profile'){
+      setFormType('dashboard');
+    }else{
+      setFormType('');
+    }
+    
   }
 
   const fixAddress = () => {
     let addInputs = [];
-    if(countryRef.current?.innerHTML === "Choose Country"){
-      addInputs.push("-country-");
+    const currentAddress = address[0];
+    if(Array.isArray(currentAddress)){
+      const currentCountry = Country.getCountryByCode(currentAddress[0]);
+      currentCountry !== undefined && setCountry(currentCountry);
+      
+      const currentState = State.getStateByCodeAndCountry(currentAddress[1],currentAddress[0])
+      currentState !== undefined && setState(currentState);
+
+      const cityData = City.getCitiesOfState(currentAddress[0],currentAddress[1]);
+      const currentCity = cityData.find(city => city.name === currentAddress[2]);
+      currentCity !== undefined && setCity(currentCity);
+      currentAddress[3] !== undefined && setAddressL1(currentAddress[3]); 
+      currentAddress[4] !== undefined && setAddressL2(currentAddress[4]); 
     }else{
-      country && addInputs.push(country.isoCode);
+      if(countryRef.current?.innerHTML === "Choose Country"){
+        addInputs.push("-country-");
+      }else{
+        country && addInputs.push(country.isoCode);
+      }
+      if(stateRef.current?.innerHTML === "Choose State"){
+        addInputs.push("-state-");
+      }else{
+        state && addInputs.push(state.isoCode);
+      }
+      if(cityRef.current?.innerHTML === "Choose City"){
+        addInputs.push("-city-");
+      }else{
+        city && addInputs.push(city.name);
+      }
+      if(addressL1 === ""){
+        addInputs.push("-addressline-");
+      }else{
+        addInputs.push(addressL1);
+        addInputs.push(addressL2)
+      }
+      setProfile({address: addInputs});
     }
-    if(stateRef.current?.innerHTML === "Choose State"){
-      addInputs.push("-state-");
-    }else{
-      state && addInputs.push(state.isoCode);
-    }
-    if(cityRef.current?.innerHTML === "Choose City"){
-      addInputs.push("-city-");
-    }else{
-      city && addInputs.push(city.name);
-    }
-    if(addressL1 === ""){
-      addInputs.push("-addressline-");
-    }else{
-      addInputs.push(`${addressL1}${" "}${addressL2}`);
-    }
-    setProfile({address: addInputs});
-    console.log(address,"address")
   }
 
   const createUser = useCreateUser();
@@ -200,6 +220,7 @@ const Profile = () => {
 
   useEffect(()=>{
     setUsers(allUsers)
+    fixAddress();
   },[Users])
 
   useEffect(() => {
@@ -214,7 +235,6 @@ const Profile = () => {
       setCityData(City.getCitiesOfState(country?.isoCode, state?.isoCode));
     }
   }, [state]);
-
 
   return (
     <>
@@ -383,7 +403,7 @@ const Profile = () => {
               </FieldLegend>
               <FieldGroup>
                 <FieldLabel htmlFor="country">Country</FieldLabel>
-                <Select id="country" onValueChange={fixAddress} autoComplete="new-address">
+                <Select id="country" onValueChange={fixAddress} autoComplete="new-address" value={country?.name ?? ''} >
                   <SelectTrigger className="w-full" >
                     <SelectValue placeholder="Choose Country" ref={countryRef}/>
                   </SelectTrigger>
@@ -403,7 +423,7 @@ const Profile = () => {
               {stateData.length > 0 && 
               <FieldGroup>
                 <FieldLabel htmlFor="country">State / Region</FieldLabel>
-                <Select id="State" onValueChange={fixAddress} autoComplete="new-address">
+                <Select id="State" onValueChange={fixAddress} autoComplete="new-address" value={state?.name ?? ''}>
                   <SelectTrigger className="w-full">
                     <SelectValue  placeholder="Choose State" ref={stateRef} />
                   </SelectTrigger>
@@ -423,7 +443,7 @@ const Profile = () => {
               {cityData.length > 0 && 
               <FieldGroup>
                 <FieldLabel htmlFor="country">City / Municipality</FieldLabel>
-                <Select id="City" autoComplete="new-address">
+                <Select id="City" autoComplete="new-address"  value={city?.name ?? ''}>
                   <SelectTrigger className="w-full">
                     <SelectValue  placeholder="Choose City" ref={cityRef}/>
                   </SelectTrigger>
@@ -522,10 +542,10 @@ const Profile = () => {
 
           <div className={clsx('field-group',{'error':fieldError(errors,'terms')})}>
             <div className='flex justify-center lg:justify-end gap-5'>
-              {formType === 'sign-in' &&
-              <Button type="submit">Register</Button>}
-              {formType === 'update' &&
-              <Button type="submit">Update</Button>}
+              <Button type="submit">
+                 {formType === 'sign-in' && 'Register'}
+                 {formType === 'update-profile' && 'Update'}
+              </Button>
               <Dialog>
                 <DialogTrigger render={<Button variant="outline" className="stroke">Cancel</Button>} />
                 <DialogContent className="modal sm all-centered">
@@ -536,9 +556,14 @@ const Profile = () => {
                     </DialogDescription>
                   </DialogHeader>
                   <DialogFooter className='items-center flex-col flex-row'>
+                    {formType === 'sign-in' && <>
                     <DialogClose render={<Button variant="outline" className="sm" onClick={clearForm}>Clear Form</Button>} />
-                    <div className='divider-vertical'></div>
-                    <Button className="stroke sm" onClick={closeForm}>Yes, Back to login</Button>
+                    <div className='divider-vertical'></div></>
+                    }
+                    <Button className="stroke sm" onClick={closeForm}>
+                      {formType === 'sign-in' && 'Yes, Back to login'}
+                      {formType === 'update-profile' && 'Yes, Back to Dashboard'}
+                    </Button>
                     <DialogClose render={<Button variant="outline" className="stroke sm" >Cancel</Button>} />
                   </DialogFooter>
                 </DialogContent>
