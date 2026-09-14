@@ -18,6 +18,8 @@ import { Eye, EyeOff } from "lucide-react"
 import { useLogin, useProfile, useErrors } from "@src/store/store";
 //hooks
 import { useGetUsers, usePutUser } from '@hooks/Profile';
+//helper
+import { setLoggedUser } from "@lib/helpers/user";
 
 const Login = () => {
   interface FormState {
@@ -79,12 +81,7 @@ const Login = () => {
       });
       setProfile({...match})
       setFormType('dashboard');
-      const toLocal = {
-        'id':match.id,
-        'username':match.username,
-        'datetime':new Date()
-      }
-      localStorage.setItem('setLogged',JSON.stringify(toLocal));
+      setLoggedUser(match.id,match.username)
     }else{
       setForm({ username: "", password: "" })
       setErrors('err');

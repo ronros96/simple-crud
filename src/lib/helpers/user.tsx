@@ -22,8 +22,22 @@ export const clearForm = () => {
 export const loggedOut = () => {
   clearForm();
   useLogin.setState({isLogged:false});
+  useLogin.setState({id:'',username:''});
   useProfile.setState({formType:''});
   localStorage.removeItem('setLogged')
+}
+
+export const setLoggedUser = (
+  id:string,
+  username:string
+) =>{
+  const toLocal = {
+    'id':id,
+    'username':username,  
+    'datetime':new Date()
+  }
+  localStorage.setItem('setLogged',JSON.stringify(toLocal));
+  useLogin.setState({id:id,username:username});
 }
 
 export const checkLogged = (validUser:User | undefined) =>{

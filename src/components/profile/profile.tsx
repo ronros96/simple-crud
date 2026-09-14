@@ -47,7 +47,7 @@ import { useErrors, useProfile, useLogin } from "@src/store/store";
 // helpers
 import {checkAllFields, showRequirements, fieldError, FieldOrginizer} from "@src/lib/helpers/field";
 import {ProfileFields} from "@src/fields/profile";
-import { clearForm } from "@lib/helpers/user";
+import { clearForm, setLoggedUser } from "@lib/helpers/user";
 //hooks
 import { useGetUsers, usePutUser, useCreateUser } from '@hooks/Profile';
 
@@ -79,7 +79,6 @@ const Profile = () => {
   const formType = useProfile((state:any) => state.formType);
   const setFormType = useProfile((state:any) => state.setFormType);
   const setLogin = useLogin((state:any) => state.setLogin);
-  const setUsername = useLogin((state:any) => state.setUsername);
   //errors
   const errors = useErrors((state:any) => state.errors);
   const setErrors = useErrors((state:any) => state.setErrors);
@@ -199,13 +198,7 @@ const Profile = () => {
             address:address,
             logged: new Date(),
           });
-          const toLocal = {
-            'id':id,
-            'username':username,  
-            'datetime':new Date()
-          }
-          localStorage.setItem('setLogged',JSON.stringify(toLocal));
-          setUsername(username);
+          setLoggedUser(id,username)
           setLogin(true);
           clearForm();
         }catch (error:any) {
@@ -227,6 +220,9 @@ const Profile = () => {
               logged: new Date()
             }
           });
+          if(formType === 'update-profile'){
+            setLoggedUser(id,username)
+          }
         }catch (error:any) {
           showToastError(error.message);
         }
