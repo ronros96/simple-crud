@@ -16,9 +16,10 @@ import { Button } from "@components/ui/button"
 
 const Page = () =>{
   const isLogged =  useLogin((state:any) => state.isLogged);
+  const id = useLogin((state:any) => state.id);
   const username = useLogin((state:any) => state.username);
   const formType =  useProfile((state:any) => state.formType);
-  const {data: validUser} = useGetUser(username);
+  const {data: validUser} = useGetUser({id:id,username:username});
 
   useEffect(()=>{
     checkLogged(validUser);

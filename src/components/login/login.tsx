@@ -58,7 +58,6 @@ const Login = () => {
       clearForm
       setErrors('err');
     }
-
   }
 
   const checkLogin = (
@@ -72,7 +71,7 @@ const Login = () => {
     if(match){
       setLogin(true);
       putUser.mutate({
-        username: username,
+        id: match.id,
         user: {
           ...match,
           logged: new Date(),
@@ -81,7 +80,8 @@ const Login = () => {
       setProfile({...match})
       setFormType('dashboard');
       const toLocal = {
-        'username':username,
+        'id':match.id,
+        'username':match.username,
         'datetime':new Date()
       }
       localStorage.setItem('setLogged',JSON.stringify(toLocal));

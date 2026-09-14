@@ -32,7 +32,7 @@ export const checkLogged = (validUser:User | undefined) =>{
   const now = new Date();
     
   if(loggedObj.username){
-    useLogin.setState({username: loggedObj.username});
+    useLogin.setState({id:loggedObj.id, username: loggedObj.username});
     if(validUser){
       const lastLogged = validUser?.logged && new Date(validUser?.logged);
       const timeDiff = lastLogged ? now.getTime() - lastLogged.getTime() : -1;
@@ -40,6 +40,7 @@ export const checkLogged = (validUser:User | undefined) =>{
       if(less24Hrs){
         useProfile.setState({
           formType:'dashboard',
+          id:validUser.id,
           username: validUser.username,
           password: validUser.password,
           firstname: validUser.firstname,

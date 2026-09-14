@@ -14,6 +14,7 @@ export const useColorScheme = create<ColorScheme>((set) => ({
 // LOG IN
 type Login = {
   isLogged: boolean;
+  id: string;
   username: string;
   password: string;
 }
@@ -26,10 +27,11 @@ type LoginStore = Login & {
 
 export const useLogin = create<LoginStore>((set) => ({
   isLogged: false,
+  id: '',
   username: '',
   password: '',
   setLogin: (state:any) => set({isLogged:state}),
-  setUsername: (state:any) => set({username:state}),
+  setUsername: (state:any) => set({id:state,username:state}),
   setPassword: (state:any) => set({password:state}),
 }));
 
@@ -59,6 +61,7 @@ export const useRole = create<RoleStore>((set) => ({
 // PROFILE
 type Profile = {
   formType: string;
+  id:string;
   username: string;
   password: string;
   firstname: string;
@@ -84,6 +87,7 @@ type ProfileStore = Profile & {
 export const useProfile  = create<ProfileStore>((set) => ({
   Users:{},
   formType: '',
+  id:"",
   username: "",
   password: "",
   firstname: "",

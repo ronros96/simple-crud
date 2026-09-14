@@ -58,11 +58,17 @@ export const getUsers = async (): Promise<User[]> => {
    GET INDIVIDUAL
  */
 
-export const getUser = async (
-  username: string
-): Promise<User> => {
+export const getUser = async ({
+  id,
+  username,
+}: {
+  id?: string;
+  username?: string;
+}): Promise<User> => {
+  const identifier = id;
+
   return request<User>(
-    `${API_URL}/${encodeURIComponent(username)}`
+    `${API_URL}/${encodeURIComponent(identifier!)}`
   );
 };
 
@@ -84,11 +90,11 @@ export const createUser = async (
  */
 
 export const putUser = async (
-  username: string,
+  id: string,
   user: User
 ): Promise<User> => {
   return request<User>(
-    `${API_URL}/${encodeURIComponent(username)}`,
+    `${API_URL}/${encodeURIComponent(id)}`,
     {
       method: "PUT",
       body: JSON.stringify(user),
@@ -101,11 +107,11 @@ export const putUser = async (
  */
 
 export const patchUser = async (
-  username: string,
+  id: string,
   user: UpdateUser
 ): Promise<User> => {
   return request<User>(
-    `${API_URL}/${encodeURIComponent(username)}`,
+    `${API_URL}/${encodeURIComponent(id)}`,
     {
       method: "PATCH",
       body: JSON.stringify(user),
@@ -118,10 +124,10 @@ export const patchUser = async (
  */
 
 export const deleteUser = async (
-  username: string
+  id: string
 ): Promise<void> => {
   return request<void>(
-    `${API_URL}/${encodeURIComponent(username)}`,
+    `${API_URL}/${encodeURIComponent(id)}`,
     {
       method: "DELETE",
     }

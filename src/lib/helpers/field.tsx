@@ -74,9 +74,10 @@ const validateField = (
 
   //unique
   const allUsers = useProfile.getState().Users;
+  const id = useProfile.getState().id;
   if(unique && Object.keys(allUsers).length > 0){
     const match = Object(allUsers).find(
-      (u:any) => u.username === value.trim()
+      (u:any) => u.username === value.trim() && u.id !== id
     );
     if(match){
       errors.push("unique");

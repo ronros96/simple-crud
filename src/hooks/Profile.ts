@@ -13,8 +13,9 @@ import {
   putUser,
   type CreateUser,
   type UpdateUser,
-  type User,
 } from "@src/api/profile";
+
+import type {User} from '@src/fields/type';
 
 
 /* QUERY KEYS */
@@ -22,8 +23,10 @@ import {
 export const userKeys = {
   all: ["users"] as const,
 
-  detail: (username: string) =>
-    ["users", username] as const,
+  detail: (identifier: {
+    id?: string;
+    username?: string;
+  }) => ["users", identifier] as const,
 };
 
 
@@ -39,20 +42,36 @@ export const useGetUsers = () => {
 
 /* GET INDIVIDUAL USER */
 
-export const useGetUser = (
-  username?: string
-) => {
-  return useQuery({
-    queryKey: userKeys.detail(username ?? ""),
-    queryFn: () => getUser(username!),
+// export const useGetUser = (
+//   username?: string
+// ) => {
+//   return useQuery({
+//     queryKey: userKeys.detail(username ?? ""),
+//     queryFn: () => getUser(username!),
 
-    enabled: Boolean(username),
+//     enabled: Boolean(username),
+//   });
+// };
+
+export const useGetUser = ({
+  id,
+  username,
+}: {
+  id?: string;
+  username?: string;
+}) => {
+  return useQuery({
+    queryKey: userKeys.detail({
+      id,
+      username,
+    }),
+    queryFn: () => getUser({ id, username }),
+    enabled: Boolean(id || username),
   });
 };
 
 
 /*  POST USER */
-
 export const useCreateUser = () => {
   const queryClient = useQueryClient();
 
@@ -68,7 +87,10 @@ export const useCreateUser = () => {
 
       // Add the new user to cache
       queryClient.setQueryData(
-        userKeys.detail(newUser.username),
+        userKeys.detail({
+          id: newUser.id,
+          username: newUser.username,
+        }),
         newUser
       );
     },
@@ -83,12 +105,12 @@ export const usePutUser = () => {
 
   return useMutation({
     mutationFn: ({
-      username,
+      id,
       user,
     }: {
-      username: string;
+      id: string;
       user: User;
-    }) => putUser(username, user),
+    }) => putUser(id, user),
 
     onSuccess: (updatedUser, variables) => {
       // Refresh users list
@@ -98,7 +120,7 @@ export const usePutUser = () => {
 
       // Update individual user cache
       queryClient.setQueryData(
-        userKeys.detail(variables.username),
+        userKeys.detail({id: variables.id}),
         updatedUser
       );
     },
@@ -113,12 +135,12 @@ export const usePatchUser = () => {
 
   return useMutation({
     mutationFn: ({
-      username,
+      id,
       user,
     }: {
-      username: string;
+      id: string;
       user: UpdateUser;
-    }) => patchUser(username, user),
+    }) => patchUser(id, user),
 
     onSuccess: (updatedUser, variables) => {
       // Refresh users list
@@ -128,7 +150,7 @@ export const usePatchUser = () => {
 
       // Update individual user cache
       queryClient.setQueryData(
-        userKeys.detail(variables.username),
+        userKeys.detail({id: variables.id}),
         updatedUser
       );
     },
@@ -142,13 +164,13 @@ export const useDeleteUser = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (username: string) =>
-      deleteUser(username),
+    mutationFn: (id: string) =>
+      deleteUser(id),
 
-    onSuccess: (_, username) => {
+    onSuccess: (_, id) => {
       // Remove individual user from cache
       queryClient.removeQueries({
-        queryKey: userKeys.detail(username),
+        queryKey: userKeys.detail({id: id}),
       });
 
       // Refresh users list

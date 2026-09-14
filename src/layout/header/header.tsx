@@ -86,7 +86,7 @@ const Header = () => {
                     </h2>
                   </div>
                   <div className='bottom'>
-                    <button className='sm stroke' onClick={()=>{loggedOut()}}>Sign Out</button>
+                    <button className='sm stroke m-auto' onClick={()=>{loggedOut()}}>Sign Out</button>
                   </div>
                 </div>
               </PopoverContent>

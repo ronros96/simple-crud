@@ -54,6 +54,7 @@ import { useGetUsers, usePutUser, useCreateUser } from '@hooks/Profile';
 const Profile = () => {
   const [showPassword, setShowPassword] = useState(false);
   //fields
+  const id = useProfile((state:any) => state.id);
   const username = useProfile((state:any) => state.username);
   const password = useProfile((state:any) => state.password);
   const firstname = useProfile((state:any) => state.firstname);
@@ -94,11 +95,9 @@ const Profile = () => {
     }else{
       setFormType('');
     }
-    
   }
 
-  const fixAddress = () => {
-    let addInputs = [];
+  const unloadAddress = () =>{
     const currentAddress = address[0];
     if(Array.isArray(currentAddress)){
       const currentCountry = Country.getCountryByCode(currentAddress[0]);
@@ -112,33 +111,37 @@ const Profile = () => {
       currentCity !== undefined && setCity(currentCity);
       currentAddress[3] !== undefined && setAddressL1(currentAddress[3]); 
       currentAddress[4] !== undefined && setAddressL2(currentAddress[4]); 
-    }else{
-      if(countryRef.current?.innerHTML === "Choose Country"){
-        addInputs.push("-country-");
-      }else{
-        country && addInputs.push(country.isoCode);
-      }
-      if(stateRef.current?.innerHTML === "Choose State"){
-        addInputs.push("-state-");
-      }else{
-        state && addInputs.push(state.isoCode);
-      }
-      if(cityRef.current?.innerHTML === "Choose City"){
-        addInputs.push("-city-");
-      }else{
-        city && addInputs.push(city.name);
-      }
-      if(addressL1 === ""){
-        addInputs.push("-addressline-");
-      }else{
-        addInputs.push(addressL1);
-        addInputs.push(addressL2)
-      }
-      setProfile({address: addInputs});
     }
   }
 
+  const fixAddress = () => {
+    let addInputs = [];
+    if(countryRef.current?.innerHTML === "Choose Country"){
+      addInputs.push("-country-");
+    }else{
+      country && addInputs.push(country.isoCode);
+    }
+    if(stateRef.current?.innerHTML === "Choose State"){
+      addInputs.push("-state-");
+    }else{
+      state && addInputs.push(state.isoCode);
+    }
+    if(cityRef.current?.innerHTML === "Choose City"){
+      addInputs.push("-city-");
+    }else{
+      city && addInputs.push(city.name);
+    }
+    if(addressL1 === ""){
+      addInputs.push("-addressline-");
+    }else{
+      addInputs.push(addressL1);
+      addInputs.push(addressL2)
+    }
+    setProfile({address: addInputs});
+  }
+
   const createUser = useCreateUser();
+  const updateUser = usePutUser();
 
   const showToastError = (message:string) => {
     const id = toast.add({
@@ -186,6 +189,7 @@ const Profile = () => {
       if(formType === 'sign-in'){
         try {
           await createUser.mutateAsync({
+            id:id,
             username:username,
             password:password,
             firstname:firstname,
@@ -196,7 +200,8 @@ const Profile = () => {
             logged: new Date(),
           });
           const toLocal = {
-            'username':username,
+            'id':id,
+            'username':username,  
             'datetime':new Date()
           }
           localStorage.setItem('setLogged',JSON.stringify(toLocal));
@@ -207,7 +212,24 @@ const Profile = () => {
           showToastError(error.message);
         }
       }else{
-        alert('update')
+        try{
+          await updateUser.mutateAsync({
+            id:id,
+            user:{
+              id:id,
+              username:username,
+              password:password,
+              firstname:firstname,
+              lastname:lastname,
+              mobile:mobile,
+              email:email,
+              address:address,
+              logged: new Date()
+            }
+          });
+        }catch (error:any) {
+          showToastError(error.message);
+        }
       }
     }else{
       setErrors(result);
@@ -220,7 +242,7 @@ const Profile = () => {
 
   useEffect(()=>{
     setUsers(allUsers)
-    fixAddress();
+    unloadAddress();
   },[Users])
 
   useEffect(() => {
@@ -403,7 +425,20 @@ const Profile = () => {
               </FieldLegend>
               <FieldGroup>
                 <FieldLabel htmlFor="country">Country</FieldLabel>
-                <Select id="country" onValueChange={fixAddress} autoComplete="new-address" value={country?.name ?? ''} >
+                <Select 
+                  id="country" 
+                  autoComplete="new-address" 
+                  value={country?.name ?? ""}
+                  onValueChange={(value) => {
+                    const selected = countryData.find(
+                      (item) => item.name === value
+                    );
+                    if (selected) {
+                      setCountry(selected);
+                      fixAddress()
+                    }
+                  }}
+                >
                   <SelectTrigger className="w-full" >
                     <SelectValue placeholder="Choose Country" ref={countryRef}/>
                   </SelectTrigger>
@@ -411,7 +446,7 @@ const Profile = () => {
                     <SelectGroup>
                       <SelectLabel>Choose Country</SelectLabel>
                       {countryData.map((item,i) => (
-                        <SelectItem key={`${item.isoCode}-${i}`} value={item.name} onClick={()=>{setCountry(item)}}>
+                        <SelectItem key={`${item.isoCode}-${i}`} value={item.name}>
                           {item.name}
                         </SelectItem>
                       ))}
@@ -423,7 +458,20 @@ const Profile = () => {
               {stateData.length > 0 && 
               <FieldGroup>
                 <FieldLabel htmlFor="country">State / Region</FieldLabel>
-                <Select id="State" onValueChange={fixAddress} autoComplete="new-address" value={state?.name ?? ''}>
+                <Select 
+                  id="State" 
+                  autoComplete="new-address" 
+                  value={state?.name ?? ""}
+                  onValueChange={(value) => {
+                    const selected = stateData.find(
+                      (item) => item.name === value
+                    );
+                    if (selected) {
+                      setState(selected);
+                      fixAddress()
+                    }
+                  }}
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue  placeholder="Choose State" ref={stateRef} />
                   </SelectTrigger>
@@ -431,7 +479,7 @@ const Profile = () => {
                     <SelectGroup>
                       <SelectLabel>Choose State</SelectLabel>
                       {stateData.map((item,i) => (
-                        <SelectItem key={`${item.isoCode}-${i}`} value={item.name} onClick={()=>{setState(item)}}>
+                        <SelectItem key={`${item.isoCode}-${i}`} value={item.name}>
                           {item.name}
                         </SelectItem>
                       ))}
@@ -443,7 +491,20 @@ const Profile = () => {
               {cityData.length > 0 && 
               <FieldGroup>
                 <FieldLabel htmlFor="country">City / Municipality</FieldLabel>
-                <Select id="City" autoComplete="new-address"  value={city?.name ?? ''}>
+                <Select 
+                  id="City" 
+                  autoComplete="new-address"  
+                  value={city?.name ?? ""}
+                  onValueChange={(value) => {
+                    const selected = cityData.find(
+                      (item) => item.name === value
+                    );
+                    if (selected) {
+                      setCity(selected);
+                      fixAddress()
+                    }
+                  }}
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue  placeholder="Choose City" ref={cityRef}/>
                   </SelectTrigger>
@@ -451,7 +512,7 @@ const Profile = () => {
                     <SelectGroup>
                       <SelectLabel>Choose City</SelectLabel>
                       {cityData.map((item,i) => (
-                        <SelectItem key={`${item.stateCode}-${i}`} value={item.name} onClick={()=>{setCity(item)}}>
+                        <SelectItem key={`${item.stateCode}-${i}`} value={item.name}>
                           {item.name}
                         </SelectItem>
                       ))}
@@ -470,7 +531,7 @@ const Profile = () => {
                   value={addressL1}
                   onChange={(e) => {
                     setAddressL1(e.target.value)
-                    fixAddress();
+                    fixAddress()
                   }}
                   type="text"
                   aria-required="true"
@@ -488,7 +549,7 @@ const Profile = () => {
                   value={addressL2}
                   onChange={(e) => {
                     setAddressL2(e.target.value)
-                    fixAddress();
+                    fixAddress()
                   }}
                   type="text"
                   aria-required="true"
