@@ -7,6 +7,10 @@ section{
   width: 100%;
   min-height: 100svh;
   background-color: var(--frame-bg);
+
+  &.transparent{
+    background-color: transparent;
+  }
   
   @media screen and (min-width: 680px) {
     margin: 2rem auto;
@@ -15,6 +19,10 @@ section{
     border-radius: 10px;
     min-height: initial;    
   }
+}
+
+.contents{
+  
 }
 
 .header-margin{

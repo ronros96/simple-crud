@@ -73,3 +73,13 @@ export const checkLogged = (validUser:User | undefined) =>{
     loggedOut();
   }
 }
+
+export const profileIcon = (firstname:string, lastname:string) =>{
+  const firstletter = ((firstname.toLowerCase().charCodeAt(0) - 96) - (lastname.toLowerCase().charCodeAt(0) - 96)) % 10;
+  const colornumber = firstletter < 0 ? firstletter * -1 : firstletter === 0 ? 1 : firstletter;
+  const pbg = `profile-color-${colornumber}`;
+
+  return <span  className={`profile-icon ${pbg}`}>
+    {firstname[0]}{lastname[0]}
+  </span>
+}

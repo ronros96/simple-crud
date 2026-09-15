@@ -208,6 +208,16 @@ button.text-only{
   }
 }
 
+button.delete{
+  border-color: var(--error);
+  background-color: var(--error);
+
+  &:hover{
+    border-color: var(--error-hover);
+    background-color: var(--error-hover);
+  }
+}
+
 /* MODAL / DIALOG BOX */
 .modal{
   padding: 1rem;

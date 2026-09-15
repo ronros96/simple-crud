@@ -41,11 +41,69 @@
   --button:#85A2CC;
   --button-hover:#a6c8ec;
   --error:#D44D4D;
+  --error-hover:#EB696B;
   --pop-up:#E0AC00;
   --green:#2DA81C;
   --disabled:#404040;
   --warn-text:#FFF588;
   --important:#FD951E;
+
+  .profile-color-1{
+    background-color: #68c950;
+  }
+  .profile-color-2{
+    background-color: #50c5c9;
+  }
+  .profile-color-3{
+    background-color: #c9a950;
+  }
+  .profile-color-4{
+    background-color: #507ac9;
+  }
+  .profile-color-5{
+    background-color: #c95e50;
+  }
+  .profile-color-6{
+    background-color: #9350c9;
+  }
+  .profile-color-7{
+    background-color: #c9509b;
+  }
+  .profile-color-8{
+    background-color: #c9b750;
+  }
+  .profile-color-9{
+    background-color: #50c9af;
+  }
+  .profile-color-10{
+    background-color: #9169d3;
+  }
+
+  .profile-icon{
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(var(--gap2x) + .25rem);
+    height: calc(var(--gap2x) + .25rem);
+    text-transform: uppercase;
+    text-align: center;
+    font-family: var(--pixel);
+    font-size: var(--font-base);
+    font-weight: 700;
+    border-radius: 100vmax;
+    border: solid 2px transparent;
+
+    transition: border-color .2s var(--ease);
+
+    &:hover{
+      border-color: var(--button);
+    }
+
+    @media screen and (min-width: 680px) {
+      cursor: pointer;
+    }
+  }
 
   body:has(.light){
     --text-default:#000;

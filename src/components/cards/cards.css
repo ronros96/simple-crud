@@ -1,0 +1,45 @@
+.profile-card{
+  position: relative;
+  padding: var(--gap2x);
+  background-color: var(--frame-bg);
+  border-radius: var(--gap);
+  cursor: pointer;
+  overflow: hidden;
+
+  &::before{
+    content: '';
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--gap3x);
+    opacity: 0;
+    background-image: linear-gradient(to bottom, #85A2CC55, #85A2CC00 ) ;
+    
+    transition: opacity .3s var(--ease);
+  }
+
+  &:hover::before{
+    opacity: 1;
+  }
+
+  h4{
+    display: flex;
+    gap:.5rem;
+    align-items: center;
+    text-transform: none;
+  }
+
+  .contents{
+    padding-top: var(--gap);
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    border-top: solid 1px var(--dgray);
+
+    p:nth-last-child(2),
+    p:last-child{
+      margin-bottom: 0;
+    }
+  }
+}

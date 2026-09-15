@@ -1,7 +1,7 @@
 import './header.css';
 import { useState } from 'react';
 import { useProfile, useLogin } from "@src/store/store";
-import { loggedOut } from "@lib/helpers/user";
+import { loggedOut, profileIcon } from "@lib/helpers/user";
 import ColorScheme from "@components/color_scheme/colorScheme";
 
 import { motion, useScroll, useTransform } from "motion/react"
@@ -29,9 +29,6 @@ const Header = () => {
   const formType =  useProfile((state:any) => state.formType);
   const setFormType =  useProfile((state:any) => state.setFormType);
   const isLogged =  useLogin((state:any) => state.isLogged);
-  const firstletter = ((firstname.toLowerCase().charCodeAt(0) - 96) - (lastname.toLowerCase().charCodeAt(0) - 96)) % 10;
-  const colornumber = firstletter === 0 ? 1 : firstletter;
-  const pbg = `profile-color-${colornumber}`;
   const showHeader = ['dashboard','update-profile'];
 
   const nav = (e:any,loc:string) => {
@@ -65,9 +62,9 @@ const Header = () => {
             </a>}
             <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger render={
-                <button 
-                  className={`profile-icon ${pbg}`}
-                >{firstname[0]}{lastname[0]}</button>
+                <button>
+                  {profileIcon(firstname,lastname)}
+                </button>
               } />
               <PopoverContent>
                 <div className='popover-user-info'>
@@ -86,7 +83,13 @@ const Header = () => {
                     </h2>
                   </div>
                   <div className='bottom'>
-                    <button className='sm stroke m-auto' onClick={()=>{loggedOut()}}>Sign Out</button>
+                    <button 
+                      className='sm stroke m-auto' 
+                      onClick={()=>{
+                        setOpen(false);
+                        loggedOut()
+                      }}
+                    >Sign Out</button>
                   </div>
                 </div>
               </PopoverContent>
