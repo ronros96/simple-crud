@@ -2,18 +2,22 @@ import './colorscheme.css';
 import clsx from 'clsx';
 import { useColorScheme } from "@src/store/store";
 import { Switch } from "@components/ui/switch";
+import { useEffect } from 'react';
 
 const colorScheme = () => {
-  const setFormType = useColorScheme((state:any) => state.setCurrentScheme);
-  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  setFormType(isDark ? 'dark' : 'light');
+  const currentScheme = useColorScheme((state:any) => state.currentScheme);
+  const setCurrentScheme = useColorScheme((state:any) => state.setCurrentScheme);
+  const isDark = currentScheme !== '' ? currentScheme === 'dark' ? true : false : window.matchMedia('(prefers-color-scheme: dark)').matches;
+  useEffect(()=>{
+     setCurrentScheme(isDark ? 'dark' : 'light');
+  },[currentScheme])
   
   return <Switch 
     className={clsx('color-scheme-toggle')}
     onCheckedChange={(val)=>{
-      setFormType(!val ? 'dark' : 'light');
+      setCurrentScheme(!val ? 'dark' : 'light');
     }}
-    defaultChecked={!isDark}
+    checked={!isDark}
   />
 }
 export default colorScheme;

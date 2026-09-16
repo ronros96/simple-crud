@@ -6,7 +6,7 @@ type ColorScheme = {
 }
 
 export const useColorScheme = create<ColorScheme>((set) => ({
-  currentScheme: 'dark',
+  currentScheme: '',
   setCurrentScheme: (state:any) => set({currentScheme:state}),
 }));
 

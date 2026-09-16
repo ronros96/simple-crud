@@ -106,6 +106,15 @@
     }
   }
 
+  body:has(.dark){
+    --text-default:#FFF;
+    --button-default:#FFF;
+    --main-bg:#242121;
+    --secondary-bg:#1C1B1B;
+    --frame-bg:#101010;
+    --dgray:#2D2D2D;
+  }
+
   body:has(.light){
     --text-default:#000;
     --button-default:#85A2CC;
