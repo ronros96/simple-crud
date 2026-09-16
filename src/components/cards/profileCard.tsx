@@ -1,5 +1,6 @@
 import './cards.css';
 import { useEffect, useState } from 'react';
+import { useProfile } from "@src/store/store";
 import { 
   Field,
   FieldGroup,
@@ -7,12 +8,10 @@ import {
 } from "@components/ui/field";
 import { Button } from "@components/ui/button";
 import { Checkbox } from "@components/ui/checkbox";
-
-import { useGetUsers } from '@hooks/Profile';
 import { profileIcon } from "@lib/helpers/user";
 
 const ProfileCard = () =>{
-  const {data: allUsers} = useGetUsers();
+  const Users = useProfile((state:any) => state.Users);
   const [selected, setSelected] = useState<{ id: string; value: boolean }[]>([]);
 
   const isSelected = (id: string) => {
@@ -38,14 +37,15 @@ const ProfileCard = () =>{
     );
   };
 
+  const hasSelected = selected.some((item) => item.value === true);
+
   useEffect(() => {
-    if (!allUsers) return;
-    const userVal = allUsers.map((user) => ({
+    const userVal = Users && Users?.map((user:any) => ({
       id: `${user.id}-${user.username}`,
       value: false,
     }));
     setSelected(userVal);
-  }, [allUsers]);
+  }, [Users]);
 
 
   return (<>
@@ -62,15 +62,14 @@ const ProfileCard = () =>{
         </FieldLabel>
       </Field>
       <Field orientation="horizontal" className='w-auto'>
-        <Button className='delete'>
+        <Button className='delete' disabled={!hasSelected}>
           Delete Selected
         </Button>
       </Field>
     </FieldGroup>
 
     <div className='grid grid-cols-3 gap-[var(--gap)]'>
-    {allUsers?.map((user)=>{
-
+    {selected && Users?.map((user:any)=>{
       return <div
         className='profile-card'
         key={`${user.id}-${user.username}`}

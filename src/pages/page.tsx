@@ -26,7 +26,7 @@ const Page = () =>{
   },[validUser]);
 
   return(
-    <section className={clsx('container',{'header-margin transparent':isLogged})}>
+    <section className={clsx('container',{'header-margin':isLogged,'transparent':formType === 'dashboard'})}>
       {
         !isLogged ? (
           formType === 'sign-in' ? (

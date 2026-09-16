@@ -621,7 +621,7 @@ const Profile = () => {
                       {formType === 'sign-in' && 'Yes, Back to login'}
                       {formType === 'update-profile' && 'Yes, Back to Dashboard'}
                     </Button>
-                    <DialogClose render={<Button variant="outline" className="stroke sm" >Cancel</Button>} />
+                    <DialogClose render={<Button variant="outline" className="stroke sm">Cancel</Button>} />
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
