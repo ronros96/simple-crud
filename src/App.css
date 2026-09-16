@@ -93,6 +93,7 @@
     font-weight: 700;
     border-radius: 100vmax;
     border: solid 2px transparent;
+    color: var(--white);
 
     transition: border-color .2s var(--ease);
 

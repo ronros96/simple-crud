@@ -146,7 +146,8 @@ button:not(
 ),
 button.stroke,
 button.sm,
-button.sm.stroke{
+button.sm.stroke,
+button.delete{
   display: block;
   width: auto;
   height: auto;
@@ -163,7 +164,11 @@ button.sm.stroke{
   cursor: pointer;
 
   transition: background-color .3s var(--ease);
+}
 
+button.stroke,
+button.sm,
+button.sm.stroke{
   &:hover{
     background-color: var(--button-hover);
   }

@@ -24,6 +24,11 @@
     opacity: 1;
   }
 
+  &:hover .user-checkbox,
+  &:has(.user-checkbox + input[type=checkbox]:checked) .user-checkbox{
+    opacity: 1;
+  }
+
   h4{
     display: flex;
     gap:.5rem;
@@ -42,4 +47,29 @@
       margin-bottom: 0;
     }
   }
+}
+
+.profile-check-all,  
+.profile-card .user-checkbox{
+  color: var(--white);
+  border: solid 2px var(--white);
+  border-radius: 100vmax;
+  background-color: transparent;
+}
+
+.profile-card .user-checkbox{
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  opacity: 0;
+  box-shadow: 0 .25rem .25rem #000000EE;
+  z-index: 10;
+
+  transition: opacity .3s var(--ease);
+}
+
+.select-all:has(.profile-check-all + input[type=checkbox]:checked) .profile-check-all,
+.profile-card:has(.user-checkbox + input[type=checkbox]:checked) .user-checkbox{
+  border-color: var(--green);
+  background-color: var(--green);
 }
