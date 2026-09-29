@@ -47,6 +47,7 @@
   --disabled:#404040;
   --warn-text:#FFF588;
   --important:#FD951E;
+  --footer:light-dark(#cec1c1,#111010);
 
   .profile-color-1{
     background-color: #68c950;
@@ -113,6 +114,7 @@
     --secondary-bg:#1C1B1B;
     --frame-bg:#101010;
     --dgray:#2D2D2D;
+    --footer:#111010;
   }
 
   body:has(.light){
@@ -122,6 +124,7 @@
     --secondary-bg:#FAF6F2;
     --frame-bg:#F5EFE9;
     --dgray:#DAD7CD;
+    --footer:#cec1c1;
   }
 
   --white:#FFF;

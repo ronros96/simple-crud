@@ -28,7 +28,7 @@ const Contents = () =>{
     return  <>
       <title>{`${import.meta.env.VITE_APP_TITLE} | Dashboard`}</title>
       <div className='contents'>
-      <div className="md:flex items-center w-full justify-between mb-5">
+      <div className="md:flex items-center w-full justify-between">
         <div className="md:flex gap-[var(--gap)]">
           <h1 className="header-5">Profiles</h1>
         </div>

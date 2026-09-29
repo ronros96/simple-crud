@@ -14,7 +14,7 @@ header{
     align-items: center;
     width: 100%;
     padding: var(--gap);
-    background-color: var(--frame-bg);
+    background-color: var(--footer);
   }
 
   .user-info{
