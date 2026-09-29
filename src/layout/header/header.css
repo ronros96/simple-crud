@@ -17,14 +17,6 @@ header{
     background-color: var(--frame-bg);
   }
 
-  .back{
-    display: flex;
-    align-items: center;
-    gap:.5rem;
-    text-transform: uppercase;
-    color: var(--text-default);
-  }
-
   .user-info{
     display: flex;
     align-items: center;

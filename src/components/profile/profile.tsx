@@ -40,6 +40,7 @@ import { Label } from "@components/ui/label"
 import { Checkbox } from "@components/ui/checkbox"
 import { PhoneInput } from "@components/ui/phone"
 import { toast, Toaster } from "@components/ui/toast"
+import BackCancel from '../back_cancel/backCancel';
 
 import { Eye, EyeOff } from "lucide-react"
 //state
@@ -556,8 +557,8 @@ const Profile = () => {
           </div>}
           
           {FieldOrginizer(ProfileFields,'terms') &&
-          <div className={clsx('profile-form',{'error':fieldError(errors,'terms')})}>
-            <FieldGroup className="grid mt-5 mb-0">
+          <div className={clsx('profile-form ',{'error':fieldError(errors,'terms')})}>
+            <FieldGroup className="grid mt-5 mb-0 col-full">
               <Field orientation="horizontal">
                 <Checkbox 
                   id="terms" 
@@ -567,7 +568,7 @@ const Profile = () => {
                   onCheckedChange={(value) => setProfile({terms:!!value})}
                   aria-required="true"
                 />
-                <Label htmlFor="terms" className='normal text-sm'>
+                <Label htmlFor="terms" className='normal text-base md:text-sm '>
                   By signing up you agree to our
                   <Dialog>
                     <DialogTrigger render={<Button variant="outline" className="link-only px-[.25rem]">terms and conditions</Button>} />
@@ -603,28 +604,7 @@ const Profile = () => {
                  {formType === 'sign-in' && 'Register'}
                  {formType === 'update-profile' && 'Update'}
               </Button>
-              <Dialog>
-                <DialogTrigger render={<Button variant="outline" className="stroke">Cancel</Button>} />
-                <DialogContent className="modal sm all-centered">
-                  <DialogHeader>
-                    <DialogTitle>Are you sure?</DialogTitle>
-                    <DialogDescription className="text-center">
-                      Some of your updates will be gone.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <DialogFooter className='items-center flex-col flex-row'>
-                    {formType === 'sign-in' && <>
-                    <DialogClose render={<Button variant="outline" className="sm" onClick={clearForm}>Clear Form</Button>} />
-                    <div className='divider-vertical'></div></>
-                    }
-                    <Button className="stroke sm" onClick={closeForm}>
-                      {formType === 'sign-in' && 'Yes, Back to login'}
-                      {formType === 'update-profile' && 'Yes, Back to Dashboard'}
-                    </Button>
-                    <DialogClose render={<Button variant="outline" className="stroke sm">Cancel</Button>} />
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+              <BackCancel/>
             </div>
           </div>
         </div>

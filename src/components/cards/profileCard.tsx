@@ -9,6 +9,7 @@ import {
 import { Button } from "@components/ui/button";
 import { Checkbox } from "@components/ui/checkbox";
 import { profileIcon } from "@lib/helpers/user";
+import SearchBar from '@components/search/search';
 
 const ProfileCard = () =>{
   const Users = useProfile((state:any) => state.Users);
@@ -51,6 +52,7 @@ const ProfileCard = () =>{
   return (<>
     <FieldGroup className="flex flex-row w-full mb-[var(--gap)] justify-between">
       <Field orientation="horizontal" className='w-auto select-all'>
+        <SearchBar/>
         <Checkbox 
           id="profile-check-all" 
           className="profile-check-all"
@@ -62,8 +64,11 @@ const ProfileCard = () =>{
         </FieldLabel>
       </Field>
       <Field orientation="horizontal" className='w-auto'>
+        <Button>
+          Create
+        </Button>
         <Button className='delete' disabled={!hasSelected}>
-          Delete Selected
+          Delete
         </Button>
       </Field>
     </FieldGroup>

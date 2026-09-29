@@ -11,6 +11,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@components/ui/popover";
+import BackCancel from '@components/back_cancel/backCancel';
 
 const Header = () => {
   const { scrollY } = useScroll();
@@ -31,11 +32,6 @@ const Header = () => {
   const isLogged =  useLogin((state:any) => state.isLogged);
   const showHeader = ['dashboard','update-profile'];
 
-  const nav = (e:any,loc:string) => {
-    e.preventDefault;
-    setFormType(loc)
-  }
-
   const profileView = (e:any) => {
     e.preventDefault;
     setFormType('update-profile')
@@ -51,15 +47,7 @@ const Header = () => {
         showHeader.includes(formType) && isLogged ?
         <div className='header-container'>
           <div className='user-info'>
-            {formType === 'update-profile' && 
-            <a 
-              className='back' 
-              href='#'
-              onClick={(e)=>{nav(e,'dashboard')}}
-            >
-              <ArrowLeft size={'1rem'}/>
-              Back
-            </a>}
+            {formType === 'update-profile' && <BackCancel type='header'/>}
             <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger render={
                 <button>
@@ -100,15 +88,7 @@ const Header = () => {
           </div>
         </div> :
         <div className='header-container'>
-          {formType === 'sign-in' && 
-          <a 
-            className='back' 
-            href='#'
-            onClick={(e)=>{nav(e,'')}}
-          >
-            <ArrowLeft size={'1rem'}/>
-            Back
-          </a>}
+          {formType === 'sign-in' && <BackCancel type='header'/>}
           <ColorScheme/>
         </div>
       }

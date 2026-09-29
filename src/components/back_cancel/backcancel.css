@@ -1,0 +1,12 @@
+.back{
+  display: flex;
+  align-items: center;
+  padding: .25rem 1rem;
+  gap:.5rem;
+  text-transform: uppercase;
+  color: var(--text-default);
+  background: transparent;
+  border-radius: 10px;
+  corner-shape: squircle;
+  cursor: pointer;
+}

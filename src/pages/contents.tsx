@@ -4,9 +4,6 @@ import { useProfile, useLogin } from "@src/store/store";
 import { useGetUsers } from '@hooks/Profile';
 import ProfileCard from '@components/cards/profileCard';
 import Profile from '@components/profile/profile';
-import SearchBar from '@components/search/search';
-
-import { Button } from "@components/ui/button";
 
 const Contents = () =>{
   const isLogged = useLogin((state:any) => state.isLogged);
@@ -31,14 +28,10 @@ const Contents = () =>{
     return  <>
       <title>{`${import.meta.env.VITE_APP_TITLE} | Dashboard`}</title>
       <div className='contents'>
-      <div className="md:flex items-center w-full justify-between">
+      <div className="md:flex items-center w-full justify-between mb-5">
         <div className="md:flex gap-[var(--gap)]">
-          <h1 className="header-5 mb-0">Profiles</h1>
-          <SearchBar/>
+          <h1 className="header-5">Profiles</h1>
         </div>
-        <Button className=''>
-          Create
-        </Button>
       </div>
       {Users?.length > 0 && <ProfileCard/>}
       </div>

@@ -13,6 +13,7 @@ import {
   InputGroupInput,
 } from "@components/ui/input-group"
 import { Button } from "@components/ui/button"
+import { Skeleton } from "@components/ui/skeleton"
 import { Eye, EyeOff } from "lucide-react"
 //state
 import { useLogin, useProfile, useErrors } from "@src/store/store";
@@ -87,7 +88,7 @@ const Login = () => {
       setErrors('err');
     }
   }
-  
+
   return (
     <>
       <div className="login-container">
@@ -102,6 +103,7 @@ const Login = () => {
           <Field className="form-group">
             <FieldLabel htmlFor="username">Username</FieldLabel>
             <InputGroup>
+              {allUsers ? 
               <InputGroupInput
                 id="username"
                 type="text"
@@ -109,13 +111,16 @@ const Login = () => {
                 value={form.username}
                 onChange={(e)=>setForm({...form,username:e.target.value})}
                 placeholder="Enter username"
-              />
+              />:
+              <Skeleton className="h-5 w-full" />}
             </InputGroup>
           </Field>
 
           <Field className="form-group">
             <FieldLabel htmlFor="password">Password</FieldLabel>
             <InputGroup>
+              {allUsers ?
+              <>
               <InputGroupInput
                 id="password"
                 type={showPassword ? "text" : "password"}
@@ -139,6 +144,8 @@ const Login = () => {
                   )}
                 </Button>
               </InputGroupAddon>
+              </>:
+              <Skeleton className="h-5 w-full" />}
             </InputGroup>
             <FieldDescription>
                 {/* <a href="#" className="forgot-password">Forgot Password?</a> */}
@@ -146,34 +153,41 @@ const Login = () => {
           </Field>
 
           <div className="form-group grid grid-cols-2">
-            <Button type="submit">Login</Button>
-            <Button 
-              className="stroke" 
-              onClick={clearForm}>
-              Cancel
-            </Button>
+            {allUsers ?
+            <>
+              <Button type="submit">Login</Button>
+              <Button 
+                className="stroke" 
+                onClick={clearForm}>
+                Cancel
+              </Button>
+            </>:
+            <>
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+            </>
+            }
           </div>
         </form>
 
-         <div className="divider-vertical"></div>
+        <div className="divider-vertical"></div>
 
         <div className="login-content md:flex justify-between flex-col ">
           <p>
             This project uses a mock API, so all login and authentication features are implemented for prototype purposes only.
           </p>
-          {/* <p>
-            The main focus of the project is to showcase my front-end development skills, particularly in building a CRUD application using React JS. It demonstrates how I structure API requests, manage application state, handle form validation and errors, and create a responsive user interface for interacting with RESTful API data.
-          </p> */}
           <div>
             <p>
               <strong>Don't have an account yet?</strong><br/>Let’s start by signing-in:<br/>
             </p>
-            <Button onClick={() => setFormType('sign-in')}>Let Me Sign-In!</Button>
+            {allUsers ?
+            <Button onClick={() => setFormType('sign-in')}>Let Me Sign-In!</Button>:
+            <Skeleton className="h-10 w-[50%]" />
+            }
           </div>
         </div>
       </div>
     </>
-    
   )
 }
 export default Login;
