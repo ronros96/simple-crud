@@ -3,7 +3,6 @@
   padding: var(--gap2x);
   background-color: var(--frame-bg);
   border-radius: var(--gap);
-  cursor: pointer;
   overflow: hidden;
 
   &::before{
@@ -25,6 +24,7 @@
   }
 
   &:hover .user-checkbox,
+  &:hover .edit-user,
   &:has(.user-checkbox + input[type=checkbox]:checked) .user-checkbox{
     opacity: 1;
   }
@@ -48,6 +48,7 @@
       margin-bottom: 0;
     }
   }
+
 }
 
 .profile-check-all,  
@@ -58,7 +59,8 @@
   background-color: transparent;
 }
 
-.profile-card .user-checkbox{
+.profile-card .user-checkbox,
+.profile-card .edit-user{
   position: absolute;
   top: 1rem;
   left: 1rem;
@@ -67,6 +69,11 @@
   z-index: 10;
 
   transition: opacity .3s var(--ease);
+}
+
+.profile-card .edit-user{
+  left: initial;
+  right: 1rem;
 }
 
 .select-all:has(.profile-check-all + input[type=checkbox]:checked) .profile-check-all,

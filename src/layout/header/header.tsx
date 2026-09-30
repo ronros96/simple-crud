@@ -65,7 +65,7 @@ const Header = () => {
                           profileView(e)
                           setOpen(false)
                         }}>
-                        <SquarePen size={'.8rem'}/>
+                        <SquarePen size={'1rem'}/>
                       </a>
                       <br/>
                     </h2>

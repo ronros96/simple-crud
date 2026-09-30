@@ -1,14 +1,17 @@
 import './cards.css';
 import { useEffect } from 'react';
-import { useProfile } from "@src/store/store";
+import { useUser } from "@src/store/store";
+import { SquarePen } from "lucide-react"
 import { Checkbox } from "@components/ui/checkbox";
 import { profileIcon } from "@lib/helpers/user";
 import { Country, State } from "country-state-city";
 
 const ProfileCard = () =>{
-  const Users = useProfile((state:any) => state.Users);
-  const selected = useProfile((state:any) => state.selected);
-  const setSelected = useProfile((state:any) => state.setSelected);
+  const Users = useUser((state:any) => state.Users);
+  const selected = useUser((state:any) => state.selected);
+  const setSelected = useUser((state:any) => state.setSelected);
+  const UserPicked = useUser((state:any) => state.UserPicked);
+  const setUserPicked = useUser((state:any) => state.setUserPicked);
   
   const isSelected = (id: string) => {
     return selected.find((item:any) => item.id === id)?.value ?? false;
@@ -28,6 +31,10 @@ const ProfileCard = () =>{
     const country = Country.getCountryByCode(address[0]);
     const state = State.getStateByCode(address[1]);
     return `${address[3]}, ${address[4]}, ${address[2]}, ${state?.name}, ${country?.name}`;
+  }
+
+  const updateUser = () =>{
+
   }
 
   useEffect(() => {
@@ -57,7 +64,15 @@ const ProfileCard = () =>{
             )
           }
           />
-        <h4 className='header-5'>
+        <a
+          className='edit-user'
+          href='#'
+          onClick={()=>{
+            alert();
+          }}>
+          <SquarePen size={'1rem'}/>
+        </a>
+        <h4 className='header-5' >
           {profileIcon(user.firstname,user.lastname)}
           {user.firstname}{' '}{user.lastname}
         </h4>

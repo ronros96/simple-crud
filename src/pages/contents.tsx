@@ -9,7 +9,7 @@ import { Checkbox } from "@components/ui/checkbox";
 import SearchBar from '@components/search/search';
 import { UserRoundPlus, UserRoundX } from "lucide-react"
 
-import { useProfile, useLogin, useSearch } from "@src/store/store";
+import { useProfile, useUser, useLogin, useSearch } from "@src/store/store";
 import { useGetUsers } from '@hooks/Profile';
 import ProfileCard from '@components/cards/profileCard';
 import Profile from '@components/profile/profile';
@@ -19,10 +19,10 @@ const Contents = () =>{
   const isLogged = useLogin((state:any) => state.isLogged);
   const formType =  useProfile((state:any) => state.formType);
   const setFormType = useProfile((state:any) => state.setFormType);
-  const setUsers = useProfile((state:any) => state.setUsers);
-  const Users = useProfile((state:any) => state.Users);
-  const selected = useProfile((state:any) => state.selected);
-  const setSelected = useProfile((state:any) => state.setSelected);
+  const selected = useUser((state:any) => state.selected);
+  const setSelected = useUser((state:any) => state.setSelected);
+  const setUsers = useUser((state:any) => state.setUsers);
+  const Users = useUser((state:any) => state.Users);
   const searchType = useSearch((state:any) => state.searchType);
   const searchValue = useSearch((state:any) => state.searchValue);
   const {data: allUsers} = useGetUsers();

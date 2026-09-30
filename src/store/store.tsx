@@ -60,7 +60,6 @@ export const useRole = create<RoleStore>((set) => ({
 
 // PROFILE
 type Profile = {
-  formType: string;
   id:string;
   username: string;
   password: string;
@@ -82,12 +81,18 @@ type ProfileSelected = {
 }
 
 type ProfileStore = Profile & {
-  Users:Partial<Profile>;
-  selected: ProfileSelected[];
+  formType:string;
   setFormType: (profile: Profile) => void;
   setProfile: (profile: Partial<Profile>) => void;
+};
+
+type UserStore = Profile & {
+  Users:Partial<Profile>;
+  UserPicked:Partial<Profile>;
+  selected: ProfileSelected[];
   setUsers: (profile: Profile) => void;
-   setSelected: (
+  setUserPicked: (profile: Profile) => void;
+  setSelected: (
     selected:
       | ProfileSelected[]
       | ((prev: ProfileSelected[]) => ProfileSelected[])
@@ -95,8 +100,32 @@ type ProfileStore = Profile & {
 };
 
 export const useProfile  = create<ProfileStore>((set) => ({
-  Users:{},
   formType: '',
+  id:"",
+  username: "",
+  password: "",
+  firstname: "",
+  lastname: "",
+  mobile: "",
+  email: "",
+  address: [],
+  terms: false,
+  booklimit:0,
+  role:0,
+  active: false,
+  created: null,
+
+  setFormType: (state:any) => set({formType:state}),
+  setProfile: (profile) =>
+    set((state) => ({
+      ...state,
+      ...profile,
+    })),
+}));
+
+export const useUser  = create<UserStore>((set) => ({
+  Users:{},
+  UserPicked:{},
   id:"",
   username: "",
   password: "",
@@ -112,20 +141,15 @@ export const useProfile  = create<ProfileStore>((set) => ({
   created: null,
   selected: [],
 
-  setFormType: (state:any) => set({formType:state}),
-  setProfile: (profile) =>
-    set((state) => ({
-      ...state,
-      ...profile,
-    })),
   setUsers: (state:any) => set({Users:state}),
+  setUserPicked: (state:any) => set({UserPicked:state}),
   setSelected: (selected) =>
-  set((state) => ({
-    selected:
-      typeof selected === 'function'
-        ? selected(state.selected)
-        : selected,
-  }))
+    set((state) => ({
+      selected:
+        typeof selected === 'function'
+          ? selected(state.selected)
+          : selected,
+    }))
 }));
 
 // SEARCH

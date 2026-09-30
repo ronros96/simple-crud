@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type {Fields ,FieldType, FieldRules, Owner} from "@src/fields/type";
-import { useRole, useProfile } from "@src/store/store";
+import { useRole, useProfile, useUser } from "@src/store/store";
 
 type Field = {
   value: any;
@@ -73,7 +73,7 @@ const validateField = (
   }
 
   //unique
-  const allUsers = useProfile.getState().Users;
+  const allUsers = useUser.getState().Users;
   const id = useProfile.getState().id;
   if(unique && Object.keys(allUsers).length > 0){
     const match = Object(allUsers).find(

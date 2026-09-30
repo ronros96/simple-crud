@@ -44,7 +44,7 @@ import BackCancel from '../back_cancel/backCancel';
 
 import { Eye, EyeOff } from "lucide-react"
 //state
-import { useErrors, useProfile, useLogin } from "@src/store/store";
+import { useErrors, useProfile, useUser, useLogin } from "@src/store/store";
 // helpers
 import {checkAllFields, showRequirements, fieldError, FieldOrginizer} from "@src/lib/helpers/field";
 import {ProfileFields} from "@src/fields/profile";
@@ -74,8 +74,8 @@ const Profile = () => {
   const terms = useProfile((state:any) => state.terms);
   const active = useProfile((state:any) => state.active);
   const setProfile = useProfile((state:any) => state.setProfile);
-  const Users = useProfile((state:any) => state.Users);
-  const setUsers = useProfile((state:any) => state.setUsers);
+  const Users = useUser((state:any) => state.Users);
+  const setUsers = useUser((state:any) => state.setUsers);
   //status logged
   const formType = useProfile((state:any) => state.formType);
   const setLogin = useLogin((state:any) => state.setLogin);
