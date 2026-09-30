@@ -12,7 +12,7 @@
   --pixel:  "Geist Pixel", sans-serif;
   --open-sans: "Open Sans", sans-serif;
 
-  --base-font-size:12px;
+  --base-font-size:16px;
   --font-sm: clamp(0.7rem, -0.05vi + 0.71rem, 0.67rem);
   --font-base: clamp(0.88rem, 0.2vi + 0.82rem, 1rem);
   --font-md: clamp(1.09rem, 0.65vi + 0.93rem, 1.5rem);
@@ -85,12 +85,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: calc(var(--gap2x) + .25rem);
-    height: calc(var(--gap2x) + .25rem);
+    width: calc(var(--gap3x) + .25rem);
+    height: calc(var(--gap3x) + .25rem);
     text-transform: uppercase;
     text-align: center;
     font-family: var(--pixel);
-    font-size: var(--font-base);
+    font-size: var(--font-md);
     font-weight: 700;
     border-radius: 100vmax;
     border: solid 2px transparent;

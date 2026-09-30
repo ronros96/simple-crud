@@ -39,7 +39,7 @@ const ProfileCard = () =>{
   }, [Users]);
 
   return (
-  <div className='grid grid-cols-3 gap-[var(--gap)]'>
+  <div className='grid lg:grid-cols-3 md:grid-cols-2 gap-[var(--gap)]'>
     {selected && Users?.map((user:any)=>{
       return <div
         className='profile-card'

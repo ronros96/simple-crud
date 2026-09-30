@@ -19,8 +19,8 @@ const Header = () => {
     scrollY,
     [0, 100],
     [
-      "linear-gradient(to bottom, #00000000, #00000000)",
-      "linear-gradient(to bottom, #000000AA, #00000000)",
+      "#00000000",
+      "#000000FF",
     ]
   );
 
@@ -40,7 +40,7 @@ const Header = () => {
   return (
     <motion.header
       style={{
-        backgroundImage: background,
+        background: background,
       }} 
     >
       {

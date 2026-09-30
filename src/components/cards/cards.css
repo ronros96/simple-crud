@@ -39,6 +39,7 @@
   .contents{
     padding-top: var(--gap);
     display: grid;
+    gap: 0 var(--gap);
     grid-template-columns: 1fr 3fr;
     border-top: solid 1px var(--dgray);
 

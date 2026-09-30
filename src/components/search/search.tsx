@@ -48,7 +48,6 @@ const SearchBar = () =>{
       <InputGroupAddon>
         <Search />
       </InputGroupAddon>
-      
     </InputGroup>
   )
 }

@@ -7,6 +7,7 @@ import {
 import { Button } from "@components/ui/button";
 import { Checkbox } from "@components/ui/checkbox";
 import SearchBar from '@components/search/search';
+import { UserRoundPlus, UserRoundX } from "lucide-react"
 
 import { useProfile, useLogin, useSearch } from "@src/store/store";
 import { useGetUsers } from '@hooks/Profile';
@@ -94,12 +95,12 @@ const Contents = () =>{
       <div className='contents'>
       <div className="md:flex items-center w-full justify-between">
         <div className="md:flex gap-[var(--gap)]">
-          <h1 className="header-5">Profiles</h1>
+          <h1 className="header-4">Profiles</h1>
         </div>
       </div>
-      <FieldGroup className="flex flex-row w-full mb-[var(--gap)] justify-between">
-        <Field orientation="horizontal" className='w-auto select-all search-box'>
-          <SearchBar/>
+      <FieldGroup className="flex md:flex-row w-full mb-[var(--gap)] justify-between">
+        <SearchBar/>
+        <Field orientation="horizontal" className='w-full'>
           <Checkbox 
             id="profile-check-all" 
             className="profile-check-all"
@@ -109,19 +110,19 @@ const Contents = () =>{
           <FieldLabel htmlFor="profile-check-all">
             Select All
           </FieldLabel>
-        </Field>
-        <Field orientation="horizontal" className='w-auto'>
           <Button onClick={() => setFormType('update-profile')}>
-            Create
+            <UserRoundPlus className="block md:hidden size-[1.5rem]"/>
+            <span className="hidden md:block">Create</span>
           </Button>
           <Button className='delete' disabled={!hasSelected}>
-            Delete
+            <UserRoundX className="block md:hidden size-[1.5rem]"/>
+            <span className="hidden md:block">Delete</span>
           </Button>
         </Field>
       </FieldGroup>
       {Users?.length > 0 ? 
       <ProfileCard/>:
-      <div className="no-result">No Results</div>
+      <div className="no-result">No Result</div>
       }
       </div>
     </>

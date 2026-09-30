@@ -153,15 +153,17 @@ button.delete{
   width: auto;
   height: auto;
   max-width: 20rem;
-  padding: .5rem 1rem;
+  padding: .8rem 1rem;
   border-radius: 10px;
   corner-shape: squircle;
   border: 1px solid var(--button);
   background-color: var(--button);
   font-family: var(--open-sans);
   font-weight: 700;
-  font-size: inherit;
+  font-size: var(--font-base);
   text-transform: uppercase;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
   color: var(--white);
   cursor: pointer;
 
@@ -176,7 +178,7 @@ button.delete{
 button.sm,
 button.sm.stroke{
   text-transform: none;
-  padding: .25rem .5rem;
+  padding: .5rem .8rem;
 }
 
 button.stroke,
@@ -260,6 +262,10 @@ button.delete{
 
   [data-slot=dialog-close]{
     color: var(--white);
+    svg{
+      width: var(--gap);
+      height: var(--gap);
+    }
     &:hover{
       background-color: var(--button);
     }
@@ -334,7 +340,7 @@ button.delete{
 /* RULES */
 ul.rules{
   li{
-    font-size: var(--font-sm);
+    font-size: var(--font-base);
     &.good{
       color: var(--green);
     }
