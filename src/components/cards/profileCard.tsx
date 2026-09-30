@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useProfile } from "@src/store/store";
 import { Checkbox } from "@components/ui/checkbox";
 import { profileIcon } from "@lib/helpers/user";
+import { Country, State } from "country-state-city";
 
 const ProfileCard = () =>{
   const Users = useProfile((state:any) => state.Users);
@@ -23,6 +24,12 @@ const ProfileCard = () =>{
     );
   };
 
+  const fixAddress = (address:string[]) =>{
+    const country = Country.getCountryByCode(address[0]);
+    const state = State.getStateByCode(address[1]);
+    return `${address[3]}, ${address[4]}, ${address[2]}, ${state?.name}, ${country?.name}`;
+  }
+
   useEffect(() => {
     const userVal = Users && Users?.map((user:any) => ({
       id: `${user.id}-${user.username}`,
@@ -30,7 +37,6 @@ const ProfileCard = () =>{
     }));
     setSelected(userVal);
   }, [Users]);
-
 
   return (
   <div className='grid grid-cols-3 gap-[var(--gap)]'>
@@ -61,7 +67,7 @@ const ProfileCard = () =>{
           <p><strong>Email</strong></p>
           <p>{user.email}</p>
           <p><strong>Address</strong></p>
-          <p>{user.address}</p>
+          <p>{fixAddress(user.address)}</p>
         </div>
       </div>
     })}

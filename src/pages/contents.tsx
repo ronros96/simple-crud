@@ -1,4 +1,4 @@
-
+import { Country, State } from "country-state-city";
 import { 
   Field,
   FieldGroup,
@@ -39,6 +39,12 @@ const Contents = () =>{
     (item:any) => item.value === true
   );
 
+  const fixAddress = (address:string[]) =>{
+    const country = Country.getCountryByCode(address[0]);
+    const state = State.getStateByCode(address[1]);
+    return `${address[3]}, ${address[4]}, ${address[2]}, ${state?.name}, ${country?.name}`;
+  }
+
   const searchUsers = (value:string) => {
     const match = allUsers?.filter((user: any) => {
       const search = value.toLowerCase();
@@ -56,15 +62,17 @@ const Contents = () =>{
           return user.email?.toLowerCase().includes(search);
 
         case 'address':
-          return user.address?.toLowerCase().includes(search);
+          const Address = fixAddress(user.address);
+          return Address.toLowerCase().includes(search);
         default:
           return false;
       }
     });
-    if(value === ''){
-      setUsers(allUsers)
-    }else{
+
+    if(value !== ''){
       setUsers(match)
+    }else{
+      setUsers(allUsers) 
     }
   }
 

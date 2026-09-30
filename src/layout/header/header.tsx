@@ -5,7 +5,7 @@ import { loggedOut, profileIcon } from "@lib/helpers/user";
 import ColorScheme from "@components/color_scheme/colorScheme";
 
 import { motion, useScroll, useTransform } from "motion/react"
-import { ArrowLeft, SquarePen } from "lucide-react"
+import { SquarePen } from "lucide-react"
 import {
   Popover,
   PopoverContent,
