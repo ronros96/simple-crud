@@ -1,44 +1,27 @@
 import './cards.css';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useProfile } from "@src/store/store";
-import { 
-  Field,
-  FieldGroup,
-  FieldLabel 
-} from "@components/ui/field";
-import { Button } from "@components/ui/button";
 import { Checkbox } from "@components/ui/checkbox";
 import { profileIcon } from "@lib/helpers/user";
-import SearchBar from '@components/search/search';
 
 const ProfileCard = () =>{
   const Users = useProfile((state:any) => state.Users);
-  const [selected, setSelected] = useState<{ id: string; value: boolean }[]>([]);
-
+  const selected = useProfile((state:any) => state.selected);
+  const setSelected = useProfile((state:any) => state.setSelected);
+  
   const isSelected = (id: string) => {
-    return selected.find((item) => item.id === id)?.value ?? false;
+    return selected.find((item:any) => item.id === id)?.value ?? false;
   };
 
   const handleSelect = (id: string, value: boolean) => {
-    setSelected((prev) =>
-      prev.map((item) =>
+    setSelected((prev:any) =>
+      prev.map((item:any) =>
         item.id === id
           ? { ...item, value }
           : item
       )
     );
   };
-
-  const checkAll = (value: boolean) => {
-    setSelected((prev) =>
-      prev.map((item) => ({
-        ...item,
-        value,
-      }))
-    );
-  };
-
-  const hasSelected = selected.some((item) => item.value === true);
 
   useEffect(() => {
     const userVal = Users && Users?.map((user:any) => ({
@@ -49,31 +32,8 @@ const ProfileCard = () =>{
   }, [Users]);
 
 
-  return (<>
-    <FieldGroup className="flex flex-row w-full mb-[var(--gap)] justify-between">
-      <Field orientation="horizontal" className='w-auto select-all'>
-        <SearchBar/>
-        <Checkbox 
-          id="profile-check-all" 
-          className="profile-check-all"
-          checked={selected.every((item) => item.value)}
-          onCheckedChange={(checked) => checkAll(checked === true)}
-        />
-        <FieldLabel htmlFor="profile-check-all">
-          Select All
-        </FieldLabel>
-      </Field>
-      <Field orientation="horizontal" className='w-auto'>
-        <Button>
-          Create
-        </Button>
-        <Button className='delete' disabled={!hasSelected}>
-          Delete
-        </Button>
-      </Field>
-    </FieldGroup>
-
-    <div className='grid grid-cols-3 gap-[var(--gap)]'>
+  return (
+  <div className='grid grid-cols-3 gap-[var(--gap)]'>
     {selected && Users?.map((user:any)=>{
       return <div
         className='profile-card'
@@ -105,8 +65,7 @@ const ProfileCard = () =>{
         </div>
       </div>
     })}
-    </div>
-  </>)
+  </div>)
 
 }
 export default ProfileCard;

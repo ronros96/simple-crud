@@ -178,7 +178,7 @@ const Login = () => {
           </p>
           <div>
             <p>
-              <strong>Don't have an account yet?</strong><br/>Let’s start by signing-in:<br/>
+              <strong>Don't have an account yet?</strong><br/>Let's start by signing-in:<br/>
             </p>
             {allUsers ?
             <Button onClick={() => setFormType('sign-in')}>Let Me Sign-In!</Button>:

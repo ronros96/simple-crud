@@ -229,7 +229,6 @@ export const showRequirements = (
   rules.unique && isUnique === null && console.error('Field type is unique, insert handler function that will determine wheter the field is available or not')
 
   const result =  validateOnChange(field,value,display);
-  // console.log(result,fieldType,value,display)
   const getClass = (name: string) => {
     if (result === "empty") return "";
     if (result === "good") return "good";

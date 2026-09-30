@@ -22,7 +22,15 @@ const BackCancel = (props:any) =>{
 
   const closeForm = () => {
     clearForm;
-    setFormType('');
+    switch(formType){
+      case 'sign-in':
+        setFormType('');
+      break;
+      case 'update-profile':
+        setFormType('dashboard');
+      break;
+    }
+    
   }
 
   return (

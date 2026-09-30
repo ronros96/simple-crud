@@ -76,12 +76,22 @@ type Profile = {
   created: null;
 };
 
+type ProfileSelected = {
+  id: string;
+  value: boolean;
+}
 
 type ProfileStore = Profile & {
   Users:Partial<Profile>;
+  selected: ProfileSelected[];
   setFormType: (profile: Profile) => void;
   setProfile: (profile: Partial<Profile>) => void;
   setUsers: (profile: Profile) => void;
+   setSelected: (
+    selected:
+      | ProfileSelected[]
+      | ((prev: ProfileSelected[]) => ProfileSelected[])
+  ) => void;
 };
 
 export const useProfile  = create<ProfileStore>((set) => ({
@@ -100,6 +110,7 @@ export const useProfile  = create<ProfileStore>((set) => ({
   role:0,
   active: false,
   created: null,
+  selected: [],
 
   setFormType: (state:any) => set({formType:state}),
   setProfile: (profile) =>
@@ -108,6 +119,31 @@ export const useProfile  = create<ProfileStore>((set) => ({
       ...profile,
     })),
   setUsers: (state:any) => set({Users:state}),
+  setSelected: (selected) =>
+  set((state) => ({
+    selected:
+      typeof selected === 'function'
+        ? selected(state.selected)
+        : selected,
+  }))
+}));
+
+// SEARCH
+type Search = {
+  searchType: string;
+  searchValue :string;
+}
+
+type SearchStore = Search & {
+  setSearchType: (search: Partial<Search>) => void;
+  setSearchValue: (search: Partial<Search>) => void;
+};
+
+export const useSearch = create<SearchStore>((set) => ({
+  searchType:"name",
+  searchValue:"",
+  setSearchType: (state:any) => set({searchType:state}),
+  setSearchValue: (state:any) => set({searchValue:state})
 }));
 
 // ERRORS

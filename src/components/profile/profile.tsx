@@ -78,7 +78,6 @@ const Profile = () => {
   const setUsers = useProfile((state:any) => state.setUsers);
   //status logged
   const formType = useProfile((state:any) => state.formType);
-  const setFormType = useProfile((state:any) => state.setFormType);
   const setLogin = useLogin((state:any) => state.setLogin);
   //errors
   const errors = useErrors((state:any) => state.errors);
@@ -88,14 +87,6 @@ const Profile = () => {
   const stateRef = useRef<HTMLElement | null>(null);
   const cityRef = useRef<HTMLElement | null>(null);
 
-  const closeForm = () => {
-    clearForm;
-    if(formType === 'update-profile'){
-      setFormType('dashboard');
-    }else{
-      setFormType('');
-    }
-  }
 
   const unloadAddress = () =>{
     const currentAddress = address[0];

@@ -8,6 +8,11 @@ section{
   min-height: 100svh;
   background-color: var(--frame-bg);
 
+  &.w-full{
+    flex: 1;
+    width: 100%;
+  }
+
   &.transparent{
     background-color: transparent;
   }
@@ -22,7 +27,7 @@ section{
 }
 
 .contents{
-  
+  width: 100%;
 }
 
 .header-margin{

@@ -12,7 +12,9 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@components/ui/tooltip";
-import { Button } from "@components/ui/button"
+import { Button } from "@components/ui/button";
+//hooks
+import { useGetUsers } from '@hooks/Profile';
 
 const Page = () =>{
   const isLogged =  useLogin((state:any) => state.isLogged);
@@ -20,13 +22,14 @@ const Page = () =>{
   const username = useLogin((state:any) => state.username);
   const formType =  useProfile((state:any) => state.formType);
   const {data: validUser} = useGetUser({id:id,username:username});
+  const {data: allUsers} = useGetUsers();
 
   useEffect(()=>{
     checkLogged(validUser);
   },[validUser]);
 
   return(
-    <section className={clsx('container',{'header-margin':isLogged,'transparent':formType === 'dashboard'})}>
+    <section className={clsx('container',{'header-margin w-full':isLogged,'transparent':formType === 'dashboard'})}>
       {
         !isLogged ? (
           formType === 'sign-in' ? (
@@ -51,7 +54,7 @@ const Page = () =>{
               <Login/>
             </>
           )
-        ) : <Contents/>
+        ) : allUsers && <Contents/>
       }
     </section>
   )

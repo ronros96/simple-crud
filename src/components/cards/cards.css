@@ -73,3 +73,7 @@
   border-color: var(--green);
   background-color: var(--green);
 }
+
+.search-box{
+  width: 100%;
+}
