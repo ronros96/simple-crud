@@ -29,7 +29,7 @@ const SearchBar = () =>{
     <InputGroup className="w-full search-container">
       <InputGroupAddon>
         <DropdownMenu>
-          <DropdownMenuTrigger render={<Button variant="outline">{searchType}:</Button>} />
+          <DropdownMenuTrigger render={<Button className="search-button"><Search />{searchType}:</Button>} />
           <DropdownMenuContent className="w-40 dropmenu" align="start">
             <DropdownMenuGroup>
               <DropdownMenuLabel>Search By</DropdownMenuLabel>
@@ -43,9 +43,6 @@ const SearchBar = () =>{
         </DropdownMenu>
       </InputGroupAddon>
       <InputGroupInput placeholder="Search..." onChange={(e)=>{setSearchValue(e.target.value)}} />
-      <InputGroupAddon>
-        <Search />
-      </InputGroupAddon>
     </InputGroup>
   )
 }

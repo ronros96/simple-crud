@@ -12,4 +12,17 @@
     border-radius: 10px 0 0 10px;
     min-width: 8rem;
   }
+
+  .search-button{
+    margin-left:-2px;
+    padding: 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    height: 100%;
+    text-transform: uppercase;
+    overflow: hidden;
+    background-color: var(--button);
+    color: var(--white);
+  }
 }

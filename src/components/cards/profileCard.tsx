@@ -1,4 +1,5 @@
 import './cards.css';
+import clsx from 'clsx';
 import { useEffect } from 'react';
 import { useUser } from "@src/store/store";
 import { SquarePen } from "lucide-react"
@@ -15,6 +16,10 @@ const ProfileCard = () =>{
   
   const isSelected = (id: string) => {
     return selected.find((item:any) => item.id === id)?.value ?? false;
+  };
+
+  const isVisible = (id: string) => {
+    return selected.find((item:any) => item.id === id)?.visible ?? false;
   };
 
   const handleSelect = (id: string, value: boolean) => {
@@ -41,6 +46,7 @@ const ProfileCard = () =>{
     const userVal = Users && Users?.map((user:any) => ({
       id: `${user.id}-${user.username}`,
       value: false,
+      visible: true,
     }));
     setSelected(userVal);
   }, [Users]);
@@ -49,7 +55,7 @@ const ProfileCard = () =>{
   <div className='grid lg:grid-cols-3 md:grid-cols-2 gap-[var(--gap)]'>
     {selected && Users?.map((user:any)=>{
       return <div
-        className='profile-card'
+        className={clsx('profile-card', !isVisible(`${user.id}-${user.username}`) && 'opacity-50')}
         key={`${user.id}-${user.username}`}
         >
         <Checkbox 

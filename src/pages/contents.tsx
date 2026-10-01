@@ -2,6 +2,8 @@ import clsx from 'clsx';
 import { useEffect, useState, useRef } from "react";
 import { Country, State } from "country-state-city";
 import { 
+  Eye,
+  Lock,
   CircleX,
   CircleCheck,
   UserCheck,
@@ -24,7 +26,12 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuPortal,
   DropdownMenuSeparator,
+  DropdownMenuCheckboxItem,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import { Button } from "@components/ui/button";
@@ -43,6 +50,12 @@ const Contents = () =>{
   const timerRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(0);
   const duration = 1000;
+  const [viewFilter, setViewFilter] = useState({
+    name: true,
+    mobile: true,
+    email: true,
+    address: true,
+  })
 
   const isLogged = useLogin((state:any) => state.isLogged);
   const formType =  useProfile((state:any) => state.formType);
@@ -104,27 +117,29 @@ const Contents = () =>{
       }
     });
 
-    if(value !== ''){
-      setUsers(match)
-    }else{
-      setUsers(allUsers) 
-    }
+    setSelected((prev: any[]) =>
+      prev.map((item: any) => ({
+        ...item,
+        visible:
+        value === '' ? 
+        true
+        : match?.some(
+          (user: any) => item.id === `${user.id}-${user.username}`
+        ) ?? false,
+      }))
+    );
   }
 
   const startProgress = () => {
     startTimeRef.current = performance.now();
-
     const update = () => {
       const elapsed = performance.now() - startTimeRef.current;
       const percentage = Math.min((elapsed / duration) * 100, 100);
-
       setProgress(percentage);
-
       if (percentage < 100) {
         timerRef.current = requestAnimationFrame(update);
       }
     };
-
     timerRef.current = requestAnimationFrame(update);
   };
 
@@ -133,7 +148,6 @@ const Contents = () =>{
       cancelAnimationFrame(timerRef.current);
       timerRef.current = null;
     }
-
     setProgress(0);
   };
 
@@ -141,9 +155,17 @@ const Contents = () =>{
     setComplete(true);
   };
 
+  // useEffect(()=>{
+  //   console.log('selected',selected)
+  // },[selected])
+
   useEffect(()=>{
-    searchUsers(searchValue)
+    searchUsers(searchValue);
   },[searchValue])
+
+  useEffect(()=>{
+    setUsers(allUsers)
+  },[Users])
 
   if(isLogged && formType === 'update-profile'){
     return  <>
@@ -170,7 +192,7 @@ const Contents = () =>{
                 </span>
               </Button>
             }/>
-            <DropdownMenuContent className="dropmenu w-50" align="end">
+            <DropdownMenuContent className="dropmenu w-80" align="end">
               <DropdownMenuGroup>
                 <DropdownMenuItem
                   onClick={() => setFormType('new-user')}
@@ -182,11 +204,67 @@ const Contents = () =>{
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
                 <DropdownMenuLabel>
+                  Filter View
+                </DropdownMenuLabel>
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger>
+                    <Eye/>
+                    Visible Fields
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuPortal>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuCheckboxItem
+                        checked={viewFilter.name}
+                        onCheckedChange={(checked) =>
+                          setViewFilter({ ...viewFilter, name: checked === true })
+                        }
+                      >
+                        Name
+                      </DropdownMenuCheckboxItem>
+                      <DropdownMenuCheckboxItem
+                        checked={viewFilter.mobile}
+                        onCheckedChange={(checked) =>
+                          setViewFilter({ ...viewFilter, mobile: checked === true })
+                        }
+                      >
+                        Mobile
+                      </DropdownMenuCheckboxItem>
+                      <DropdownMenuCheckboxItem
+                        checked={viewFilter.email}
+                        onCheckedChange={(checked) =>
+                          setViewFilter({ ...viewFilter, email: checked === true })
+                        }
+                      >
+                        Email
+                      </DropdownMenuCheckboxItem>
+                      <DropdownMenuCheckboxItem
+                        checked={viewFilter.address}
+                        onCheckedChange={(checked) =>
+                          setViewFilter({ ...viewFilter, address: checked === true })
+                        }
+                      >
+                        Address
+                      </DropdownMenuCheckboxItem>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuPortal>
+                </DropdownMenuSub>
+                <DropdownMenuCheckboxItem
+                  checked={viewFilter.mobile}
+                  onCheckedChange={(checked) =>
+                    setViewFilter({ ...viewFilter, mobile: checked === true })
+                  }
+                >
+                  <Lock/>
+                  Lock Selected User(s)
+                </DropdownMenuCheckboxItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>
                   Selected Users
                   <span>
                     <UserCheck size={'1rem'}/>
                     {selectedCount}
-                    
                   </span>
                 </DropdownMenuLabel>
                 <DropdownMenuItem
@@ -198,10 +276,10 @@ const Contents = () =>{
                   <><CircleCheck/> Select All</>
                 }
                 </DropdownMenuItem>
-                <DropdownMenuItem disabled={!hasSelected}>
+                {/* <DropdownMenuItem disabled={!hasSelected}>
                   <View/>
                   View Selected
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>

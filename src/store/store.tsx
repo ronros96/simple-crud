@@ -78,6 +78,7 @@ type Profile = {
 type ProfileSelected = {
   id: string;
   value: boolean;
+  visible: boolean;
 }
 
 type ProfileStore = Profile & {
