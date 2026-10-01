@@ -1,4 +1,5 @@
 import "./backcancel.css";
+import { useNavigate } from 'react-router';
 import { ArrowLeft} from "lucide-react"
 import {
   Dialog,
@@ -19,6 +20,7 @@ const BackCancel = (props:any) =>{
   const type = props.type;
   const formType = useProfile((state:any) => state.formType);
   const setFormType = useProfile((state:any) => state.setFormType);
+  const navigate = useNavigate();
 
   const returnDashboard = [
     'update-profile',
@@ -29,14 +31,15 @@ const BackCancel = (props:any) =>{
     clearForm;
     switch(formType){
       case 'sign-in':
-        setFormType('');
+        navigate('/')
+        setFormType('login');
       break;
       case 'update-profile':
       case 'new-user':
+        navigate('/dashboard')
         setFormType('dashboard');
       break;
     }
-    
   }
 
   return (

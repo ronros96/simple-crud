@@ -1,6 +1,5 @@
 import { useLogin, useProfile, useErrors } from "@src/store/store";
 import type {User} from '@src/fields/type';
-import { useNavigate } from 'react-router';
 
 export const clearForm = () => {
   useLogin.setState({username:''});

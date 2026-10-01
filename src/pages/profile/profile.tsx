@@ -40,7 +40,7 @@ import { Label } from "@components/ui/label"
 import { Checkbox } from "@components/ui/checkbox"
 import { PhoneInput } from "@components/ui/phone"
 import { toast, Toaster } from "@components/ui/toast"
-import BackCancel from '../back_cancel/backCancel';
+import BackCancel from '../../components/back_cancel/backCancel';
 
 import { Eye, EyeOff } from "lucide-react"
 //state
@@ -84,6 +84,7 @@ const Profile = () => {
   const formType = useProfile((state:any) => state.formType);
   const setFormType = useProfile((state:any) => state.setFormType);
   const setLogin = useLogin((state:any) => state.setLogin);
+  const isLogged =  useLogin((state:any) => state.isLogged);
   //errors
   const errors = useErrors((state:any) => state.errors);
   const setErrors = useErrors((state:any) => state.setErrors);
@@ -232,6 +233,7 @@ const Profile = () => {
   const {data: allUsers} = useGetUsers();
 
   useEffect(()=>{
+    setFormType('sign-in');
     setUsers(allUsers)
     unloadAddress();
   },[Users])
@@ -250,7 +252,16 @@ const Profile = () => {
   }, [state]);
 
   return (
-    <>
+    <section className={
+      clsx('container',
+        {
+          'header-margin':isLogged,
+          'header-space':formType === 'sign-in',
+        })
+      }>
+      <title>{`${import.meta.env.VITE_APP_TITLE} | Sign-In`}</title>
+      <h1 className='header-4'>Sign-in</h1>
+      <div className='divider-horizontal'></div>
       <div className="important">
         <strong>* Required</strong><br/>
         <p className={clsx('err-msg',{'show':Object.values(errors).some(value => value !== 'good')})}>
@@ -604,7 +615,7 @@ const Profile = () => {
         </div>
       </form>
       <Toaster/>
-    </>
+    </section>
   )
 }
 export default Profile;

@@ -40,7 +40,7 @@ import SearchBar from '@components/search/search';
 import { useProfile, useUser, useLogin, useSearch } from "@src/store/store";
 import { useGetUsers } from '@hooks/Profile';
 import ProfileCard from '@components/cards/profileCard';
-import Profile from '@components/profile/profile';
+import Profile from '@src/pages/profile/profile';
 
 const Contents = () =>{
   const [open,setOpen] = useState(false);

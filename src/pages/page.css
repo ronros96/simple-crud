@@ -66,3 +66,76 @@ section{
   color: var(--lgray);
 }
 
+.login-container{
+  display: flex;
+  flex-direction: column-reverse;
+  gap:var(--gap2x);
+  margin: 0 auto;
+  max-width: 50rem;
+  background-color: var(--frame-bg);
+
+  @media screen and (min-width: 768px) {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap:var(--gap);
+    align-items: stretch; 
+    border-radius: .5rem;
+  }
+}
+
+.login-form,
+.login-content{
+  width: 100%;
+
+  @media screen and (min-width: 768px) {
+    max-width: 24rem;
+  }
+
+  @media screen and (min-width: 900px) {
+    max-width: 50rem;
+  }
+
+  .hidden-content{
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .3s var(--ease);
+    
+    &.show{
+      max-height: 100svh;
+    }
+
+    @media screen and (min-width: 680px) {
+      max-height: 100%;
+      overflow: initial;
+    }
+  }
+
+  .show-content{
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    gap: .5rem;
+    cursor: pointer;
+    color: var(--link);
+
+    svg{
+      transform: rotate(0deg);
+      transition: transform .3s var(--ease);
+    }
+
+    @media screen and (min-width: 680px) {
+      display: none;
+    }
+  }
+}
+
+object svg{
+  fill:none;
+  background: transparent;
+}
+
+object {
+  fill:none;
+  background: transparent;
+}
+

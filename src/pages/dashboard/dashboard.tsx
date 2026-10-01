@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router';
 import { useLogin } from "@src/store/store";
 import { useGetUsers } from '@hooks/Profile';
-import Contents from './contents/contents';
+import Contents from '../contents/contents';
 import { useEffect } from 'react';
 
 const Dashboard = () =>{

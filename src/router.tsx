@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router';
 import Home from '@page/page';
-import Dashboard from '@page/dashboard';
+import Dashboard from '@page/dashboard/dashboard';
+import Profile from '@page/profile/profile';
 import App from './App';
 
 import { queryClient } from '@lib/queryClient';
@@ -15,6 +16,10 @@ export const router = createBrowserRouter(
         {
           path: '/',
           element: <Home />,
+        },
+        {
+          path: 'register',
+          element: <Profile />,
         },
         {
           path: 'dashboard',
