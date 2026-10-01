@@ -1,4 +1,5 @@
 import './header.css';
+import { useNavigate } from 'react-router';
 import { 
   LogOutIcon,
   UserPen,
@@ -12,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import { Button } from "@components/ui/button";
+
 
 import { useProfile, useLogin } from "@src/store/store";
 import { loggedOut, profileIcon } from "@lib/helpers/user";
@@ -30,8 +32,8 @@ const Header = () => {
       "#000000FF",
     ]
   );
+  const navigate = useNavigate();
 
-  
   const firstname =  useProfile((state:any) => state.firstname);
   const lastname =  useProfile((state:any) => state.lastname);
   const formType =  useProfile((state:any) => state.formType);
@@ -49,7 +51,7 @@ const Header = () => {
 
   const profileView = (e:any) => {
     e.preventDefault;
-    setFormType('update-profile')
+    setFormType('update-profile');
   }
 
   return (
@@ -83,6 +85,7 @@ const Header = () => {
                 <DropdownMenuItem
                   onClick={()=>{
                     loggedOut()
+                    navigate('/')
                   }}
                 >
                   <LogOutIcon />

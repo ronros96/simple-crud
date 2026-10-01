@@ -48,11 +48,15 @@ import { useErrors, useProfile, useUser, useLogin } from "@src/store/store";
 // helpers
 import {checkAllFields, showRequirements, fieldError, FieldOrginizer} from "@src/lib/helpers/field";
 import {ProfileFields} from "@src/fields/profile";
-import { clearForm, setLoggedUser } from "@lib/helpers/user";
+import { setLoggedUser } from "@lib/helpers/user";
 //hooks
 import { useGetUsers, usePutUser, useCreateUser } from '@hooks/Profile';
 
 const Profile = () => {
+  //update / register
+  const newProfile = ['sign-in','new-user'];
+  const updateProfile = ['update-profile','update-user'];
+  //state
   const [showPassword, setShowPassword] = useState(false);
   //fields
   const id = useProfile((state:any) => state.id);
@@ -78,15 +82,14 @@ const Profile = () => {
   const setUsers = useUser((state:any) => state.setUsers);
   //status logged
   const formType = useProfile((state:any) => state.formType);
+  const setFormType = useProfile((state:any) => state.setFormType);
   const setLogin = useLogin((state:any) => state.setLogin);
   //errors
   const errors = useErrors((state:any) => state.errors);
   const setErrors = useErrors((state:any) => state.setErrors);
-
   const countryRef = useRef<HTMLElement | null>(null);
   const stateRef = useRef<HTMLElement | null>(null);
   const cityRef = useRef<HTMLElement | null>(null);
-
 
   const unloadAddress = () =>{
     const currentAddress = address[0];
@@ -177,7 +180,7 @@ const Profile = () => {
     setErrors([]);
     
     if(Object.values(result).every(value => value === "good")){
-      if(formType === 'sign-in'){
+      if(newProfile.includes(formType)){
         try {
           await createUser.mutateAsync({
             id:id,
@@ -190,9 +193,9 @@ const Profile = () => {
             address:address,
             logged: new Date(),
           });
-          setLoggedUser(id,username)
           setLogin(true);
-          clearForm();
+          setFormType('dashboard');
+          setLoggedUser(id,username);
         }catch (error:any) {
           showToastError(error.message);
         }
@@ -592,8 +595,8 @@ const Profile = () => {
           <div className={clsx('field-group',{'error':fieldError(errors,'terms')})}>
             <div className='flex justify-center lg:justify-end gap-5'>
               <Button type="submit">
-                 {formType === 'sign-in' && 'Register'}
-                 {formType === 'update-profile' && 'Update'}
+                 {newProfile.includes(formType) && 'Register'}
+                 {updateProfile.includes(formType) && 'Update'}
               </Button>
               <BackCancel/>
             </div>

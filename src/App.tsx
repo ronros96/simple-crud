@@ -2,7 +2,9 @@ import './App.css';
 import "./index.css";
 
 import clsx from 'clsx';
-import Layout from '@layout/layout';
+import { Outlet } from 'react-router';
+import Header from '@layout/header/header';
+import Footer from '@layout/footer/footer';
 import { useColorScheme } from './store/store';
 import { useLogin } from "@src/store/store";
 
@@ -11,15 +13,20 @@ function App() {
   const isLogged =  useLogin((state:any) => state.isLogged);
 
   return (
-    <main className={clsx(
-      'flex items-center flex-col',
-      currentScheme,
-      {'justify-start':isLogged},
-      {'justify-center':!isLogged}
-    )}>
-      <Layout/>
-    </main>
+    <>
+      <Header/>
+      <main className={clsx(
+        'flex items-center flex-col',
+        currentScheme,
+        {'justify-start':isLogged},
+        {'justify-center':!isLogged}
+      )}>
+        <Outlet />
+      </main>
+      <Footer/>
+    </>
   )
+
 }
 
 export default App

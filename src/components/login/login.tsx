@@ -1,6 +1,7 @@
 import './login.css';
 import clsx from 'clsx';
-import { useState } from "react"
+import { useState } from "react";
+import { useNavigate } from 'react-router';
 //ui
 import {
   Field,
@@ -27,7 +28,7 @@ const Login = () => {
     username: string;
     password: string;
   }
-
+  const navigate = useNavigate();
   //states
   const setLogin = useLogin((state:any) => state.setLogin);
   const setFormType = useProfile((state:any) => state.setFormType);
@@ -72,7 +73,6 @@ const Login = () => {
     );
 
     if(match){
-      setLogin(true);
       putUser.mutate({
         id: match.id,
         user: {
@@ -80,9 +80,11 @@ const Login = () => {
           logged: new Date(),
         },
       });
-      setProfile({...match})
+      setLogin(true);
+      setProfile({...match});
       setFormType('dashboard');
-      setLoggedUser(match.id,match.username)
+      setLoggedUser(match.id,match.username);
+      navigate('/dashboard');
     }else{
       setForm({ username: "", password: "" })
       setErrors('err');

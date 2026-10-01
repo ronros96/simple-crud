@@ -15,8 +15,8 @@ import { useProfile } from "@src/store/store";
 const Footer = () => {
   const formType =  useProfile((state:any) => state.formType);
   return(
-    <footer  className={clsx('footer',{'intro':formType === ''})}>
-      <p><span>Developed by:</span> Aaron Rosales <span>2026</span></p>
+    <footer  className={clsx('footer',{'intro':formType === 'login'})}>
+      <p className='mb-0'><span>Developed by:</span> Aaron Rosales <span>2026</span></p>
       <div className='links'>
         <TooltipProvider delay={200}>
           <Tooltip>

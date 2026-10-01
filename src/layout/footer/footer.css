@@ -6,6 +6,7 @@ footer{
   gap:.5rem;
   padding: var(--gap) var(--gap2x);
   width: 100%;
+  background-color: var(--footer);
 
   &.intro{
     flex-direction: column;

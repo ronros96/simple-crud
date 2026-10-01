@@ -9,7 +9,6 @@ import {
   UserCheck,
   UserRoundX,
   UserRoundPlus,
-  View,
 } from "lucide-react"
 import {
   Dialog,
@@ -56,6 +55,7 @@ const Contents = () =>{
     email: true,
     address: true,
   })
+  const profile = ['update-profile','new-user','update-user'];
 
   const isLogged = useLogin((state:any) => state.isLogged);
   const formType =  useProfile((state:any) => state.formType);
@@ -167,7 +167,7 @@ const Contents = () =>{
     setUsers(allUsers)
   },[Users])
 
-  if(isLogged && formType === 'update-profile'){
+  if(isLogged && profile.includes(formType)){
     return  <>
       <title>{`${import.meta.env.VITE_APP_TITLE} | Sign-In`}</title>
       <h1 className='header-4 '>UPDATE PROFILE</h1>

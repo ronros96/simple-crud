@@ -4,6 +4,10 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 
+import { 
+  queryOptions 
+} from '@tanstack/react-query';
+
 import {
   createUser,
   deleteUser,
@@ -31,13 +35,15 @@ export const userKeys = {
 
 
 /* GET ALL USERS */
-
 export const useGetUsers = () => {
-  return useQuery({
+  return useQuery(usersQuery());
+};
+
+export const usersQuery = () =>
+  queryOptions({
     queryKey: userKeys.all,
     queryFn: getUsers,
   });
-};
 
 
 /* GET INDIVIDUAL USER */
