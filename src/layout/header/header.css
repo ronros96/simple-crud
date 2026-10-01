@@ -5,7 +5,8 @@ header{
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 10;
+  z-index: 20;
+  backdrop-filter: blur(10px);
 
   .header-container{
     position: relative;

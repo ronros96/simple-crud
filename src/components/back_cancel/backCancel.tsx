@@ -20,6 +20,11 @@ const BackCancel = (props:any) =>{
   const formType = useProfile((state:any) => state.formType);
   const setFormType = useProfile((state:any) => state.setFormType);
 
+  const returnDashboard = [
+    'update-profile',
+    'new-user'
+  ]
+
   const closeForm = () => {
     clearForm;
     switch(formType){
@@ -27,6 +32,7 @@ const BackCancel = (props:any) =>{
         setFormType('');
       break;
       case 'update-profile':
+      case 'new-user':
         setFormType('dashboard');
       break;
     }
@@ -60,7 +66,7 @@ const BackCancel = (props:any) =>{
           }
           <Button className="stroke sm" onClick={closeForm}>
             {formType === 'sign-in' && 'Yes, Back to login'}
-            {formType === 'update-profile' && 'Yes, Back to Dashboard'}
+            {returnDashboard.includes(formType) && 'Yes, Back to Dashboard'}
           </Button>
           <DialogClose render={<Button variant="outline" className="stroke sm">Cancel</Button>} />
         </DialogFooter>

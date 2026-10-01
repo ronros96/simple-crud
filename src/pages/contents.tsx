@@ -1,21 +1,49 @@
+import clsx from 'clsx';
+import { useEffect, useState, useRef } from "react";
 import { Country, State } from "country-state-city";
 import { 
-  Field,
-  FieldGroup,
-  FieldLabel 
-} from "@components/ui/field";
+  CircleX,
+  CircleCheck,
+  UserCheck,
+  UserRoundX,
+  UserRoundPlus,
+  View,
+} from "lucide-react"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@components/ui/dropdown-menu";
 import { Button } from "@components/ui/button";
-import { Checkbox } from "@components/ui/checkbox";
+import { Progress } from "@components/ui/progress"
 import SearchBar from '@components/search/search';
-import { UserRoundPlus, UserRoundX } from "lucide-react"
 
 import { useProfile, useUser, useLogin, useSearch } from "@src/store/store";
 import { useGetUsers } from '@hooks/Profile';
 import ProfileCard from '@components/cards/profileCard';
 import Profile from '@components/profile/profile';
-import { useEffect } from "react";
 
 const Contents = () =>{
+  const [open,setOpen] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [complete, setComplete] = useState(false);
+  const timerRef = useRef<number | null>(null);
+  const startTimeRef = useRef<number>(0);
+  const duration = 1000;
+
   const isLogged = useLogin((state:any) => state.isLogged);
   const formType =  useProfile((state:any) => state.formType);
   const setFormType = useProfile((state:any) => state.setFormType);
@@ -36,9 +64,15 @@ const Contents = () =>{
     );
   };
 
+  const allChecked = selected.every((item:any) => item.value);
+
   const hasSelected = selected.some(
     (item:any) => item.value === true
   );
+
+  const selectedCount: number = selected.filter(
+    (item: any) => item.value
+  ).length;
 
   const fixAddress = (address:string[]) =>{
     const country = Country.getCountryByCode(address[0]);
@@ -77,6 +111,36 @@ const Contents = () =>{
     }
   }
 
+  const startProgress = () => {
+    startTimeRef.current = performance.now();
+
+    const update = () => {
+      const elapsed = performance.now() - startTimeRef.current;
+      const percentage = Math.min((elapsed / duration) * 100, 100);
+
+      setProgress(percentage);
+
+      if (percentage < 100) {
+        timerRef.current = requestAnimationFrame(update);
+      }
+    };
+
+    timerRef.current = requestAnimationFrame(update);
+  };
+
+  const stopProgress = () => {
+    if (timerRef.current) {
+      cancelAnimationFrame(timerRef.current);
+      timerRef.current = null;
+    }
+
+    setProgress(0);
+  };
+
+  const handleComplete = () => {
+    setComplete(true);
+  };
+
   useEffect(()=>{
     searchUsers(searchValue)
   },[searchValue])
@@ -93,37 +157,118 @@ const Contents = () =>{
     return  <>
       <title>{`${import.meta.env.VITE_APP_TITLE} | Dashboard`}</title>
       <div className='contents'>
-      <div className="md:flex items-center w-full justify-between">
-        <div className="md:flex gap-[var(--gap)]">
-          <h1 className="header-4">Profiles</h1>
+        <div className="md:flex items-center w-full justify-between gap-[var(--gap)] py-[var(--gap)]">
+          <h1 className="header-4 mb-0">Profiles</h1>
+          <SearchBar/>
+          <DropdownMenu>
+            <DropdownMenuTrigger render={
+              <Button>
+                Action
+                <span>
+                  <UserCheck/>
+                  {selectedCount}
+                </span>
+              </Button>
+            }/>
+            <DropdownMenuContent className="dropmenu w-50" align="end">
+              <DropdownMenuGroup>
+                <DropdownMenuItem
+                  onClick={() => setFormType('new-user')}
+                >
+                  <UserRoundPlus/>
+                  Create User
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>
+                  Selected Users
+                  <span>
+                    <UserCheck size={'1rem'}/>
+                    {selectedCount}
+                    
+                  </span>
+                </DropdownMenuLabel>
+                <DropdownMenuItem
+                  onClick={() => checkAll(!allChecked)}
+                >
+                {
+                  allChecked ?
+                  <><CircleX/> Deselect All</>  : 
+                  <><CircleCheck/> Select All</>
+                }
+                </DropdownMenuItem>
+                <DropdownMenuItem disabled={!hasSelected}>
+                  <View/>
+                  View Selected
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem 
+                  disabled={!hasSelected}
+                  variant="destructive"
+                  onClick={()=>{
+                    setOpen(!open)
+                  }}
+                >
+                  <UserRoundX/>
+                  Delete Selected
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
-      </div>
-      <FieldGroup className="flex md:flex-row w-full mb-[var(--gap)] justify-between">
-        <SearchBar/>
-        <Field orientation="horizontal" className='w-full'>
-          <Checkbox 
-            id="profile-check-all" 
-            className="profile-check-all"
-            checked={selected.every((item:any) => item.value)}
-            onCheckedChange={(checked) => checkAll(checked === true)}
-          />
-          <FieldLabel htmlFor="profile-check-all">
-            Select All
-          </FieldLabel>
-          <Button onClick={() => setFormType('update-profile')}>
-            <UserRoundPlus className="block md:hidden size-[1.5rem]"/>
-            <span className="hidden md:block">Create</span>
-          </Button>
-          <Button className='delete' disabled={!hasSelected}>
-            <UserRoundX className="block md:hidden size-[1.5rem]"/>
-            <span className="hidden md:block">Delete</span>
-          </Button>
-        </Field>
-      </FieldGroup>
-      {Users?.length > 0 ? 
-      <ProfileCard/>:
-      <div className="no-result">No Result</div>
-      }
+
+        <Dialog 
+          open={open} 
+          onOpenChange={() =>{
+            setOpen(!open);
+            setProgress(0);
+            setComplete(false);
+          }}>
+          <DialogContent className="modal sm all-centered">
+            <DialogHeader>
+              <DialogTitle>Delete {selectedCount > 1 ? 'Users':'User'}?</DialogTitle>
+              <DialogDescription className="text-center mb-0">
+                All Selected {selectedCount > 1 ? 'users':'user'} will be permanently deleted.
+              </DialogDescription>
+              <Progress value={complete ? 100 : progress} className={clsx('w-full',{'progress-active':progress > 0 || complete})}>
+                {progress >= 100 || complete ? 'Deleted!' : 'Deleting...'}
+              </Progress>
+            </DialogHeader>
+            <DialogFooter className='items-center flex-col flex-row'>
+              {
+                !complete ?
+                <Button 
+                  className="sm delete"
+                  onClick={(e:any) => {
+                    e.preventDefault();
+                  }}
+                  onPointerDown={startProgress}
+                  onPointerUp={() => {
+                    if (progress >= 100) {
+                      handleComplete();
+                    }else{
+                      stopProgress();
+                    } 
+                  }}
+                  onPointerLeave={stopProgress}
+                  onPointerCancel={stopProgress}
+                >
+                  Yes{' '}<small>Press + Hold to Proceed</small>
+                </Button>:
+                <DialogClose render={<Button variant="outline" className="sm stroke">Okay</Button>} />
+              }
+              <DialogClose render={<Button variant="outline" className="stroke sm">Cancel</Button>} />
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {Users?.length > 0 ? 
+        <ProfileCard/>:
+        <div className="no-result">No Result</div>
+        }
       </div>
     </>
   }

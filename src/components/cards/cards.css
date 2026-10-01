@@ -5,22 +5,24 @@
   border-radius: var(--gap);
   overflow: hidden;
 
-  &::before{
-    content: '';
-    position: absolute;
-    display: block;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: var(--gap3x);
-    opacity: 0;
-    background-image: linear-gradient(to bottom, #85A2CC55, #85A2CC00 ) ;
-    
-    transition: opacity .3s var(--ease);
-  }
+  @media screen and (min-width: 1024px) {
+    &::before{
+      content: '';
+      position: absolute;
+      display: block;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--gap3x);
+      opacity: 0;
+      background-image: linear-gradient(to bottom, #85A2CC55, #85A2CC00 ) ;
+      
+      transition: opacity .3s var(--ease);
+    }
 
-  &:hover::before{
-    opacity: 1;
+    &:hover::before{
+      opacity: 1;
+    }
   }
 
   &:hover .user-checkbox,
@@ -40,7 +42,7 @@
     padding-top: var(--gap);
     display: grid;
     gap: 0 var(--gap);
-    grid-template-columns: 1fr 3fr;
+    grid-template-columns: 5rem 3fr;
     border-top: solid 1px var(--dgray);
 
     p:nth-last-child(2),
@@ -51,7 +53,6 @@
 
 }
 
-.profile-check-all,  
 .profile-card .user-checkbox{
   color: var(--white);
   border: solid 2px var(--white);
@@ -64,11 +65,15 @@
   position: absolute;
   top: 1rem;
   left: 1rem;
-  opacity: 0;
+  opacity: 1;
   box-shadow: 0 .25rem .25rem #000000EE;
   z-index: 10;
 
   transition: opacity .3s var(--ease);
+
+  @media screen and (min-width: 1024px) {
+    opacity: 0;
+  }
 }
 
 .profile-card .edit-user{

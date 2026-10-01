@@ -85,12 +85,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: calc(var(--gap3x) + .25rem);
-    height: calc(var(--gap3x) + .25rem);
+    width: calc(var(--gap2x) + .25rem);
+    height: calc(var(--gap2x) + .25rem);
     text-transform: uppercase;
     text-align: center;
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
     font-family: var(--pixel);
-    font-size: var(--font-md);
+    font-size: var(--font-base);
     font-weight: 700;
     border-radius: 100vmax;
     border: solid 2px transparent;
@@ -188,12 +190,15 @@ main{
 }
 
 h1,h2,h3,h4,h5,h6{
-  margin-bottom: var(--gap);
   font-family: var(--pixel);
   font-weight: 400;
   text-transform: uppercase;
   color: var(--text-default);
   line-height: 1;
+  &:not([class*='mb']){
+    margin-bottom: 1rem;
+  }
+
   span{
     font-size: 70%;
     font-weight: 200;
@@ -202,20 +207,24 @@ h1,h2,h3,h4,h5,h6{
 }
 
 p,a{
-  margin-bottom: 1rem;
   font-family: inherit;
   font-size: inherit;
   font-weight: 400;
   color: var(--text-default);
   line-height: 1.5;
   font-variation-settings: "wdth" 100;
+  &:not([class*='mb']){
+    margin-bottom: 1rem;
+  }
 }
 
 a{
-  margin-bottom: 0;
   color: var(--link);
   &:hover{
     text-decoration: underline;
+  }
+  &:not([class*='mb']){
+    margin-bottom: 0;
   }
 }
 
@@ -229,6 +238,10 @@ ul{
     color: var(--text-default);
   }
 }
+
+/* h1,h2,h3,h4,h5,h6,p,a,li{
+  &.
+} */
 
 em,u{
   font-size: inherit;

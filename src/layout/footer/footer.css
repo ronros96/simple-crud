@@ -8,11 +8,15 @@ footer{
   width: 100%;
 
   &.intro{
-    position: absolute;
-    bottom: 0;
     flex-direction: column;
-    background-color: transparent;
+    background-color: var(--footer);
     gap:1rem;
+
+    @media screen and (min-width: 768px) {
+      position: absolute;
+      bottom: 0;
+      background-color: transparent;
+    }
   }
 
   @media screen and (min-width: 900px) {

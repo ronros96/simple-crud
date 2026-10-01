@@ -1,4 +1,5 @@
 import './App.css';
+import "./index.css";
 
 import clsx from 'clsx';
 import Layout from '@layout/layout';

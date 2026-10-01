@@ -10,8 +10,8 @@ const ProfileCard = () =>{
   const Users = useUser((state:any) => state.Users);
   const selected = useUser((state:any) => state.selected);
   const setSelected = useUser((state:any) => state.setSelected);
-  const UserPicked = useUser((state:any) => state.UserPicked);
-  const setUserPicked = useUser((state:any) => state.setUserPicked);
+  // const UserPicked = useUser((state:any) => state.UserPicked);
+  // const setUserPicked = useUser((state:any) => state.setUserPicked);
   
   const isSelected = (id: string) => {
     return selected.find((item:any) => item.id === id)?.value ?? false;
@@ -33,9 +33,9 @@ const ProfileCard = () =>{
     return `${address[3]}, ${address[4]}, ${address[2]}, ${state?.name}, ${country?.name}`;
   }
 
-  const updateUser = () =>{
+  // const updateUser = () =>{
 
-  }
+  // }
 
   useEffect(() => {
     const userVal = Users && Users?.map((user:any) => ({

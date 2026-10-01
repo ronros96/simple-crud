@@ -6,7 +6,6 @@
   text-transform: uppercase;
   color: var(--text-default);
   background: transparent;
-  border-radius: 10px;
-  corner-shape: squircle;
+  border: none;
   cursor: pointer;
 }

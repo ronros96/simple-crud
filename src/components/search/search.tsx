@@ -1,6 +1,4 @@
 import './search.css';
-import { useState, useEffect } from 'react';
-
 import { Search } from "lucide-react";
 import {
   InputGroup,
@@ -32,7 +30,7 @@ const SearchBar = () =>{
       <InputGroupAddon>
         <DropdownMenu>
           <DropdownMenuTrigger render={<Button variant="outline">{searchType}:</Button>} />
-          <DropdownMenuContent className="w-40 search-dropdown" align="start">
+          <DropdownMenuContent className="w-40 dropmenu" align="start">
             <DropdownMenuGroup>
               <DropdownMenuLabel>Search By</DropdownMenuLabel>
               <DropdownMenuSeparator></DropdownMenuSeparator>

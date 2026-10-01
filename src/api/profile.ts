@@ -60,7 +60,7 @@ export const getUsers = async (): Promise<User[]> => {
 
 export const getUser = async ({
   id,
-  username,
+  // username,
 }: {
   id?: string;
   username?: string;
