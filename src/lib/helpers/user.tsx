@@ -1,8 +1,9 @@
-import { useLogin, useProfile, useErrors } from "@src/store/store";
+import { useLogin, useProfile, useUser, useErrors } from "@src/store/store";
+import { Country, State } from "country-state-city";
 import type {User} from '@src/fields/type';
 
 export const clearForm = () => {
-  useLogin.setState({username:''});
+  // useLogin.setState({username:''});
   useProfile.setState({
     username:'',
     password:'',
@@ -18,6 +19,25 @@ export const clearForm = () => {
   });
   useErrors.setState({errors: []})
 }
+
+export const clearUser = () => {
+  useUser.setState({
+    username:'',
+    password:'',
+    firstname:'',
+    lastname:'',
+    mobile:'',
+    email:'',
+    address:[],
+    terms:false,
+    booklimit:0,
+    role:0,
+    active: false,
+  });
+  useErrors.setState({errors: []})
+}
+
+
 export const loggedOut = () => {
   clearForm();
   useLogin.setState({isLogged:false});
@@ -30,6 +50,7 @@ export const setLoggedUser = (
   id:string,
   username:string
 ) =>{
+  console.log(id)
   const toLocal = {
     'id':id,
     'username':username,  
@@ -81,4 +102,13 @@ export const profileIcon = (firstname:string, lastname:string) =>{
   return <span  className={`profile-icon ${pbg}`}>
     {firstname[0]}{lastname[0]}
   </span>
+}
+
+export const fixAddress = (address:string[]) =>{
+  const country = Country.getCountryByCode(address[0]);
+  const state = State.getStateByCodeAndCountry(address[0],address[1]) !== undefined ? 
+    State.getStateByCodeAndCountry(address[0],address[1]): 
+    {name:''};
+  const stateDisplay = state?.name !== '' ? `${state?.name},`:''; 
+  return `${address[3]}, ${address[4]}, ${address[2]}, ${stateDisplay} ${country?.name}`;
 }

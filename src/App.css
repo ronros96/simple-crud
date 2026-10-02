@@ -171,6 +171,34 @@
   font-size: var(--base-font-size);
 }
 
+@keyframes page-out {
+  from { opacity: 1; transform: translateY(-8px)}
+  to   { opacity: 0; transform: none;}
+}
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(8px)}
+  to   { opacity: 1; transform: none;}
+}
+
+::view-transition-old(page) {
+  animation: page-out 0.2s var(--ease) both;
+  mix-blend-mode: normal;
+}
+::view-transition-new(page) {
+  animation: page-in 0.2s var(--ease) 0.2s both;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(page),
+  ::view-transition-new(page) { animation: none; }
+}
+
 html,
 body{
   position: relative;
@@ -186,7 +214,28 @@ main{
   min-height: 100svh;
   height: auto;
   isolation: isolate;
-  background-color: var(--main-bg);
+  /* background-color: var(--main-bg); */
+  background: radial-gradient(var(--dgray) 2px, var(--main-bg) 1px) 0 0 / 30px 30px;
+  background-repeat: repeat;
+  isolation: isolate;
+
+  &:has(section:empty){
+    .loader{
+      display: block;
+    }
+  }
+
+  section:empty{
+    display: none;
+  }
+
+  .loader{
+    position: fixed;
+    display: flex;
+    inset: 0;
+    z-index: -1;
+    background-color: red;
+  }
 }
 
 h1,h2,h3,h4,h5,h6{
@@ -284,6 +333,10 @@ h6,
 
 .important{
   color: var(--important);
+}
+
+.page-content {
+  view-transition-name: page;
 }
 
 .dark {

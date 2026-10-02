@@ -1,7 +1,6 @@
 import './page.css';
+import { useState } from 'react';
 import clsx from 'clsx';
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
 //ui
 import {
   Tooltip,
@@ -23,10 +22,11 @@ import { Skeleton } from "@components/ui/skeleton"
 import { Eye, EyeOff } from "lucide-react"
 //Hooks
 import { useLogin, useProfile, useErrors } from "@src/store/store";
-import { checkLogged } from "@lib/helpers/user";
-import { useGetUser, useGetUsers, usePutUser  } from '@hooks/Profile';
+import { useGetUsers, usePutUser  } from '@hooks/Profile';
 //helper
 import { setLoggedUser } from "@lib/helpers/user";
+import { useRoute } from "@lib/helpers/routes";
+
 
 const Page = () =>{
   interface FormState {
@@ -34,11 +34,9 @@ const Page = () =>{
     password: string;
   }
   const isLogged =  useLogin((state:any) => state.isLogged);
-  const id = useLogin((state:any) => state.id);
-  const username = useLogin((state:any) => state.username);
   const formType =  useProfile((state:any) => state.formType);
-  const {data: validUser} = useGetUser({id:id,username:username});
-  const navigate = useNavigate();
+  //navigation
+  const { toDashboard, toNewProfile } = useRoute();
 
   //states
   const setLogin = useLogin((state:any) => state.setLogin);
@@ -95,19 +93,12 @@ const Page = () =>{
       setProfile({...match});
       setFormType('dashboard');
       setLoggedUser(match.id,match.username);
-      navigate('/dashboard');
+      toDashboard();
     }else{
       setForm({ username: "", password: "" })
       setErrors('err');
     }
   }
-
-  useEffect(()=>{
-    checkLogged(validUser);
-    if(isLogged){
-      navigate('/dashboard');
-    }
-  },[isLogged,validUser]);
 
   return(
     <section className='container'>
@@ -116,11 +107,11 @@ const Page = () =>{
           <title>{`${import.meta.env.VITE_APP_TITLE} | Log-in`}</title>
           <h1 className='header-4'>
             <Tooltip>
-            <TooltipTrigger delay={300} render={<Button variant="outline" className="text-only p-0">Hello There</Button>} />
-            <TooltipContent>
-              <p className='mb-0'>General Kenobi!</p>
-            </TooltipContent>
-          </Tooltip>
+              <TooltipTrigger delay={300} render={<Button variant="outline" className="text-only p-0">Hello There</Button>} />
+              <TooltipContent>
+                <p className='mb-0'>General Kenobi!</p>
+              </TooltipContent>
+            </Tooltip>
           </h1>
           <div className='divider-horizontal'></div>
           <div className="login-container">
@@ -215,7 +206,7 @@ const Page = () =>{
                 {allUsers ?
                 <Button onClick={() => {
                   setFormType('sign-in')
-                  navigate('/register')
+                  toNewProfile();
                 }}>Let Me Sign-In!</Button>:
                 <Skeleton className="h-10 w-[50%]" />
                 }

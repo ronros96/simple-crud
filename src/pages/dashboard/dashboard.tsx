@@ -1,23 +1,16 @@
-import { useNavigate } from 'react-router';
-import { useLogin } from "@src/store/store";
 import { useGetUsers } from '@hooks/Profile';
 import Contents from '../contents/contents';
-import { useEffect } from 'react';
+import { useLogin } from "@src/store/store";
+
 
 const Dashboard = () =>{
-  const isLogged =  useLogin((state:any) => state.isLogged);
+  //hooks
   const {data: allUsers} = useGetUsers();
-  const navigate = useNavigate();
-  
-  useEffect(()=>{
-    if(!isLogged || !allUsers){
-      navigate('/');
-    }
-  },[allUsers])
+  const isLogged =  useLogin((state:any) => state.isLogged);
 
   return (
     <section className='container header-margin transparent w-full'>
-      {allUsers && <Contents/>}
+      {allUsers && isLogged  && <Contents/>}
     </section>
   )
   

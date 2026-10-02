@@ -1,0 +1,36 @@
+@keyframes loading {
+  from{
+    left:-100svw;
+  }to{
+    left: 100svw;
+  }
+}
+
+.preloader{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  z-index: 30;
+
+  transition: width .3s var(--ease);
+
+  .progress{
+    position: absolute;
+    background-color: var(--link);
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    &::before{
+      position: absolute;
+      left: -100svw;
+      content: '';
+      display: block;
+      width: 200svw;
+      height: 100%;
+      background-image: linear-gradient(to right, #FFFFFF00 15%,  #FFFFFFFF 25%, #FFFFFF00 35%);
+      animation: loading 3s linear infinite;
+    }
+  }
+}

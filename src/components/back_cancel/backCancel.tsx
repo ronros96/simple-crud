@@ -1,5 +1,4 @@
 import "./backcancel.css";
-import { useNavigate } from 'react-router';
 import { ArrowLeft} from "lucide-react"
 import {
   Dialog,
@@ -14,13 +13,16 @@ import {
 import { Button } from "@components/ui/button";
 import { clearForm } from "@lib/helpers/user";
 import { useProfile } from "@src/store/store";
+import { useRoute } from "@lib/helpers/routes";
 
 const BackCancel = (props:any) =>{
 
   const type = props.type;
+  //hooks
   const formType = useProfile((state:any) => state.formType);
   const setFormType = useProfile((state:any) => state.setFormType);
-  const navigate = useNavigate();
+  //navigation
+  const { toLogin, toDashboard} = useRoute();
 
   const returnDashboard = [
     'update-profile',
@@ -31,12 +33,12 @@ const BackCancel = (props:any) =>{
     clearForm;
     switch(formType){
       case 'sign-in':
-        navigate('/')
+        toLogin();
         setFormType('login');
       break;
       case 'update-profile':
       case 'new-user':
-        navigate('/dashboard')
+        toDashboard()
         setFormType('dashboard');
       break;
     }
@@ -45,7 +47,7 @@ const BackCancel = (props:any) =>{
   return (
     <Dialog>
       <DialogTrigger render={
-        type === 'header' ? 
+        type === 'header' ?
         <Button 
           variant="outline"
           className='back'

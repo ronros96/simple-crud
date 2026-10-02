@@ -1,5 +1,4 @@
 import './header.css';
-import { useNavigate } from 'react-router';
 import { 
   LogOutIcon,
   UserPen,
@@ -22,6 +21,8 @@ import ColorScheme from "@components/color_scheme/colorScheme";
 import { motion, useScroll, useTransform } from "motion/react"
 import BackCancel from '@components/back_cancel/backCancel';
 
+import { useRoute } from '@lib/helpers/routes';
+
 const Header = () => {
   const { scrollY } = useScroll();
   const background = useTransform(
@@ -32,13 +33,16 @@ const Header = () => {
       "#000000FF",
     ]
   );
-  const navigate = useNavigate();
-
+  //hooks
+  const id =  useProfile((state:any) => state.id);
   const firstname =  useProfile((state:any) => state.firstname);
   const lastname =  useProfile((state:any) => state.lastname);
   const formType =  useProfile((state:any) => state.formType);
   const setFormType =  useProfile((state:any) => state.setFormType);
   const isLogged =  useLogin((state:any) => state.isLogged);
+  //navigation
+  const { toLogin, toUpdateProfile } = useRoute();
+
   const showHeader = [
     'dashboard',
     'update-profile',
@@ -48,11 +52,6 @@ const Header = () => {
     'update-profile',
     'new-user'
   ]
-
-  const profileView = (e:any) => {
-    e.preventDefault;
-    setFormType('update-profile');
-  }
 
   return (
     <motion.header
@@ -74,7 +73,8 @@ const Header = () => {
                 <DropdownMenuGroup>
                   <DropdownMenuItem 
                     onClick={(e:any)=>{
-                      profileView(e)
+                      setFormType('update-profile');
+                      toUpdateProfile(id);
                     }}
                   >
                     <UserPen />
@@ -85,7 +85,7 @@ const Header = () => {
                 <DropdownMenuItem
                   onClick={()=>{
                     loggedOut()
-                    navigate('/')
+                    toLogin()
                   }}
                 >
                   <LogOutIcon />

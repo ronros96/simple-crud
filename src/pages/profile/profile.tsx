@@ -1,8 +1,9 @@
 import './profile.css';
 import clsx from 'clsx';
-import { useEffect, useState, useRef } from "react";
+import { useParams } from 'react-router';
+import { useEffect, useState, useRef, useMemo } from "react";
 import { City, Country, State } from "country-state-city";
-import type {ICountry, IState, ICity} from "country-state-city";
+import type { ICountry, IState, ICity } from "country-state-city";
 //ui
 import {
   Field,
@@ -40,33 +41,45 @@ import { Label } from "@components/ui/label"
 import { Checkbox } from "@components/ui/checkbox"
 import { PhoneInput } from "@components/ui/phone"
 import { toast, Toaster } from "@components/ui/toast"
-import BackCancel from '../../components/back_cancel/backCancel';
+import BackCancel from '@components/back_cancel/backCancel';
 
 import { Eye, EyeOff } from "lucide-react"
 //state
 import { useErrors, useProfile, useUser, useLogin } from "@src/store/store";
 // helpers
 import {checkAllFields, showRequirements, fieldError, FieldOrginizer} from "@src/lib/helpers/field";
-import {ProfileFields} from "@src/fields/profile";
+import { ProfileFields } from "@src/fields/profile";
 import { setLoggedUser } from "@lib/helpers/user";
+import { useRoute } from "@lib/helpers/routes";
 //hooks
 import { useGetUsers, usePutUser, useCreateUser } from '@hooks/Profile';
 
 const Profile = () => {
+  //get ID
+  const { id } = useParams();
   //update / register
   const newProfile = ['sign-in','new-user'];
   const updateProfile = ['update-profile','update-user'];
   //state
   const [showPassword, setShowPassword] = useState(false);
-  //fields
-  const id = useProfile((state:any) => state.id);
+  //global state form type
+  const formType = useProfile((state:any) => state.formType);
+  const setFormType = useProfile((state:any) => state.setFormType);
+  //global state fields
+  const userID = id !== null ? id : useProfile((state:any) => state.id);
   const username = useProfile((state:any) => state.username);
-  const password = useProfile((state:any) => state.password);
+  const password =  useProfile((state:any) => state.password);
   const firstname = useProfile((state:any) => state.firstname);
   const lastname = useProfile((state:any) => state.lastname);
   const mobile = useProfile((state:any) => state.mobile);
   const email = useProfile((state:any) => state.email);
   const address = useProfile((state:any) => state.address);
+  const terms = useProfile((state:any) => state.terms);
+  const active = useProfile((state:any) => state.active);
+  const setProfile = useProfile((state:any) => state.setProfile);
+  const Users = useUser((state:any) => state.Users);
+  const setUsers = useUser((state:any) => state.setUsers);
+  //address
   let countryData = Country.getAllCountries();
   const [stateData, setStateData] = useState<IState[]>([]);
   const [cityData, setCityData] = useState<ICity[]>([]);
@@ -75,22 +88,28 @@ const Profile = () => {
   const [city, setCity] = useState<ICity | null>(null); 
   const [addressL1,setAddressL1] =  useState("");
   const [addressL2,setAddressL2] =  useState("");
-  const terms = useProfile((state:any) => state.terms);
-  const active = useProfile((state:any) => state.active);
-  const setProfile = useProfile((state:any) => state.setProfile);
-  const Users = useUser((state:any) => state.Users);
-  const setUsers = useUser((state:any) => state.setUsers);
-  //status logged
-  const formType = useProfile((state:any) => state.formType);
-  const setFormType = useProfile((state:any) => state.setFormType);
+  //global state logged
   const setLogin = useLogin((state:any) => state.setLogin);
   const isLogged =  useLogin((state:any) => state.isLogged);
-  //errors
+  //global state errors
   const errors = useErrors((state:any) => state.errors);
   const setErrors = useErrors((state:any) => state.setErrors);
   const countryRef = useRef<HTMLElement | null>(null);
   const stateRef = useRef<HTMLElement | null>(null);
   const cityRef = useRef<HTMLElement | null>(null);
+  //navigation
+  const { toSuccess } = useRoute();
+
+  const setTitle = () =>{
+    if(formType === 'sign-in') 
+      return 'Sign-in';
+    if(formType === 'new-user') 
+      return 'New User';
+    if(updateProfile.includes(formType))
+       return 'Update';
+    if(!updateProfile.includes(formType) && !newProfile.includes(formType))
+      return <span>Closing...</span>;
+  }
 
   const unloadAddress = () =>{
     const currentAddress = address[0];
@@ -145,7 +164,6 @@ const Profile = () => {
       actionProps: {
         children: "Ok",
         onClick() {
-          // window.scrollTo({ top: 0, behavior: 'smooth' });
           toast.close(id)
         },
       },
@@ -184,7 +202,7 @@ const Profile = () => {
       if(newProfile.includes(formType)){
         try {
           await createUser.mutateAsync({
-            id:id,
+            id:userID,
             username:username,
             password:password,
             firstname:firstname,
@@ -194,18 +212,19 @@ const Profile = () => {
             address:address,
             logged: new Date(),
           });
-          setLogin(true);
-          setFormType('dashboard');
-          setLoggedUser(id,username);
+          // setLogin(true);
+          // setFormType('dashboard');
+          // setLoggedUser(userID,username);
+          toSuccess();
         }catch (error:any) {
           showToastError(error.message);
         }
       }else{
         try{
           await updateUser.mutateAsync({
-            id:id,
+            id:userID,
             user:{
-              id:id,
+              id:userID,
               username:username,
               password:password,
               firstname:firstname,
@@ -217,7 +236,7 @@ const Profile = () => {
             }
           });
           if(formType === 'update-profile'){
-            setLoggedUser(id,username)
+            setLoggedUser(userID,username)
           }
         }catch (error:any) {
           showToastError(error.message);
@@ -232,9 +251,19 @@ const Profile = () => {
   /*check username if avail */
   const {data: allUsers} = useGetUsers();
 
+  const users = useMemo(
+    () => allUsers?.filter((user) => !(user.id === userID && user.username === username)) ?? [],
+    [allUsers, userID, username]
+  );
+
   useEffect(()=>{
-    setFormType('sign-in');
-    setUsers(allUsers)
+    if(id){
+      setUsers(users)
+      console.log('update',id)
+    }else{
+      setUsers(allUsers)
+      console.log('new',id)
+    }
     unloadAddress();
   },[Users])
 
@@ -260,7 +289,7 @@ const Profile = () => {
         })
       }>
       <title>{`${import.meta.env.VITE_APP_TITLE} | Sign-In`}</title>
-      <h1 className='header-4'>Sign-in</h1>
+      <h1 className='header-4'>{setTitle()}</h1>
       <div className='divider-horizontal'></div>
       <div className="important">
         <strong>* Required</strong><br/>
@@ -383,7 +412,7 @@ const Profile = () => {
                 <PhoneInput
                   id="mobile"
                   name="mobile"
-                  value={mobile}
+                  value={mobile.replace(/[^\d+]/g, "")}
                   onChange={(value) => setProfile({mobile:value})}
                   type="text"
                   aria-required="true"

@@ -5,7 +5,7 @@ import { useUser } from "@src/store/store";
 import { SquarePen } from "lucide-react"
 import { Checkbox } from "@components/ui/checkbox";
 import { profileIcon } from "@lib/helpers/user";
-import { Country, State } from "country-state-city";
+import { fixAddress } from '@lib/helpers/user';
 
 const ProfileCard = () =>{
   const Users = useUser((state:any) => state.Users);
@@ -32,12 +32,6 @@ const ProfileCard = () =>{
     );
   };
 
-  const fixAddress = (address:string[]) =>{
-    const country = Country.getCountryByCode(address[0]);
-    const state = State.getStateByCode(address[1]);
-    return `${address[3]}, ${address[4]}, ${address[2]}, ${state?.name}, ${country?.name}`;
-  }
-
   // const updateUser = () =>{
 
   // }
@@ -55,7 +49,7 @@ const ProfileCard = () =>{
   <div className='grid lg:grid-cols-3 md:grid-cols-2 gap-[var(--gap)]'>
     {selected && Users?.map((user:any)=>{
       return <div
-        className={clsx('profile-card', !isVisible(`${user.id}-${user.username}`) && 'opacity-50')}
+        className={clsx('profile-card',{'opacity-50':!isVisible(`${user.id}-${user.username}`) && !isSelected(`${user.id}-${user.username}`) })}
         key={`${user.id}-${user.username}`}
         >
         <Checkbox 
