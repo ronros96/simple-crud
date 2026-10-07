@@ -94,12 +94,20 @@ export const checkLogged = (validUser:User | undefined) =>{
   }
 }
 
-export const profileIcon = (firstname:string, lastname:string) =>{
-  const firstletter = ((firstname.toLowerCase().charCodeAt(0) - 96) - (lastname.toLowerCase().charCodeAt(0) - 96)) % 10;
-  const colornumber = firstletter < 0 ? firstletter * -1 : firstletter === 0 ? 1 : firstletter;
-  const pbg = `profile-color-${colornumber}`;
+export const profileIcon = (
+  firstname:string,
+  lastname:string,
+  order?:number,
+) =>{
+  const nameMod = ((firstname.toLowerCase().charCodeAt(0) - 96) - (lastname.toLowerCase().charCodeAt(0) - 96)) % 7;
+  const colornumber = nameMod < 0 ? 
+        nameMod * -1 : 
+        nameMod === 0 ? (firstname.toLowerCase().charCodeAt(0) - 96) % 7 : 
+        nameMod;
+  const colorBG = `profile-color-${colornumber}`;
+    console.log(colorBG)
 
-  return <span  className={`profile-icon ${pbg}`}>
+  return <span  className={`profile-icon ${colorBG}`} data-order={order ?? 0}>
     {firstname[0]}{lastname[0]}
   </span>
 }

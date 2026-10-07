@@ -1,7 +1,7 @@
 import * as React from "react"
 import { Menu as MenuPrimitive } from "@base-ui/react/menu"
 import { cn } from "cn"
-import { ChevronRightIcon, CheckIcon } from "lucide-react"
+import { ChevronRightIcon, CheckIcon, Eye, EyeClosed } from "lucide-react"
 
 function DropdownMenu({ ...props }: MenuPrimitive.Root.Props) {
   return <MenuPrimitive.Root data-slot="dropdown-menu" {...props} />
@@ -147,6 +147,7 @@ function DropdownMenuCheckboxItem({
   children,
   checked,
   inset,
+  tickerType,
   ...props
 }: MenuPrimitive.CheckboxItem.Props & {
   inset?: boolean
@@ -166,9 +167,10 @@ function DropdownMenuCheckboxItem({
         className="pointer-events-none absolute right-2 flex items-center justify-center"
         data-slot="dropdown-menu-checkbox-item-indicator"
       >
-        <MenuPrimitive.CheckboxItemIndicator>
-          <CheckIcon
-          />
+        <MenuPrimitive.CheckboxItemIndicator keepMounted={tickerType === 'visual' ? true:false}>
+          {tickerType === 'visual' && checked && <Eye/>}
+          {tickerType === 'visual' && !checked && <EyeClosed/>}
+          {tickerType === undefined && <CheckIcon/>}
         </MenuPrimitive.CheckboxItemIndicator>
       </span>
       {children}

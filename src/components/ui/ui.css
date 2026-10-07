@@ -520,6 +520,39 @@ ul.rules{
     &:hover{
       background-color: var(--button);
     }
+
+    .collected{
+      position: relative;
+      display: flex;
+      justify-content: end;
+      width: auto;
+      flex: 1;
+      isolation: isolate;
+    }
+
+    .collected .profile-icon{
+      position: relative;
+      margin-left: calc(var(--gap) * -1);
+      width: calc(var(--gap) + .5rem);
+      height: calc(var(--gap) + .5rem);
+      font-size:var(--font-sm);
+      box-shadow: .25rem 0 .25rem #00000088;
+      z-index: calc(attr(data-order type(<number>),1) * -1);
+      &:first-child{
+        margin-left: 0;
+      }
+    }
+    .profile-icon:nth-child(n + 5){
+      display: none;
+    }
+
+    .collected:has(> .profile-icon:nth-child(5))::before{
+
+    }
+  }
+
+  [data-slot=dropdown-menu-checkbox-item]:focus{
+    background-color: var(--button);
   }
 }
 

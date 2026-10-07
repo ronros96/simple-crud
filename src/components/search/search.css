@@ -2,6 +2,7 @@
   padding-left: 0;
   gap:.5rem;
   overflow: hidden;
+  background-color: var(--secondary-bg);
 
   [data-slot=input-group-addon]{
     padding: 0;

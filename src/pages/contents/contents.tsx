@@ -8,6 +8,7 @@ import {
   UserCheck,
   UserRoundX,
   UserRoundPlus,
+  View,
 } from "lucide-react"
 import {
   Dialog,
@@ -24,12 +25,8 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
   DropdownMenuCheckboxItem,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import { Button } from "@components/ui/button";
@@ -42,6 +39,9 @@ import ProfileCard from '@components/cards/profileCard';
 
 import { clearUser, fixAddress } from '@lib/helpers/user';
 import { useRoute } from '@lib/helpers/routes';
+
+import { profileIcon } from "@lib/helpers/user";
+// import type { User } from '@src/fields/type';
 
 const Contents = () =>{
   //local states
@@ -80,8 +80,6 @@ const Contents = () =>{
       }))
     );
   };
-
-  const allChecked = selected.every((item:any) => item.value);
 
   const hasSelected = selected.some(
     (item:any) => item.value === true
@@ -186,7 +184,7 @@ const Contents = () =>{
               </span>
             </Button>
           }/>
-          <DropdownMenuContent className="dropmenu w-80" align="end">
+          <DropdownMenuContent className="dropmenu w-60" align="end">
             <DropdownMenuGroup>
               <DropdownMenuItem
                 onClick={() => {
@@ -204,49 +202,44 @@ const Contents = () =>{
               <DropdownMenuLabel>
                 Filter View
               </DropdownMenuLabel>
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger>
-                  <Eye/>
-                  Visible Fields
-                </DropdownMenuSubTrigger>
-                <DropdownMenuPortal>
-                  <DropdownMenuSubContent>
-                    <DropdownMenuCheckboxItem
-                      checked={viewFilter.name}
-                      onCheckedChange={(checked) =>
-                        setViewFilter({ ...viewFilter, name: checked === true })
-                      }
-                    >
-                      Name
-                    </DropdownMenuCheckboxItem>
-                    <DropdownMenuCheckboxItem
-                      checked={viewFilter.mobile}
-                      onCheckedChange={(checked) =>
-                        setViewFilter({ ...viewFilter, mobile: checked === true })
-                      }
-                    >
-                      Mobile
-                    </DropdownMenuCheckboxItem>
-                    <DropdownMenuCheckboxItem
-                      checked={viewFilter.email}
-                      onCheckedChange={(checked) =>
-                        setViewFilter({ ...viewFilter, email: checked === true })
-                      }
-                    >
-                      Email
-                    </DropdownMenuCheckboxItem>
-                    <DropdownMenuCheckboxItem
-                      checked={viewFilter.address}
-                      onCheckedChange={(checked) =>
-                        setViewFilter({ ...viewFilter, address: checked === true })
-                      }
-                    >
-                      Address
-                    </DropdownMenuCheckboxItem>
-                  </DropdownMenuSubContent>
-                </DropdownMenuPortal>
-              </DropdownMenuSub>
               <DropdownMenuCheckboxItem
+                tickerType='visual'
+                checked={viewFilter.name}
+                onCheckedChange={(checked) =>
+                  setViewFilter({ ...viewFilter, name: checked === true })
+                }
+                
+              >
+                Name
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                tickerType='visual'
+                checked={viewFilter.mobile}
+                onCheckedChange={(checked) =>
+                  setViewFilter({ ...viewFilter, mobile: checked === true })
+                }
+              >
+                Mobile
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                tickerType='visual'
+                checked={viewFilter.email}
+                onCheckedChange={(checked) =>
+                  setViewFilter({ ...viewFilter, email: checked === true })
+                }
+              >
+                Email
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                tickerType='visual'
+                checked={viewFilter.address}
+                onCheckedChange={(checked) =>
+                  setViewFilter({ ...viewFilter, address: checked === true })
+                }
+              >
+                Address
+              </DropdownMenuCheckboxItem>
+              {/* <DropdownMenuCheckboxItem
                 checked={viewFilter.mobile}
                 onCheckedChange={(checked) =>
                   setViewFilter({ ...viewFilter, mobile: checked === true })
@@ -254,7 +247,7 @@ const Contents = () =>{
               >
                 <Lock/>
                 Lock Selected User(s)
-              </DropdownMenuCheckboxItem>
+              </DropdownMenuCheckboxItem> */}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
@@ -266,18 +259,27 @@ const Contents = () =>{
                 </span>
               </DropdownMenuLabel>
               <DropdownMenuItem
-                onClick={() => checkAll(!allChecked)}
+                onClick={() => checkAll(true)}
               >
-              {
-                allChecked ?
-                <><CircleX/> Deselect All</>  : 
-                <><CircleCheck/> Select All</>
-              }
+                <CircleCheck/> Select All
               </DropdownMenuItem>
-              {/* <DropdownMenuItem disabled={!hasSelected}>
+              <DropdownMenuItem
+                onClick={() => checkAll(false)}
+                disabled={!hasSelected}
+              >
+                <CircleX/> Unselect All
+              </DropdownMenuItem>
+              <DropdownMenuItem disabled={!hasSelected}>
                 <View/>
                 View Selected
-              </DropdownMenuItem> */}
+                <div className='collected'>
+                  {
+                    selected.map((user:any,ctr:number)=>{
+                      return user.value && profileIcon(user.firstname,user.lastname,ctr)
+                    })
+                  }
+                </div>
+              </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>

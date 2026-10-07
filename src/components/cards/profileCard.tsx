@@ -39,6 +39,9 @@ const ProfileCard = () =>{
   useEffect(() => {
     const userVal = Users && Users?.map((user:any) => ({
       id: `${user.id}-${user.username}`,
+      userID: user.id,
+      firstname: user.firstname,
+      lastname: user.lastname,
       value: false,
       visible: true,
     }));
@@ -49,7 +52,7 @@ const ProfileCard = () =>{
   <div className='grid lg:grid-cols-3 md:grid-cols-2 gap-[var(--gap)]'>
     {selected && Users?.map((user:any)=>{
       return <div
-        className={clsx('profile-card',{'opacity-50':!isVisible(`${user.id}-${user.username}`) && !isSelected(`${user.id}-${user.username}`) })}
+        className={clsx('profile-card',{'hidden':!isVisible(`${user.id}-${user.username}`) })}
         key={`${user.id}-${user.username}`}
         >
         <Checkbox 

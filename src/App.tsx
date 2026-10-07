@@ -26,10 +26,9 @@ function App() {
 
   useEffect(()=>{
     checkLogged(validUser);
+    console.log(isLogged)
     if(isLogged){
-      if(location.pathname !== '/simple-crud/'){
-        toDashboard();
-      }
+      toDashboard();
     }else{
       toLogin()
     }
