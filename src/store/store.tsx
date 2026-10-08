@@ -16,23 +16,19 @@ type Login = {
   isLogged: boolean;
   id: string;
   username: string;
-  password: string;
 }
 
 type LoginStore = Login & {
   setLogin: (Login: Required<Login>) => void;
   setUsername: (Login: Required<Login>) => void;
-  setPassword: (Login: Required<Login>) => void;
 };
 
 export const useLogin = create<LoginStore>((set) => ({
   isLogged: false,
   id: '',
   username: '',
-  password: '',
   setLogin: (state:any) => set({isLogged:state}),
-  setUsername: (state:any) => set({id:state,username:state}),
-  setPassword: (state:any) => set({password:state}),
+  setUsername: (state:any) => set({id:state,username:state})
 }));
 
 // ROLES

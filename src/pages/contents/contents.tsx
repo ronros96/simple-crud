@@ -291,7 +291,7 @@ const Contents = () =>{
                 }}
               >
                 <UserRoundX/>
-                Delete Selected
+                Delete All Selected
               </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>

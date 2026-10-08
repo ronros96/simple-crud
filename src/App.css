@@ -197,6 +197,8 @@ body{
   font-size: var(--font-base);
   font-optical-sizing: auto;
   color: var(--text-default);
+  background: radial-gradient(var(--dgray) 2px, var(--main-bg) 1px) 0 0 / 30px 30px;
+  background-repeat: repeat;
 }
 
 main{
@@ -204,10 +206,6 @@ main{
   width: 100%;
   min-height: 100svh;
   height: auto;
-  isolation: isolate;
-  /* background-color: var(--main-bg); */
-  background: radial-gradient(var(--dgray) 2px, var(--main-bg) 1px) 0 0 / 30px 30px;
-  background-repeat: repeat;
   isolation: isolate;
 
   &:has(section:empty){

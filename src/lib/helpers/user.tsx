@@ -60,40 +60,6 @@ export const setLoggedUser = (
   useLogin.setState({id:id,username:username});
 }
 
-export const checkLogged = (validUser:User | undefined) =>{
-  const isLogged = localStorage.getItem('setLogged') ?? "";
-  const loggedObj = isLogged !== "" && JSON.parse(isLogged);
-  const now = new Date();
-    
-  if(loggedObj.username){
-    useLogin.setState({id:loggedObj.id, username: loggedObj.username});
-    if(validUser){
-      const lastLogged = validUser?.logged && new Date(validUser?.logged);
-      const timeDiff = lastLogged ? now.getTime() - lastLogged.getTime() : -1;
-      const less24Hrs = timeDiff >= 0 && timeDiff <= 24 * 60 * 60 * 1000;
-      if(less24Hrs){
-        useProfile.setState({
-          formType:'dashboard',
-          id:validUser.id,
-          username: validUser.username,
-          password: validUser.password,
-          firstname: validUser.firstname,
-          lastname: validUser.lastname,
-          mobile: validUser.mobile,
-          email: validUser.email,
-          address: [validUser.address],
-          terms: true,
-        })
-        useLogin.setState({isLogged: true});
-      }else{
-        loggedOut();
-      }
-    }
-  }else{
-    loggedOut();
-  }
-}
-
 export const profileIcon = (
   firstname:string,
   lastname:string,
