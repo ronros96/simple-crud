@@ -1,4 +1,6 @@
 import './cards.css';
+import type { User } from '@src/fields/type';
+
 import clsx from 'clsx';
 import { useEffect } from 'react';
 import { useUser } from "@src/store/store";
@@ -6,6 +8,7 @@ import { SquarePen } from "lucide-react"
 import { Checkbox } from "@components/ui/checkbox";
 import { profileIcon } from "@lib/helpers/user";
 import { fixAddress } from '@lib/helpers/user';
+
 
 const ProfileCard = () =>{
   const Users = useUser((state:any) => state.Users);
@@ -37,7 +40,7 @@ const ProfileCard = () =>{
   // }
 
   useEffect(() => {
-    const userVal = Users && Users?.map((user:any) => ({
+    const userVal = Users && Users?.map((user:User) => ({
       id: `${user.id}-${user.username}`,
       userID: user.id,
       firstname: user.firstname,

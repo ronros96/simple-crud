@@ -561,19 +561,12 @@ ul.rules{
   display: flex;
   flex-direction: column;
   gap: .25rem;
-  margin-top: var(--gap);
+  margin-block: var(--gap);
   color: var(--error);
   font-size: var(--font-sm);
   font-weight: 700;
   text-align: center;
   text-transform: uppercase;
-  opacity: 0;
-  
-  transition: opacity .3s var(--ease);
-
-  &.progress-active{
-    opacity: 1;
-  }
 
   [data-slot=progress-track]{
     background-color: var(--dgray);

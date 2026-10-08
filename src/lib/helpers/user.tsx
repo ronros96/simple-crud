@@ -71,9 +71,8 @@ export const profileIcon = (
         nameMod === 0 ? (firstname.toLowerCase().charCodeAt(0) - 96) % 7 : 
         nameMod;
   const colorBG = `profile-color-${colornumber}`;
-    console.log(colorBG)
 
-  return <span  className={`profile-icon ${colorBG}`} data-order={order ?? 0}>
+  return <span key={`${firstname}-${lastname}`} className={`profile-icon ${colorBG}`} data-order={order ?? 0}>
     {firstname[0]}{lastname[0]}
   </span>
 }

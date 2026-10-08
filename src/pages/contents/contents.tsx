@@ -1,8 +1,6 @@
 import clsx from 'clsx';
 import { useEffect, useState, useRef, useMemo } from "react";
-import { 
-  Eye,
-  Lock,
+import {
   CircleX,
   CircleCheck,
   UserCheck,
@@ -34,19 +32,24 @@ import { Progress } from "@components/ui/progress"
 import SearchBar from '@components/search/search';
 
 import { useProfile, useUser, useSearch } from "@src/store/store";
-import { useGetUsers } from '@hooks/Profile';
+import { useGetUsers, useDeleteUser } from '@hooks/Profile';
 import ProfileCard from '@components/cards/profileCard';
 
 import { clearUser, fixAddress } from '@lib/helpers/user';
 import { useRoute } from '@lib/helpers/routes';
 
 import { profileIcon } from "@lib/helpers/user";
-// import type { User } from '@src/fields/type';
+import type { User } from '@src/fields/type';
+
+// type SelectedUser:<Record>User = {
+
+// }
 
 const Contents = () =>{
   //local states
   const [open,setOpen] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [confirm, setConfirm] = useState(false);
   const [complete, setComplete] = useState(false);
   const timerRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(0);
@@ -68,15 +71,21 @@ const Contents = () =>{
   const searchType = useSearch((state:any) => state.searchType);
   const searchValue = useSearch((state:any) => state.searchValue);
   //hooks
-  const {data: allUsers} = useGetUsers();
+  const {data: allUsers, refetch} = useGetUsers();
+  const deleteUser = useDeleteUser();
   //navigation
-  const { toNewProfile } = useRoute()
+  const { toNewProfile } = useRoute();
+
+  const users = useMemo(
+    () => allUsers?.filter((user) => !(user.id === userID && user.username === username)) ?? [],
+    [allUsers, userID, username]
+  );
 
   const checkAll = (value: boolean) => {
     setSelected((prev:any) =>
       prev.map((item:any) => ({
         ...item,
-        value,
+        value
       }))
     );
   };
@@ -132,8 +141,15 @@ const Contents = () =>{
       const elapsed = performance.now() - startTimeRef.current;
       const percentage = Math.min((elapsed / duration) * 100, 100);
       setProgress(percentage);
+      console.log(progress,percentage)
       if (percentage < 100) {
         timerRef.current = requestAnimationFrame(update);
+      }
+      if(percentage === 100){
+        setConfirm(true);
+        setTimeout(()=>{
+          handleComplete();
+        },1000)
       }
     };
     timerRef.current = requestAnimationFrame(update);
@@ -147,22 +163,30 @@ const Contents = () =>{
     setProgress(0);
   };
 
-  const handleComplete = () => {
-    setComplete(true);
-  };
+  const handleComplete = async () => {
+    setProgress(0);
+    try {
+      const usersToDelete = selected.filter(
+        (user: User) => user.value
+      );
+      const total = usersToDelete.length;
 
-  // useEffect(()=>{
-  //   console.log('selected',selected)
-  // },[selected])
+      for (let i = 0; i < total; i++) {
+        const user = usersToDelete[i];
+        await deleteUser.mutateAsync(user.userID);
+        const deletePercent = ((i + 1) / total) * 100;
+        setProgress(deletePercent);
+      }
+      refetch;
+      setComplete(true);
+    } catch (error: any) {
+      alert(error.message);
+    }
+  };
 
   useEffect(()=>{
     searchUsers(searchValue);
   },[searchValue])
-
-  const users = useMemo(
-    () => allUsers?.filter((user) => !(user.id === userID && user.username === username)) ?? [],
-    [allUsers, userID, username]
-  );
 
   useEffect(()=>{
     setUsers(users)
@@ -304,6 +328,9 @@ const Contents = () =>{
           setOpen(!open);
           setProgress(0);
           setComplete(false);
+          setConfirm(false);
+          setUsers(allUsers)
+          setSelected(allUsers);
         }}>
         <DialogContent className="modal sm all-centered">
           <DialogHeader>
@@ -311,8 +338,14 @@ const Contents = () =>{
             <DialogDescription className="text-center mb-0">
               All Selected {selectedCount > 1 ? 'users':'user'} will be permanently deleted.
             </DialogDescription>
-            <Progress value={complete ? 100 : progress} className={clsx('w-full',{'progress-active':progress > 0 || complete})}>
-              {progress >= 100 || complete ? 'Deleted!' : 'Deleting...'}
+            <Progress value={complete ? 100 : progress}>
+              {
+                progress >= 100 && complete ? 'Deleted!' :
+                progress > 1 && !confirm ? 'Confirming...' :
+                progress >= 100 && confirm ? 'Confirmed! Starting to delete' :
+                progress < 100 && confirm ? 'Deleting...' :
+                'Press & Hold the Confirm Button to proceed'
+              }
             </Progress>
           </DialogHeader>
           <DialogFooter className='items-center flex-col flex-row'>
@@ -324,21 +357,22 @@ const Contents = () =>{
                   e.preventDefault();
                 }}
                 onPointerDown={startProgress}
-                onPointerUp={() => {
-                  if (progress >= 100) {
-                    handleComplete();
-                  }else{
-                    stopProgress();
-                  } 
-                }}
+                onPointerUp={
+                  stopProgress
+                }
                 onPointerLeave={stopProgress}
                 onPointerCancel={stopProgress}
+                disabled={confirm}
               >
-                Yes{' '}<small>Press + Hold to Proceed</small>
+                {
+                  !confirm ? <>Confirm{' '}<small>Press & Hold</small></>:
+                  <>Confirmed</>
+                }
+                
               </Button>:
-              <DialogClose render={<Button variant="outline" className="sm stroke">Okay</Button>} />
+              <DialogClose render={<Button variant="outline" className="sm stroke" disabled={!complete}>Okay</Button>} />
             }
-            <DialogClose render={<Button variant="outline" className="stroke sm">Cancel</Button>} />
+            {!confirm && <DialogClose render={<Button variant="outline" className="stroke sm">Cancel</Button>}/>}
           </DialogFooter>
         </DialogContent>
       </Dialog>

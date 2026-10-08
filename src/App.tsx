@@ -20,6 +20,7 @@ function App() {
   const isLogged = useLogin((state:any) => state.isLogged);
   const setLogin = useLogin((state:any) => state.setLogin);
   const setUsername = useLogin((state:any) => state.setUsername);
+  const formType = useProfile((state:any) => state.formType);
   const setFormType = useProfile((state:any) => state.setFormType);
   const localLogged = localStorage.getItem('setLogged') ?? "";
   const loggedObj = localLogged !== "" && JSON.parse(localLogged);
@@ -51,22 +52,22 @@ function App() {
           username:validUser.username
         })
         setLogin(true)
-        return true;
       }else{
         loggedOut();
-        return false;
       }
     }
   }
 
   useEffect(()=>{
-    if(checkLogged()){
-      setFormType('dasboard');
+    checkLogged()
+    if(isLogged){
+      setFormType('dashboard');
       toDashboard();
     }else{
       setFormType('login');
       toLogin()
     }
+    console.log(isLogged,formType);
   },[isLogged,validUser]);
 
   return (
