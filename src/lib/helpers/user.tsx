@@ -8,7 +8,7 @@ export const clearForm = () => {
     password:'',
     firstname:'',
     lastname:'',
-    mobile:'',
+    contact:'',
     email:'',
     address:[],
     terms:false,
@@ -21,11 +21,12 @@ export const clearForm = () => {
 
 export const clearUser = () => {
   useUser.setState({
+    UserPicked:{},
     username:'',
     password:'',
     firstname:'',
     lastname:'',
-    mobile:'',
+    contact:'',
     email:'',
     address:[],
     terms:false,
@@ -80,4 +81,17 @@ export const fixAddress = (address:string[]) =>{
     {name:''};
   const stateDisplay = state?.name !== '' ? `${state?.name},`:''; 
   return `${address[3]}, ${address[4]}, ${address[2]}, ${stateDisplay} ${country?.name}`;
+}
+
+export const fixContact = (
+  contact:string,
+  countryCode: undefined | string[]
+) =>{
+  const number = contact.split('x');
+  const actualNum = number[0].replace(/[().\-\s]/g, "")
+  const localNum = number[1] ? `(${number[1]})` : '';
+  const countryNum = countryCode !== undefined ? Country.getCountryByCode(countryCode[0])?.phonecode : '';
+  const countryNumPlus = countryNum !== '' && countryNum !== undefined ? countryNum?.startsWith('+') ? `${countryNum}` : `+${countryNum}` : '';
+  // console.log(`${countryNumPlus}${actualNum}`)
+  return [`${countryNumPlus}${actualNum}`,localNum]; 
 }

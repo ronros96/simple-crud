@@ -40,9 +40,9 @@ export const ProfileFields:Fields = {
       required:true,
     }
   },
-  mobile:{
+  contact:{
     value:'',
-    fieldType:'mobile',
+    fieldType:'contact',
     fieldRules:{
       required:true,
       characters:10,

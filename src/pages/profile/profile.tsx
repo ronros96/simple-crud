@@ -1,4 +1,6 @@
 import './profile.css';
+//types
+import type { User } from '@src/fields/type';
 import clsx from 'clsx';
 import { useParams } from 'react-router';
 import { useEffect, useState, useRef, useMemo } from "react";
@@ -42,33 +44,31 @@ import { Checkbox } from "@components/ui/checkbox"
 import { PhoneInput } from "@components/ui/phone"
 import { toast, Toaster } from "@components/ui/toast"
 import BackCancel from '@components/back_cancel/backCancel';
-
 import { Eye, EyeOff } from "lucide-react"
 //state
 import { useErrors, useProfile, useUser, useLogin } from "@src/store/store";
 // helpers
 import {checkAllFields, showRequirements, fieldError, FieldOrginizer} from "@src/lib/helpers/field";
 import { ProfileFields } from "@src/fields/profile";
-import { setLoggedUser } from "@lib/helpers/user";
+import { setLoggedUser, fixContact } from "@lib/helpers/user";
 import { useRoute } from "@lib/helpers/routes";
 //hooks
-import { usePutUser, useCreateUser, useGetUser } from '@hooks/Profile';
+import { usePutUser, useCreateUser, useGetUser, useGetUsers } from '@hooks/Profile';
+
 
 const Profile = () => {
-  //get ID
+  //Init
   const { id } = useParams();
   const UserPicked = useUser((state:any) => state.UserPicked);
   const setUserPicked = useUser((state:any) => state.setUserPicked);
   const {data: userFound} = useGetUser({id:id});
+  const {data: allUsers} = useGetUsers();
 
   useEffect(()=>{
     if(id && userFound){
       setFormType('update-user')
       setUserPicked(userFound);
-      //remove user from users
-      
     }
-    unloadAddress();
   },[userFound,UserPicked])
 
   //update / register
@@ -85,12 +85,13 @@ const Profile = () => {
   const password = (UserPicked && UserPicked.password) ?? '';
   const firstname = (UserPicked && UserPicked.firstname) ?? '';
   const lastname = (UserPicked && UserPicked.lastname) ?? '';
-  const mobile =( UserPicked && UserPicked.mobile) ?? '';
+  const contact =(UserPicked && UserPicked.contact) ?? '';
   const email = (UserPicked && UserPicked.email) ?? '';
   const address = (UserPicked && UserPicked.address) ?? '';
   const terms = (UserPicked && UserPicked.terms) ?? false;
   const active = (UserPicked && UserPicked.active)?? false;
- 
+  //users
+  const setUsers = useUser((state:any) => state.setUsers);
   //address
   let countryData = Country.getAllCountries();
   const [stateData, setStateData] = useState<IState[]>([]);
@@ -123,8 +124,18 @@ const Profile = () => {
       return <span>Closing...</span>;
   }
 
+  const [contactNum,setContactNum] = useState('');
+  const [contactLoc,setContactLoc] = useState('');
+  const setContact = () => {
+    setUserPicked({contact:`${contactNum} x${contactLoc}`})
+  }
+
   const unloadAddress = () =>{
-    const currentAddress = address[0];
+    setCountry(null);
+    setState(null);
+    setCity(null);
+
+    const currentAddress = address;
     if(Array.isArray(currentAddress)){
       const currentCountry = Country.getCountryByCode(currentAddress[0]);
       currentCountry !== undefined && setCountry(currentCountry);
@@ -140,7 +151,7 @@ const Profile = () => {
     }
   }
 
-  const fixAddress = () => {
+  const setAddress = () => {
     let addInputs = [];
     if(countryRef.current?.innerHTML === "Choose Country"){
       addInputs.push("-country-");
@@ -190,14 +201,14 @@ const Profile = () => {
       password,
       firstname,
       lastname,
-      mobile,
+      contact,
       email,
       address,
       terms,
       active
     }
     //insert state values to ProfileFields value
-    fixAddress();
+    setAddress();
     const fields = Object.fromEntries(
       Object.entries(ProfileFields).map(([key, field]) => [
         key,
@@ -219,10 +230,11 @@ const Profile = () => {
             password:password,
             firstname:firstname,
             lastname:lastname,
-            mobile:mobile,
+            contact:contact,
             email:email,
             address:address,
             logged: new Date(),
+            bot:false,
           });
           // setLogin(true);
           // setFormType('dashboard');
@@ -241,10 +253,11 @@ const Profile = () => {
               password:password,
               firstname:firstname,
               lastname:lastname,
-              mobile:mobile,
+              contact:contact,
               email:email,
               address:address,
-              logged: new Date()
+              logged: new Date(),
+              bot:false,
             }
           });
           if(formType === 'update-profile'){
@@ -259,6 +272,21 @@ const Profile = () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
   }
+
+  const filteredUsers = useMemo(
+    () => allUsers?.filter((user:User) => !(user.id === id )) ?? [],
+    [allUsers]
+  );
+
+  //setUsers to check username uniqueness.
+  useEffect(() => {
+    if(id){
+      setUsers(filteredUsers);
+      unloadAddress();
+    }else{
+      setUsers(allUsers);
+    }
+  },[address,allUsers,country,state,city])
 
   useEffect(() => {
     if(country){
@@ -398,19 +426,23 @@ const Profile = () => {
               </InputGroup>
             </Field>}
             
-            {FieldOrginizer(ProfileFields,'mobile') &&
-            <Field className={clsx('form-group',{'error':fieldError(errors,'mobile')})}>
-              <FieldLabel htmlFor="mobile">Mobile Number<span className="important">*</span>:</FieldLabel>
+            {FieldOrginizer(ProfileFields,'contact') &&
+            <Field className={clsx('form-group',{'error':fieldError(errors,'contact')})}>
+              <FieldLabel htmlFor="contact">Contact Number<span className="important">*</span>:</FieldLabel>
               <InputGroup>
-                <PhoneInput
-                  id="mobile"
-                  name="mobile"
-                  value={mobile.replace(/[^\d+]/g, "")}
-                  onChange={(value) => setUserPicked({mobile:value})}
+                {/* <PhoneInput
+                  id="contact"
+                  name="contact"
+                  value={fixContact(contact,address)[0]}
+                  onChange={(value) => {
+                    setContactNum(value);
+                    setContact;
+                  }}
                   type="text"
                   aria-required="true"
-                />
+                /> */}
               </InputGroup>
+              
             </Field>}
 
             {FieldOrginizer(ProfileFields,'email') &&
@@ -447,6 +479,7 @@ const Profile = () => {
                 }
               )}
               </FieldLegend>
+
               <FieldGroup>
                 <FieldLabel htmlFor="country">Country</FieldLabel>
                 <Select 
@@ -459,7 +492,7 @@ const Profile = () => {
                     );
                     if (selected) {
                       setCountry(selected);
-                      fixAddress()
+                      setAddress()
                     }
                   }}
                 >
@@ -479,7 +512,6 @@ const Profile = () => {
                 </Select>
               </FieldGroup>
 
-              {stateData.length > 0 && 
               <FieldGroup>
                 <FieldLabel htmlFor="country">State / Region</FieldLabel>
                 <Select 
@@ -492,12 +524,13 @@ const Profile = () => {
                     );
                     if (selected) {
                       setState(selected);
-                      fixAddress()
+                      setAddress()
                     }
                   }}
+                  disabled={stateData.length === 0}
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue  placeholder="Choose State" ref={stateRef} />
+                    <SelectValue  placeholder={stateData.length === 0 ? 'Choose Country first' : 'Choose State'} ref={stateRef} />
                   </SelectTrigger>
                   <SelectContent className="select-content">
                     <SelectGroup>
@@ -510,9 +543,8 @@ const Profile = () => {
                     </SelectGroup>
                   </SelectContent>
                 </Select>
-              </FieldGroup>}
+              </FieldGroup>
 
-              {cityData.length > 0 && 
               <FieldGroup>
                 <FieldLabel htmlFor="country">City / Municipality</FieldLabel>
                 <Select 
@@ -525,12 +557,13 @@ const Profile = () => {
                     );
                     if (selected) {
                       setCity(selected);
-                      fixAddress()
+                      setAddress()
                     }
                   }}
+                  disabled={cityData.length === 0}
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue  placeholder="Choose City" ref={cityRef}/>
+                    <SelectValue  placeholder={cityData.length === 0 ? 'Choose State first' : 'Choose City'} ref={cityRef}/>
                   </SelectTrigger>
                   <SelectContent className="select-content">
                     <SelectGroup>
@@ -543,7 +576,7 @@ const Profile = () => {
                     </SelectGroup>
                   </SelectContent>
                 </Select>
-                </FieldGroup>}
+              </FieldGroup>
             </FieldSet>
 
             <FieldGroup className='col-full mt-2'>
@@ -555,7 +588,7 @@ const Profile = () => {
                   value={addressL1}
                   onChange={(e) => {
                     setAddressL1(e.target.value)
-                    fixAddress()
+                    setAddress()
                   }}
                   type="text"
                   aria-required="true"
@@ -573,7 +606,7 @@ const Profile = () => {
                   value={addressL2}
                   onChange={(e) => {
                     setAddressL2(e.target.value)
-                    fixAddress()
+                    setAddress()
                   }}
                   type="text"
                   aria-required="true"

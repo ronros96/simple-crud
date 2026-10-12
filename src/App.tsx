@@ -41,7 +41,7 @@ function App() {
           password: validUser.password,
           firstname: validUser.firstname,
           lastname: validUser.lastname,
-          mobile: validUser.mobile,
+          contact: validUser.contact,
           email: validUser.email,
           address: [validUser.address],
           terms: true,

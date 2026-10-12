@@ -56,7 +56,7 @@ const Contents = () =>{
   const duration = 1000;
   const [viewFilter, setViewFilter] = useState({
     name: true,
-    mobile: true,
+    contact: true,
     email: true,
     address: true,
   })
@@ -77,7 +77,7 @@ const Contents = () =>{
   const { toNewProfile } = useRoute();
 
   const users = useMemo(
-    () => allUsers?.filter((user) => !(user.id === userID && user.username === username)) ?? [],
+    () => allUsers?.filter((user) => !(user.id === userID)) ?? [],
     [allUsers, userID, username]
   );
 
@@ -108,8 +108,8 @@ const Contents = () =>{
             user.lastname?.toLowerCase().includes(search)
           );
 
-        case 'mobile':
-          return user.mobile?.includes(value);
+        case 'contact':
+          return user.contact?.includes(value);
 
         case 'email':
           return user.email?.toLowerCase().includes(search);
@@ -238,12 +238,12 @@ const Contents = () =>{
               </DropdownMenuCheckboxItem>
               <DropdownMenuCheckboxItem
                 tickerType='visual'
-                checked={viewFilter.mobile}
+                checked={viewFilter.contact}
                 onCheckedChange={(checked) =>
-                  setViewFilter({ ...viewFilter, mobile: checked === true })
+                  setViewFilter({ ...viewFilter, contact: checked === true })
                 }
               >
-                Mobile
+                Contact
               </DropdownMenuCheckboxItem>
               <DropdownMenuCheckboxItem
                 tickerType='visual'
@@ -264,9 +264,9 @@ const Contents = () =>{
                 Address
               </DropdownMenuCheckboxItem>
               {/* <DropdownMenuCheckboxItem
-                checked={viewFilter.mobile}
+                checked={viewFilter.contact}
                 onCheckedChange={(checked) =>
-                  setViewFilter({ ...viewFilter, mobile: checked === true })
+                  setViewFilter({ ...viewFilter, contact: checked === true })
                 }
               >
                 <Lock/>

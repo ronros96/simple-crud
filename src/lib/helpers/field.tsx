@@ -144,7 +144,7 @@ const validateField = (
       }
       break;
 
-    case "mobile":
+    case "contact":
       if (!/^(\+\d{1,3}[- ]?)?\d{10}$/.test(value)) {
         errors.push("numberOnly");
       }

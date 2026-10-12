@@ -35,7 +35,7 @@ const SearchBar = () =>{
               <DropdownMenuLabel>Search By</DropdownMenuLabel>
               <DropdownMenuSeparator></DropdownMenuSeparator>
               <DropdownMenuItem onClick={()=>{setSearchType('name')}}>Name</DropdownMenuItem>
-              <DropdownMenuItem onClick={()=>{setSearchType('mobile')}}>Mobile</DropdownMenuItem>
+              <DropdownMenuItem onClick={()=>{setSearchType('contact')}}>Contact</DropdownMenuItem>
               <DropdownMenuItem onClick={()=>{setSearchType('email')}}>Email</DropdownMenuItem>
               <DropdownMenuItem onClick={()=>{setSearchType('address')}}>Address</DropdownMenuItem>
             </DropdownMenuGroup>

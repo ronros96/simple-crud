@@ -7,7 +7,7 @@
                                 'alphanum' (accepts alpha-numberic only) 
                                 'alpha' (accepts letters only)
                                 'num' (accepts numbers only)
-                                'mobile' (accepts 10+ digits mobile number)
+                                'contact' (accepts 15+ digits contact number)
                                 'bool' (accepts binary | binary[])  - for tick boxes like checkbox / radio
                                                                     - if required single entity: it only accepts 'true' value
                                                                     - if required multiple entity: at least one entity must be 'true'
@@ -41,7 +41,7 @@ type uniqueType = "profile"
 
 export type Owner = Record<string,string>
 
-export type FieldType = "any" | "alphanum" | "alpha" | "num" | "mobile" | "bool" | "date" | "datetime";
+export type FieldType = "any" | "alphanum" | "alpha" | "num" | "contact" | "bool" | "date" | "datetime";
 
 export type FieldRules = {
   required?: boolean;
@@ -80,10 +80,11 @@ export type User = {
   password: string;
   firstname: string;
   lastname: string;
-  mobile: string;
+  contact: string;
   email: string;
   address: string;
   logged?: Date;
-  value?: boolean,
-  visible?: boolean,
+  bot?:boolean;
+  value?: boolean;
+  visible?: boolean;
 };

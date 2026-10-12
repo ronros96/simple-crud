@@ -11,8 +11,7 @@ import { SquarePen } from "lucide-react"
 import { useUser, useProfile } from "@src/store/store";
 //helpers
 import { profileIcon } from "@lib/helpers/user";
-import { fixAddress } from '@lib/helpers/user';
-import { useRoute } from "@lib/helpers/routes";
+import { fixAddress, fixContact } from '@lib/helpers/user';
 
 
 
@@ -23,8 +22,6 @@ const ProfileCard = () =>{
   const selected = useUser((state:any) => state.selected);
   const setSelected = useUser((state:any) => state.setSelected);
   const setFormType = useProfile((state:any) => state.setFormType);
-  //Navigation
-  const { toUpdateProfile } = useRoute();
 
   const isSelected = (id: string) => {
     return selected.find((item:any) => item.id === id)?.value ?? false;
@@ -84,10 +81,11 @@ const ProfileCard = () =>{
         <h4 className='header-5' >
           {profileIcon(user.firstname,user.lastname)}
           {user.firstname}{' '}{user.lastname}
+          {user.bot && <span className='bot'>Dummy</span>}
         </h4>
         <div className='contents'>
-          <p><strong>Mobile</strong></p>
-          <p>{user.mobile}</p>
+          <p><strong>Contact</strong></p>
+          <p>{fixContact(user.contact,user.bot ? user.address : undefined).join(' ')}</p>
           <p><strong>Email</strong></p>
           <p>{user.email}</p>
           <p><strong>Address</strong></p>

@@ -91,3 +91,15 @@
 .search-box{
   width: 100%;
 }
+
+.profile-card .bot{
+  padding: .15rem;
+  display: block;
+  font-size: var(--font-xsm);
+  font-weight: 700;
+  color: var(--lgray);
+  border: solid 1px var(--lgray);
+  border-radius: 5px;
+  corner-shape: squircle;
+  text-transform: uppercase;
+}
