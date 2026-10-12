@@ -20,11 +20,10 @@ function App() {
   const isLogged = useLogin((state:any) => state.isLogged);
   const setLogin = useLogin((state:any) => state.setLogin);
   const setUsername = useLogin((state:any) => state.setUsername);
-  const formType = useProfile((state:any) => state.formType);
   const setFormType = useProfile((state:any) => state.setFormType);
   const localLogged = localStorage.getItem('setLogged') ?? "";
   const loggedObj = localLogged !== "" && JSON.parse(localLogged);
-  const {data: validUser} = useGetUser({id:loggedObj.id,username:loggedObj.username});
+  const {data: validUser} = useGetUser({id:loggedObj.id,});
   //navigation
   const { toDashboard, toLogin } = useRoute();
 
@@ -67,7 +66,7 @@ function App() {
       setFormType('login');
       toLogin()
     }
-    console.log(isLogged,formType);
+    //console.log(isLogged,formType);
   },[isLogged,validUser]);
 
   return (

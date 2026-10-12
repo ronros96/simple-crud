@@ -2,7 +2,7 @@ import type {User} from '@src/fields/type';
 
 const API_URL = import.meta.env.VITE_APP_API_PROFILE;
 
-export type CreateUser = Omit<User, "username"> & {
+export type CreateUser = Omit<User, "username" | "userID"> & {
   username: string;
 };
 
@@ -60,13 +60,10 @@ export const getUsers = async (): Promise<User[]> => {
 
 export const getUser = async ({
   id,
-  // username,
 }: {
   id?: string;
-  username?: string;
 }): Promise<User> => {
   const identifier = id;
-
   return request<User>(
     `${API_URL}/${encodeURIComponent(identifier!)}`
   );

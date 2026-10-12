@@ -19,7 +19,7 @@ const usersLoader = async () => {
   try {
     return await queryClient.query(usersQuery());
   } catch (e) {
-    if (e instanceof CancelledError) return null; // component's useQuery will refetch
+    if (e instanceof CancelledError) return null;
     throw e;
   }
 };

@@ -1,6 +1,5 @@
 import { useLogin, useProfile, useUser, useErrors } from "@src/store/store";
 import { Country, State } from "country-state-city";
-import type {User} from '@src/fields/type';
 
 export const clearForm = () => {
   // useLogin.setState({username:''});
@@ -39,11 +38,8 @@ export const clearUser = () => {
 
 
 export const loggedOut = () => {
-  clearForm();
-  useLogin.setState({isLogged:false});
-  useLogin.setState({id:'',username:''});
-  useProfile.setState({formType:'login'});
-  localStorage.removeItem('setLogged')
+  localStorage.removeItem('setLogged');
+  window.location.reload();
 }
 
 export const setLoggedUser = (

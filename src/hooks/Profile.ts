@@ -60,19 +60,16 @@ export const usersQuery = () =>
 // };
 
 export const useGetUser = ({
-  id,
-  username,
+  id
 }: {
   id?: string;
-  username?: string;
 }) => {
   return useQuery({
     queryKey: userKeys.detail({
-      id,
-      username,
+      id
     }),
-    queryFn: () => getUser({ id, username }),
-    enabled: Boolean(id || username),
+    queryFn: () => getUser({ id }),
+    enabled: Boolean(id),
   });
 };
 

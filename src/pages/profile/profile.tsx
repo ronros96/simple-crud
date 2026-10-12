@@ -52,11 +52,25 @@ import { ProfileFields } from "@src/fields/profile";
 import { setLoggedUser } from "@lib/helpers/user";
 import { useRoute } from "@lib/helpers/routes";
 //hooks
-import { useGetUsers, usePutUser, useCreateUser } from '@hooks/Profile';
+import { usePutUser, useCreateUser, useGetUser } from '@hooks/Profile';
 
 const Profile = () => {
   //get ID
   const { id } = useParams();
+  const UserPicked = useUser((state:any) => state.UserPicked);
+  const setUserPicked = useUser((state:any) => state.setUserPicked);
+  const {data: userFound} = useGetUser({id:id});
+
+  useEffect(()=>{
+    if(id && userFound){
+      setFormType('update-user')
+      setUserPicked(userFound);
+      //remove user from users
+      
+    }
+    unloadAddress();
+  },[userFound,UserPicked])
+
   //update / register
   const newProfile = ['sign-in','new-user'];
   const updateProfile = ['update-profile','update-user'];
@@ -66,19 +80,17 @@ const Profile = () => {
   const formType = useProfile((state:any) => state.formType);
   const setFormType = useProfile((state:any) => state.setFormType);
   //global state fields
-  const userID = id !== null ? id : useProfile((state:any) => state.id);
-  const username = useProfile((state:any) => state.username);
-  const password =  useProfile((state:any) => state.password);
-  const firstname = useProfile((state:any) => state.firstname);
-  const lastname = useProfile((state:any) => state.lastname);
-  const mobile = useProfile((state:any) => state.mobile);
-  const email = useProfile((state:any) => state.email);
-  const address = useProfile((state:any) => state.address);
-  const terms = useProfile((state:any) => state.terms);
-  const active = useProfile((state:any) => state.active);
-  const setProfile = useProfile((state:any) => state.setProfile);
-  const Users = useUser((state:any) => state.Users);
-  const setUsers = useUser((state:any) => state.setUsers);
+  const userID = id !== null ? id : UserPicked && UserPicked.id;
+  const username = (UserPicked && UserPicked.username) ?? '';
+  const password = (UserPicked && UserPicked.password) ?? '';
+  const firstname = (UserPicked && UserPicked.firstname) ?? '';
+  const lastname = (UserPicked && UserPicked.lastname) ?? '';
+  const mobile =( UserPicked && UserPicked.mobile) ?? '';
+  const email = (UserPicked && UserPicked.email) ?? '';
+  const address = (UserPicked && UserPicked.address) ?? '';
+  const terms = (UserPicked && UserPicked.terms) ?? false;
+  const active = (UserPicked && UserPicked.active)?? false;
+ 
   //address
   let countryData = Country.getAllCountries();
   const [stateData, setStateData] = useState<IState[]>([]);
@@ -89,7 +101,6 @@ const Profile = () => {
   const [addressL1,setAddressL1] =  useState("");
   const [addressL2,setAddressL2] =  useState("");
   //global state logged
-  const setLogin = useLogin((state:any) => state.setLogin);
   const isLogged =  useLogin((state:any) => state.isLogged);
   //global state errors
   const errors = useErrors((state:any) => state.errors);
@@ -99,6 +110,7 @@ const Profile = () => {
   const cityRef = useRef<HTMLElement | null>(null);
   //navigation
   const { toSuccess } = useRoute();
+  
 
   const setTitle = () =>{
     if(formType === 'sign-in') 
@@ -151,7 +163,7 @@ const Profile = () => {
       addInputs.push(addressL1);
       addInputs.push(addressL2)
     }
-    setProfile({address: addInputs});
+    setUserPicked({address: addInputs});
   }
 
   const createUser = useCreateUser();
@@ -248,25 +260,6 @@ const Profile = () => {
     };
   }
 
-  /*check username if avail */
-  const {data: allUsers} = useGetUsers();
-
-  const users = useMemo(
-    () => allUsers?.filter((user) => !(user.id === userID && user.username === username)) ?? [],
-    [allUsers, userID, username]
-  );
-
-  useEffect(()=>{
-    if(id){
-      setUsers(users)
-      console.log('update',id)
-    }else{
-      setUsers(allUsers)
-      console.log('new',id)
-    }
-    unloadAddress();
-  },[Users])
-
   useEffect(() => {
     if(country){
       setStateData(State.getStatesOfCountry(country?.isoCode));
@@ -280,7 +273,7 @@ const Profile = () => {
     }
   }, [state]);
 
-  return (
+  return ( UserPicked &&
     <section className={
       clsx('container',
         {
@@ -318,7 +311,7 @@ const Profile = () => {
                   name="username"
                   value={username}
                   onChange={(e) => {
-                    setProfile({username:e.target.value})
+                    setUserPicked({username:e.target.value})
                   }}
                   aria-required="true"
                 />
@@ -343,7 +336,7 @@ const Profile = () => {
                   type={showPassword ? "text" : "password"}
                   name="password"
                   value={password}
-                  onChange={(e) => setProfile({password:e.target.value})}
+                  onChange={(e) => setUserPicked({password:e.target.value})}
                   aria-required="true"
                 />
                 <InputGroupAddon align="inline-end">
@@ -383,7 +376,7 @@ const Profile = () => {
                   id="firstname"
                   name="firstname"
                   value={firstname}
-                  onChange={(e) => setProfile({firstname:e.target.value})}
+                  onChange={(e) => setUserPicked({firstname:e.target.value})}
                   type="text"
                   aria-required="true"
                 />
@@ -398,7 +391,7 @@ const Profile = () => {
                   id="lastname"
                   name="lastname"
                   value={lastname}
-                  onChange={(e) => setProfile({lastname:e.target.value})}
+                  onChange={(e) => setUserPicked({lastname:e.target.value})}
                   type="text"
                   aria-required="true"
                 />
@@ -413,7 +406,7 @@ const Profile = () => {
                   id="mobile"
                   name="mobile"
                   value={mobile.replace(/[^\d+]/g, "")}
-                  onChange={(value) => setProfile({mobile:value})}
+                  onChange={(value) => setUserPicked({mobile:value})}
                   type="text"
                   aria-required="true"
                 />
@@ -428,7 +421,7 @@ const Profile = () => {
                   id="email"
                   name="email"
                   value={email}
-                  onChange={(e) => setProfile({email:e.target.value})}
+                  onChange={(e) => setUserPicked({email:e.target.value})}
                   type="text"
                   aria-required="true"
                 />
@@ -599,7 +592,7 @@ const Profile = () => {
                   name="terms"
                   title="Terms and Condition"
                   checked={terms}
-                  onCheckedChange={(value) => setProfile({terms:!!value})}
+                  onCheckedChange={(value) => setUserPicked({terms:!!value})}
                   aria-required="true"
                 />
                 <Label htmlFor="terms" className='normal text-base md:text-sm '>

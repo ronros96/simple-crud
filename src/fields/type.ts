@@ -75,7 +75,7 @@ export type RolesMap = {
 
 export type User = {
   id:string;
-  userID:string;
+  userID?:string;
   username: string;
   password: string;
   firstname: string;

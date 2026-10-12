@@ -68,6 +68,7 @@
   opacity: 1;
   box-shadow: 0 .25rem .25rem #000000EE;
   z-index: 10;
+  cursor: pointer;
 
   transition: opacity .3s var(--ease);
 

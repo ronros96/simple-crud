@@ -25,7 +25,7 @@ const BackCancel = (props:any) =>{
   const { toLogin, toDashboard} = useRoute();
 
   const returnDashboard = [
-    'update-profile',
+    'update-user',
     'new-user'
   ]
 
@@ -36,7 +36,7 @@ const BackCancel = (props:any) =>{
         toLogin();
         setFormType('login');
       break;
-      case 'update-profile':
+      case 'update-user':
       case 'new-user':
         toDashboard()
         setFormType('dashboard');

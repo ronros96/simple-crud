@@ -1,22 +1,31 @@
 import './cards.css';
-import type { User } from '@src/fields/type';
-
 import clsx from 'clsx';
-import { useEffect } from 'react';
-import { useUser } from "@src/store/store";
-import { SquarePen } from "lucide-react"
+import { useEffect} from 'react';
+import { Link } from 'react-router';
+//type
+import type { User } from '@src/fields/type';
+//UI
 import { Checkbox } from "@components/ui/checkbox";
+import { SquarePen } from "lucide-react"
+//storage
+import { useUser, useProfile } from "@src/store/store";
+//helpers
 import { profileIcon } from "@lib/helpers/user";
 import { fixAddress } from '@lib/helpers/user';
+import { useRoute } from "@lib/helpers/routes";
+
 
 
 const ProfileCard = () =>{
+  //local state
+  //global states
   const Users = useUser((state:any) => state.Users);
   const selected = useUser((state:any) => state.selected);
   const setSelected = useUser((state:any) => state.setSelected);
-  // const UserPicked = useUser((state:any) => state.UserPicked);
-  // const setUserPicked = useUser((state:any) => state.setUserPicked);
-  
+  const setFormType = useProfile((state:any) => state.setFormType);
+  //Navigation
+  const { toUpdateProfile } = useRoute();
+
   const isSelected = (id: string) => {
     return selected.find((item:any) => item.id === id)?.value ?? false;
   };
@@ -35,9 +44,6 @@ const ProfileCard = () =>{
     );
   };
 
-  // const updateUser = () =>{
-
-  // }
 
   useEffect(() => {
     const userVal = Users && Users?.map((user:User) => ({
@@ -70,14 +76,11 @@ const ProfileCard = () =>{
             )
           }
           />
-        <a
+        <Link
           className='edit-user'
-          href='#'
-          onClick={()=>{
-            alert();
-          }}>
-          <SquarePen size={'1rem'}/>
-        </a>
+          to={`update/${user.id}`}>
+          <SquarePen id={user.id} size={'1rem'}/>
+        </Link>
         <h4 className='header-5' >
           {profileIcon(user.firstname,user.lastname)}
           {user.firstname}{' '}{user.lastname}
