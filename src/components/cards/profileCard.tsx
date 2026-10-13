@@ -41,7 +41,6 @@ const ProfileCard = () =>{
     );
   };
 
-
   useEffect(() => {
     const userVal = Users && Users?.map((user:User) => ({
       id: `${user.id}-${user.username}`,

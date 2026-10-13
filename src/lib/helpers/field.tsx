@@ -210,7 +210,7 @@ const validateOnChange = (
 
 export const showRequirements = (
   field: FieldConfig,
-  value: string,
+  value: string | boolean,
   settings?:{
     display?: Display,
     insert?: string[],
@@ -233,7 +233,7 @@ export const showRequirements = (
     if (result === "empty") return "";
     if (result === "good") return "good";
     if (result === 'none') return "hidden";
-    return result?.errors.includes(name) ? "err" : value.length > 0 ? "good" : "";
+    return result?.errors.includes(name) ? "err" : value ? "good" : "";
   };
 
   //for required tickers (checkbox / radio)

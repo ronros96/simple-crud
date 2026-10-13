@@ -11,7 +11,7 @@ import {
   DialogTrigger,
 } from "@components/ui/dialog";
 import { Button } from "@components/ui/button";
-import { clearForm } from "@lib/helpers/user";
+import { clearForm, clearUser } from "@lib/helpers/user";
 import { useProfile } from "@src/store/store";
 import { useRoute } from "@lib/helpers/routes";
 
@@ -30,7 +30,8 @@ const BackCancel = (props:any) =>{
   ]
 
   const closeForm = () => {
-    clearForm;
+    clearForm();
+    clearUser();
     switch(formType){
       case 'sign-in':
         toLogin();

@@ -50,7 +50,7 @@ import { useErrors, useProfile, useUser, useLogin } from "@src/store/store";
 // helpers
 import {checkAllFields, showRequirements, fieldError, FieldOrginizer} from "@src/lib/helpers/field";
 import { ProfileFields } from "@src/fields/profile";
-import { setLoggedUser, fixContact } from "@lib/helpers/user";
+import { fixContact, loggedOut } from "@lib/helpers/user";
 import { useRoute } from "@lib/helpers/routes";
 //hooks
 import { usePutUser, useCreateUser, useGetUser, useGetUsers } from '@hooks/Profile';
@@ -63,33 +63,35 @@ const Profile = () => {
   const setUserPicked = useUser((state:any) => state.setUserPicked);
   const {data: userFound} = useGetUser({id:id});
   const {data: allUsers} = useGetUsers();
+  //global state form type
+  const formType = useProfile((state:any) => state.formType);
+  const setFormType = useProfile((state:any) => state.setFormType);
 
   useEffect(()=>{
     if(id && userFound){
       setFormType('update-user')
-      setUserPicked(userFound);
     }
-  },[userFound,UserPicked])
+  },[formType,userFound])
 
   //update / register
   const newProfile = ['sign-in','new-user'];
   const updateProfile = ['update-profile','update-user'];
   //state
   const [showPassword, setShowPassword] = useState(false);
-  //global state form type
-  const formType = useProfile((state:any) => state.formType);
-  const setFormType = useProfile((state:any) => state.setFormType);
   //global state fields
-  const userID = id !== null ? id : UserPicked && UserPicked.id;
-  const username = (UserPicked && UserPicked.username) ?? '';
-  const password = (UserPicked && UserPicked.password) ?? '';
-  const firstname = (UserPicked && UserPicked.firstname) ?? '';
-  const lastname = (UserPicked && UserPicked.lastname) ?? '';
-  const contact =(UserPicked && UserPicked.contact) ?? '';
-  const email = (UserPicked && UserPicked.email) ?? '';
-  const address = (UserPicked && UserPicked.address) ?? '';
-  const terms = (UserPicked && UserPicked.terms) ?? false;
-  const active = (UserPicked && UserPicked.active)?? false;
+  const userID = id !== null ? id :UserPicked.id;
+  const username = UserPicked.username ?? userFound?.username ?? '';
+  const password = UserPicked.password ?? userFound?.password ?? '';
+  const firstname = UserPicked.firstname ?? userFound?.firstname ?? '';
+  const lastname = UserPicked.lastname ?? userFound?.lastname ?? '';
+  const contact = UserPicked.contact ?? userFound?.contact ?? '';
+  const email = UserPicked.email ?? userFound?.email ?? '';
+  const address = UserPicked.address ?? userFound?.address ?? '';
+  const terms =  UserPicked.id ?? userFound?.id ?? false;
+  const [init, setInit] = useState(false);
+  const [contactNum,setContactNum] = useState(fixContact(contact,address)[0]);
+  const [contactLoc,setContactLoc] = useState(fixContact(contact,address)[1]);
+
   //users
   const setUsers = useUser((state:any) => state.setUsers);
   //address
@@ -124,50 +126,50 @@ const Profile = () => {
       return <span>Closing...</span>;
   }
 
-  const [contactNum,setContactNum] = useState('');
-  const [contactLoc,setContactLoc] = useState('');
   const setContact = () => {
     setUserPicked({contact:`${contactNum} x${contactLoc}`})
   }
 
   const unloadAddress = () =>{
-    setCountry(null);
-    setState(null);
-    setCity(null);
+    // setCountry(null);
+    // setState(null);
+    // setCity(null);
 
     const currentAddress = address;
     if(Array.isArray(currentAddress)){
       const currentCountry = Country.getCountryByCode(currentAddress[0]);
-      currentCountry !== undefined && setCountry(currentCountry);
+      setCountry(currentCountry ?? null);
       
       const currentState = State.getStateByCodeAndCountry(currentAddress[1],currentAddress[0])
-      currentState !== undefined && setState(currentState);
+      setState(currentState ?? null);
 
       const cityData = City.getCitiesOfState(currentAddress[0],currentAddress[1]);
       const currentCity = cityData.find(city => city.name === currentAddress[2]);
-      currentCity !== undefined && setCity(currentCity);
-      currentAddress[3] !== undefined && setAddressL1(currentAddress[3]); 
-      currentAddress[4] !== undefined && setAddressL2(currentAddress[4]); 
+      setCity(currentCity ?? null);
+      setAddressL1(currentAddress[3] ?? "");
+      setAddressL2(currentAddress[4] ?? "");
     }
   }
 
   const setAddress = () => {
     let addInputs = [];
-    if(countryRef.current?.innerHTML === "Choose Country"){
+    if(country === null){
       addInputs.push("-country-");
     }else{
       country && addInputs.push(country.isoCode);
     }
-    if(stateRef.current?.innerHTML === "Choose State"){
+    if(stateData.length > 0 && state === null){
       addInputs.push("-state-");
     }else{
       state && addInputs.push(state.isoCode);
     }
-    if(cityRef.current?.innerHTML === "Choose City"){
+
+    if(cityData.length > 0 && city === null){
       addInputs.push("-city-");
     }else{
       city && addInputs.push(city.name);
     }
+
     if(addressL1 === ""){
       addInputs.push("-addressline-");
     }else{
@@ -204,8 +206,7 @@ const Profile = () => {
       contact,
       email,
       address,
-      terms,
-      active
+      terms
     }
     //insert state values to ProfileFields value
     setAddress();
@@ -222,6 +223,7 @@ const Profile = () => {
     setErrors([]);
     
     if(Object.values(result).every(value => value === "good")){
+      alert(1);
       if(newProfile.includes(formType)){
         try {
           await createUser.mutateAsync({
@@ -236,6 +238,7 @@ const Profile = () => {
             logged: new Date(),
             bot:false,
           });
+          alert(2);
           // setLogin(true);
           // setFormType('dashboard');
           // setLoggedUser(userID,username);
@@ -261,7 +264,7 @@ const Profile = () => {
             }
           });
           if(formType === 'update-profile'){
-            setLoggedUser(userID,username)
+            loggedOut
           }
         }catch (error:any) {
           showToastError(error.message);
@@ -269,6 +272,7 @@ const Profile = () => {
       }
     }else{
       setErrors(result);
+      console.log(result)
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
   }
@@ -279,14 +283,22 @@ const Profile = () => {
   );
 
   //setUsers to check username uniqueness.
+  useEffect(()=>{
+    if(!init && Array.isArray(address) && contact !== ''){
+      setContactNum(fixContact(contact,address)[0]);
+      setContactLoc(fixContact(contact,address)[1]);
+      unloadAddress();
+      setInit(true);
+    }
+  },[address,contact,init])
+
   useEffect(() => {
     if(id){
       setUsers(filteredUsers);
-      unloadAddress();
     }else{
       setUsers(allUsers);
     }
-  },[address,allUsers,country,state,city])
+  },[allUsers]);
 
   useEffect(() => {
     if(country){
@@ -338,9 +350,9 @@ const Profile = () => {
                   type="text"
                   name="username"
                   value={username}
-                  onChange={(e) => {
-                    setUserPicked({username:e.target.value})
-                  }}
+                  onChange={(e) =>
+                    setUserPicked({ username: e.target.value })
+                  }
                   aria-required="true"
                 />
               </InputGroup>
@@ -364,7 +376,9 @@ const Profile = () => {
                   type={showPassword ? "text" : "password"}
                   name="password"
                   value={password}
-                  onChange={(e) => setUserPicked({password:e.target.value})}
+                   onChange={(e) =>
+                    setUserPicked({ password: e.target.value })
+                  }
                   aria-required="true"
                 />
                 <InputGroupAddon align="inline-end">
@@ -427,22 +441,33 @@ const Profile = () => {
             </Field>}
             
             {FieldOrginizer(ProfileFields,'contact') &&
-            <Field className={clsx('form-group',{'error':fieldError(errors,'contact')})}>
+            <Field className={clsx('form-group contact',{'error':fieldError(errors,'contact')})}>
               <FieldLabel htmlFor="contact">Contact Number<span className="important">*</span>:</FieldLabel>
               <InputGroup>
-                {/* <PhoneInput
+                <PhoneInput
                   id="contact"
                   name="contact"
-                  value={fixContact(contact,address)[0]}
+                  value={contactNum}
                   onChange={(value) => {
-                    setContactNum(value);
+                    setContactNum(value)
                     setContact;
                   }}
                   type="text"
                   aria-required="true"
-                /> */}
+                />
+                <FieldLabel className='local-label' htmlFor="local">Local :</FieldLabel>
+                <InputGroupInput
+                  id="local"
+                  name="local"
+                  value={contactLoc}
+                  onChange={(e:any) => {
+                    setContactLoc(e.target.value);
+                    setContact;
+                  }}
+                  type="number"
+                  aria-required="true"
+                />
               </InputGroup>
-              
             </Field>}
 
             {FieldOrginizer(ProfileFields,'email') &&
@@ -492,6 +517,8 @@ const Profile = () => {
                     );
                     if (selected) {
                       setCountry(selected);
+                      setState(null);
+                      setCity(null)
                       setAddress()
                     }
                   }}
@@ -524,6 +551,7 @@ const Profile = () => {
                     );
                     if (selected) {
                       setState(selected);
+                      setCity(null)
                       setAddress()
                     }
                   }}
@@ -625,7 +653,10 @@ const Profile = () => {
                   name="terms"
                   title="Terms and Condition"
                   checked={terms}
-                  onCheckedChange={(value) => setUserPicked({terms:!!value})}
+                  onCheckedChange={(value) => {
+                    console.log(value)
+                    setUserPicked({terms:!value})
+                  }}
                   aria-required="true"
                 />
                 <Label htmlFor="terms" className='normal text-base md:text-sm '>
@@ -636,7 +667,7 @@ const Profile = () => {
                       <DialogHeader>
                         <DialogTitle>What Terms and Conditions!?</DialogTitle>
                         <DialogDescription>
-                          <img src="meme-1.png"/>
+                          <img src={`${import.meta.env.BASE_URL}meme-1.png`}/>
                         </DialogDescription>
                       </DialogHeader>
                       <DialogFooter>

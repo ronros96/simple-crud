@@ -8,6 +8,6 @@ export const useRoute = () => {
     toDashboard: () => navigate("/",{ viewTransition: true }),
     toSuccess: () => navigate("/success",{ viewTransition: true }),
     toNewProfile: () => navigate("/register",{ viewTransition: true }),
-    toUpdateProfile: (id:number) => navigate(`/update/${id}`,{ viewTransition: true }),
+    toUpdateProfile: (id:string) => navigate(`/update/${id}`,{ viewTransition: true }),
   };
 };

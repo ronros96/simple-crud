@@ -32,5 +32,28 @@
   ul li{
     font-size: var(--text-sm);
   }
+
+  .contact .phone-input{
+    flex: 3;
+  }
+
+  .contact [data-slot=input-group-control]{
+    appearance: textfield;
+    flex: 1;
+  }
+
+  .contact .local-label{
+    padding-left: .5rem;
+    font-size: var(--font-sm);
+    color: var(--lgray);
+    border-left: solid 1px var(--lgray);
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
+  }
+
+  .contact [data-slot=input-group-control]::-webkit-inner-spin-button,
+  .contact [data-slot=input-group-control]::-webkit-outer-spin-button{
+    appearance: none;
+  }
 }
 

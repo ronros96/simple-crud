@@ -42,7 +42,7 @@ export const ProfileFields:Fields = {
   },
   contact:{
     value:'',
-    fieldType:'contact',
+    fieldType:'any',
     fieldRules:{
       required:true,
       characters:10,
@@ -65,7 +65,7 @@ export const ProfileFields:Fields = {
     }
   },
   terms:{
-    value:'',
+    value:false,
     fieldType:'bool',
     fieldRules:{
       required:true,

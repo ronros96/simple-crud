@@ -2,7 +2,7 @@ import './App.css';
 
 import { useEffect } from 'react';
 import clsx from 'clsx';
-import { Outlet } from 'react-router';
+import { Outlet , useLocation } from 'react-router';
 
 import { useColorScheme } from './store/store';
 import { useLogin,useProfile } from "@src/store/store";
@@ -16,6 +16,7 @@ import Footer from '@layout/footer/footer';
 import Preloader from '@components/preloader/preloader';
 
 function App() {
+  const location = useLocation();
   const currentScheme =  useColorScheme((state:any) => state.currentScheme);
   const isLogged = useLogin((state:any) => state.isLogged);
   const setLogin = useLogin((state:any) => state.setLogin);
@@ -25,7 +26,7 @@ function App() {
   const loggedObj = localLogged !== "" && JSON.parse(localLogged);
   const {data: validUser} = useGetUser({id:loggedObj.id,});
   //navigation
-  const { toDashboard, toLogin } = useRoute();
+  const { toDashboard, toLogin, toNewProfile } = useRoute();
 
   const checkLogged = () =>{
     const now = new Date();
@@ -56,7 +57,7 @@ function App() {
       }
     }
   }
-
+   
   useEffect(()=>{
     checkLogged()
     if(isLogged){
@@ -66,7 +67,6 @@ function App() {
       setFormType('login');
       toLogin()
     }
-    //console.log(isLogged,formType);
   },[isLogged,validUser]);
 
   return (

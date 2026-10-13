@@ -142,7 +142,13 @@ export const useUser  = create<UserStore>((set) => ({
   selected: [],
 
   setUsers: (state:any) => set({Users:state}),
-  setUserPicked: (state:any) => set({UserPicked:state}),
+  setUserPicked: (data) =>
+    set((state) => ({
+      UserPicked: {
+        ...state.UserPicked,
+        ...data,
+      },
+    })),
   setSelected: (selected) =>
     set((state) => ({
       selected:

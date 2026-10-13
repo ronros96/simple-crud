@@ -89,8 +89,8 @@ export const fixContact = (
 ) =>{
   const number = contact.split('x');
   const actualNum = number[0].replace(/[().\-\s]/g, "")
-  const localNum = number[1] ? `(${number[1]})` : '';
-  const countryNum = countryCode !== undefined ? Country.getCountryByCode(countryCode[0])?.phonecode : '';
+  const localNum = number[1] ? number[1] : '';
+  const countryNum = countryCode !== undefined ? !actualNum.startsWith('+') ? Country.getCountryByCode(countryCode[0])?.phonecode : '' : '';
   const countryNumPlus = countryNum !== '' && countryNum !== undefined ? countryNum?.startsWith('+') ? `${countryNum}` : `+${countryNum}` : '';
   // console.log(`${countryNumPlus}${actualNum}`)
   return [`${countryNumPlus}${actualNum}`,localNum]; 
