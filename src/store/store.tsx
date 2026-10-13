@@ -158,6 +158,14 @@ export const useUser  = create<UserStore>((set) => ({
     }))
 }));
 
+//for User Update Notif
+export const useUserUpdated  = create((set) => ({
+  profileUpdate:false,
+  updatedUserID:'',
+  setProfileUpdate: (state:any) => set({profileUpdate:state}),
+  setUpdatedUserID: (state:any) => set({updatedUserID:state})
+}));
+
 // SEARCH
 type Search = {
   searchType: string;

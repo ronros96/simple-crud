@@ -1,7 +1,6 @@
 import './cards.css';
 import clsx from 'clsx';
 import { useEffect} from 'react';
-import { Link } from 'react-router';
 //type
 import type { User } from '@src/fields/type';
 //UI
@@ -11,7 +10,9 @@ import { SquarePen } from "lucide-react"
 import { useUser, useProfile } from "@src/store/store";
 //helpers
 import { profileIcon } from "@lib/helpers/user";
+import { useRoute } from '@lib/helpers/routes';
 import { fixAddress, fixContact } from '@lib/helpers/user';
+
 
 
 
@@ -22,6 +23,8 @@ const ProfileCard = () =>{
   const selected = useUser((state:any) => state.selected);
   const setSelected = useUser((state:any) => state.setSelected);
   const setFormType = useProfile((state:any) => state.setFormType);
+  //navigation
+  const { toUpdateProfile } = useRoute();
 
   const isSelected = (id: string) => {
     return selected.find((item:any) => item.id === id)?.value ?? false;
@@ -40,6 +43,12 @@ const ProfileCard = () =>{
       )
     );
   };
+
+  const updateProfile = (e:any,id:any) =>{
+    e.preventDefault();
+    setFormType('update-user');
+    toUpdateProfile(id)
+  } 
 
   useEffect(() => {
     const userVal = Users && Users?.map((user:User) => ({
@@ -72,11 +81,12 @@ const ProfileCard = () =>{
             )
           }
           />
-        <Link
+        <a
           className='edit-user'
-          to={`update/${user.id}`}>
+          href='#'
+          onClick={(e)=>updateProfile(e,user.id)}>
           <SquarePen id={user.id} size={'1rem'}/>
-        </Link>
+        </a>
         <h4 className='header-5' >
           {profileIcon(user.firstname,user.lastname)}
           {user.firstname}{' '}{user.lastname}

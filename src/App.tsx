@@ -16,17 +16,17 @@ import Footer from '@layout/footer/footer';
 import Preloader from '@components/preloader/preloader';
 
 function App() {
-  const location = useLocation();
   const currentScheme =  useColorScheme((state:any) => state.currentScheme);
   const isLogged = useLogin((state:any) => state.isLogged);
   const setLogin = useLogin((state:any) => state.setLogin);
   const setUsername = useLogin((state:any) => state.setUsername);
+  const formType = useProfile((state:any) => state.formType);
   const setFormType = useProfile((state:any) => state.setFormType);
   const localLogged = localStorage.getItem('setLogged') ?? "";
   const loggedObj = localLogged !== "" && JSON.parse(localLogged);
   const {data: validUser} = useGetUser({id:loggedObj.id,});
   //navigation
-  const { toDashboard, toLogin, toNewProfile } = useRoute();
+  const { toDashboard, toLogin } = useRoute();
 
   const checkLogged = () =>{
     const now = new Date();
@@ -36,7 +36,6 @@ function App() {
       const less24Hrs = timeDiff >= 0 && timeDiff <= 24 * 60 * 60 * 1000;
       if(less24Hrs){
         useProfile.setState({
-          formType:'dashboard',
           id:validUser.id,
           username: validUser.username,
           password: validUser.password,
@@ -68,6 +67,10 @@ function App() {
       toLogin()
     }
   },[isLogged,validUser]);
+
+  useEffect(()=>{
+    console.log(formType)
+  },[formType])
 
   return (
     <>

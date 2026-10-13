@@ -22,7 +22,7 @@ const BackCancel = (props:any) =>{
   const formType = useProfile((state:any) => state.formType);
   const setFormType = useProfile((state:any) => state.setFormType);
   //navigation
-  const { toLogin, toDashboard} = useRoute();
+  const { toLogin, toDashboard } = useRoute();
 
   const returnDashboard = [
     'update-user',
@@ -30,18 +30,14 @@ const BackCancel = (props:any) =>{
   ]
 
   const closeForm = () => {
-    clearForm();
-    clearUser();
-    switch(formType){
-      case 'sign-in':
-        toLogin();
-        setFormType('login');
-      break;
-      case 'update-user':
-      case 'new-user':
-        toDashboard()
-        setFormType('dashboard');
-      break;
+    if(formType === 'sign-in'){
+      setFormType('login');
+      clearForm();
+      toLogin();
+    }else if(returnDashboard.includes(formType)){
+      setFormType('dashboard');
+      clearUser();
+      toDashboard()
     }
   }
 

@@ -55,5 +55,7 @@
   .contact [data-slot=input-group-control]::-webkit-outer-spin-button{
     appearance: none;
   }
+
+
 }
 

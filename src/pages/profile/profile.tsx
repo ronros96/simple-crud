@@ -46,7 +46,7 @@ import { toast, Toaster } from "@components/ui/toast"
 import BackCancel from '@components/back_cancel/backCancel';
 import { Eye, EyeOff } from "lucide-react"
 //state
-import { useErrors, useProfile, useUser, useLogin } from "@src/store/store";
+import { useErrors, useProfile, useUser, useLogin, useUserUpdated } from "@src/store/store";
 // helpers
 import {checkAllFields, showRequirements, fieldError, FieldOrginizer} from "@src/lib/helpers/field";
 import { ProfileFields } from "@src/fields/profile";
@@ -65,19 +65,13 @@ const Profile = () => {
   const {data: allUsers} = useGetUsers();
   //global state form type
   const formType = useProfile((state:any) => state.formType);
-  const setFormType = useProfile((state:any) => state.setFormType);
-
-  useEffect(()=>{
-    if(id && userFound){
-      setFormType('update-user')
-    }
-  },[formType,userFound])
 
   //update / register
   const newProfile = ['sign-in','new-user'];
   const updateProfile = ['update-profile','update-user'];
   //state
   const [showPassword, setShowPassword] = useState(false);
+  const [saving,setSaving] = useState(false);
   //global state fields
   const userID = id !== null ? id :UserPicked.id;
   const username = UserPicked.username ?? userFound?.username ?? '';
@@ -87,7 +81,7 @@ const Profile = () => {
   const contact = UserPicked.contact ?? userFound?.contact ?? '';
   const email = UserPicked.email ?? userFound?.email ?? '';
   const address = UserPicked.address ?? userFound?.address ?? '';
-  const terms =  UserPicked.id ?? userFound?.id ?? false;
+  const terms =  UserPicked.terms ?? userFound?.id ? true : false;
   const [init, setInit] = useState(false);
   const [contactNum,setContactNum] = useState(fixContact(contact,address)[0]);
   const [contactLoc,setContactLoc] = useState(fixContact(contact,address)[1]);
@@ -111,10 +105,12 @@ const Profile = () => {
   const countryRef = useRef<HTMLElement | null>(null);
   const stateRef = useRef<HTMLElement | null>(null);
   const cityRef = useRef<HTMLElement | null>(null);
+  //Notification state
+  const setProfileUpdate = useUserUpdated((state:any) => state.setProfileUpdate);
+  const setUpdatedUserID = useUserUpdated((state:any) => state.setUpdatedUserID);
   //navigation
-  const { toSuccess } = useRoute();
+  const { toSuccess, toDashboard } = useRoute();
   
-
   const setTitle = () =>{
     if(formType === 'sign-in') 
       return 'Sign-in';
@@ -131,10 +127,6 @@ const Profile = () => {
   }
 
   const unloadAddress = () =>{
-    // setCountry(null);
-    // setState(null);
-    // setCity(null);
-
     const currentAddress = address;
     if(Array.isArray(currentAddress)){
       const currentCountry = Country.getCountryByCode(currentAddress[0]);
@@ -223,7 +215,7 @@ const Profile = () => {
     setErrors([]);
     
     if(Object.values(result).every(value => value === "good")){
-      alert(1);
+      setSaving(true);
       if(newProfile.includes(formType)){
         try {
           await createUser.mutateAsync({
@@ -238,10 +230,6 @@ const Profile = () => {
             logged: new Date(),
             bot:false,
           });
-          alert(2);
-          // setLogin(true);
-          // setFormType('dashboard');
-          // setLoggedUser(userID,username);
           toSuccess();
         }catch (error:any) {
           showToastError(error.message);
@@ -263,6 +251,9 @@ const Profile = () => {
               bot:false,
             }
           });
+          setProfileUpdate(true);
+          setUpdatedUserID(userID);
+          toDashboard();
           if(formType === 'update-profile'){
             loggedOut
           }
@@ -319,6 +310,7 @@ const Profile = () => {
         {
           'header-margin':isLogged,
           'header-space':formType === 'sign-in',
+          'saving':saving,
         })
       }>
       <title>{`${import.meta.env.VITE_APP_TITLE} | Sign-In`}</title>
@@ -654,8 +646,10 @@ const Profile = () => {
                   title="Terms and Condition"
                   checked={terms}
                   onCheckedChange={(value) => {
-                    console.log(value)
-                    setUserPicked({terms:!value})
+                    setUserPicked({
+                      ...UserPicked,
+                      terms: value === true,
+                    });
                   }}
                   aria-required="true"
                 />

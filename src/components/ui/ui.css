@@ -442,11 +442,17 @@ ul.rules{
 [data-slot=toast]{
   background-color: var(--secondary-bg);
   box-shadow: 0 0 1rem #00000088;
+  z-index: 20;
 
   h2{
-    color: var(--error);
+    color: var(--text-default);
     font-size: var(--font-base);
     font-weight: 700;
+  }
+  
+  [data-slot=toast-description]{
+    font-size: var(--font-sm);
+    margin-bottom: 0;
   }
   
   [data-slot=toast-close]{

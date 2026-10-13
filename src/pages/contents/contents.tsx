@@ -41,10 +41,6 @@ import { useRoute } from '@lib/helpers/routes';
 import { profileIcon } from "@lib/helpers/user";
 import type { User } from '@src/fields/type';
 
-// type SelectedUser:<Record>User = {
-
-// }
-
 const Contents = () =>{
   //local states
   const [open,setOpen] = useState(false);

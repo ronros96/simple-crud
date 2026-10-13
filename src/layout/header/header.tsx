@@ -41,7 +41,7 @@ const Header = () => {
   const setFormType =  useProfile((state:any) => state.setFormType);
   const isLogged =  useLogin((state:any) => state.isLogged);
   //navigation
-  const { toLogin, toUpdateProfile } = useRoute();
+  const { toUpdateProfile } = useRoute();
 
   const showHeader = [
     'dashboard',

@@ -14,7 +14,7 @@
 
   --base-font-size:16px;
   --font-xsm: clamp(0.6rem, -0.05vi + 0.61rem, 0.65rem);
-  --font-sm: clamp(0.7rem, -0.05vi + 0.71rem, 0.67rem);
+  --font-sm: clamp(0.8rem, -0.15vi + 0.78rem, 0.67rem);
   --font-base: clamp(0.88rem, 0.2vi + 0.82rem, 1rem);
   --font-md: clamp(1.09rem, 0.65vi + 0.93rem, 1.5rem);
   --font-lg: clamp(1.37rem, 1.41vi + 1.01rem, 2.25rem);
@@ -254,6 +254,9 @@ p,a{
   font-variation-settings: "wdth" 100;
   &:not([class*='mb']){
     margin-bottom: 1rem;
+  }
+  strong{
+    font-size: inherit;
   }
 }
 

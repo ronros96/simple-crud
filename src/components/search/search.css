@@ -1,4 +1,4 @@
-.search-container{
+[data-slot=input-group].search-container{
   padding-left: 0;
   gap:.5rem;
   overflow: hidden;
