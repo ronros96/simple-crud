@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "shadcn/tailwind.css";
+/* @import "shadcn/tailwind.css"; */
 
 .form-group{
   width: 100%;
@@ -42,8 +42,6 @@
     }
   }
 }
-
-
 
 fieldset label{
   text-transform: none;
@@ -356,7 +354,7 @@ button.sm.stroke.counter:disabled{
   @media screen and (min-width: 680px) {
     padding: 2rem;
     &.sm{
-      max-width: 30rem;
+      max-width: 35rem;
     }
   }
 }

@@ -1,8 +1,8 @@
-import { useLogin, useProfile, useUser, useErrors } from "@src/store/store";
+import { useProfile, useUser, useErrors } from "@src/store/store";
 import { Country, State } from "country-state-city";
+import { removeAuthCookie } from '@hooks/logs';
 
 export const clearForm = () => {
-  // useLogin.setState({username:''});
   useProfile.setState({
     username:'',
     password:'',
@@ -37,24 +37,9 @@ export const clearUser = () => {
   useErrors.setState({errors: []})
 }
 
-
 export const loggedOut = () => {
-  localStorage.removeItem('setLogged');
+  removeAuthCookie();
   window.location.reload();
-}
-
-export const setLoggedUser = (
-  id:string,
-  username:string
-) =>{
-  console.log(id)
-  const toLocal = {
-    'id':id,
-    'username':username,  
-    'datetime':new Date()
-  }
-  localStorage.setItem('setLogged',JSON.stringify(toLocal));
-  useLogin.setState({id:id,username:username});
 }
 
 export const profileIcon = (
@@ -92,6 +77,5 @@ export const fixContact = (
   const localNum = number[1] ? number[1] : '';
   const countryNum = countryCode !== undefined ? !actualNum.startsWith('+') ? Country.getCountryByCode(countryCode[0])?.phonecode : '' : '';
   const countryNumPlus = countryNum !== '' && countryNum !== undefined ? countryNum?.startsWith('+') ? `${countryNum}` : `+${countryNum}` : '';
-  // console.log(`${countryNumPlus}${actualNum}`)
   return [`${countryNumPlus}${actualNum}`,localNum]; 
 }

@@ -124,7 +124,7 @@ function ToastClose({
       {...props}
     >
       {children ?? (
-        <XIcon aria-hidden="true" />
+        <XIcon aria-hidden="true" size={'50px'} />
       )}
     </ToastPrimitive.Close>
   )
@@ -135,25 +135,25 @@ function ToastIcon({ type }: { type: string | undefined }) {
 
   if (type === "success") {
     icon = (
-      <CircleCheckIcon aria-hidden="true" />
+      <CircleCheckIcon aria-hidden="true" className="text-[var(--green)]" />
     )
   }
 
   if (type === "info") {
     icon = (
-      <InfoIcon aria-hidden="true" />
+      <InfoIcon aria-hidden="true"  className="text-[var(--text-default)]" />
     )
   }
 
   if (type === "warning") {
     icon = (
-      <TriangleAlertIcon aria-hidden="true" />
+      <TriangleAlertIcon aria-hidden="true"  className="text-[var(--warn-text)]" />
     )
   }
 
   if (type === "error") {
     icon = (
-      <OctagonXIcon className="text-destructive" aria-hidden="true" />
+      <OctagonXIcon className="text-[var(--error)]" aria-hidden="true" />
     )
   }
 

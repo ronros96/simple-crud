@@ -45,10 +45,12 @@ const Header = () => {
 
   const showHeader = [
     'dashboard',
+    'update-profile',
     'update-user',
     'new-user'
   ];
   const showBackCancel = [
+    'update-profile',
     'update-user',
     'new-user'
   ]
@@ -73,7 +75,7 @@ const Header = () => {
                 <DropdownMenuGroup>
                   <DropdownMenuItem 
                     onClick={(e:any)=>{
-                      setFormType('update-user');
+                      setFormType('update-profile');
                       toUpdateProfile(id);
                     }}
                   >

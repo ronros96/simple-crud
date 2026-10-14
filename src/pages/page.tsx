@@ -20,11 +20,12 @@ import {
 import { Button } from "@components/ui/button"
 import { Skeleton } from "@components/ui/skeleton"
 import { Eye, EyeOff } from "lucide-react"
+
 //Hooks
 import { useLogin, useProfile, useErrors } from "@src/store/store";
 import { useGetUsers, usePutUser  } from '@hooks/Profile';
+import { useCreateAuthSession } from "@hooks/logs";
 //helper
-import { setLoggedUser } from "@lib/helpers/user";
 import { useRoute } from "@lib/helpers/routes";
 
 
@@ -33,11 +34,13 @@ const Page = () =>{
     username: string;
     password: string;
   }
+  
   const isLogged =  useLogin((state:any) => state.isLogged);
   const formType =  useProfile((state:any) => state.formType);
   //navigation
   const { toDashboard, toNewProfile } = useRoute();
-
+  //hooks
+  const createAuthSession = useCreateAuthSession();
   //states
   const setLogin = useLogin((state:any) => state.setLogin);
   const setFormType = useProfile((state:any) => state.setFormType);
@@ -52,7 +55,7 @@ const Page = () =>{
   const clearForm = (e:any) => {
     e.preventDefault;
     setShowPassword(false);
-    setErrors('');
+    setErrors([]);
     setForm({ username: "", password: "" })
   }
 
@@ -69,9 +72,21 @@ const Page = () =>{
       checkLogin(formProps.username,formProps.password)
     }else{
       clearForm
-      setErrors('err');
+      setErrors(['login']);
     }
   }
+
+  const handleUserLogs = async (id:string,user:string) => {
+    try {
+      await createAuthSession.mutateAsync({
+        UserId: id,
+        username: user,
+      });
+    } catch (error) {
+      console.log(error,'session error')
+      setErrors(['session',`${error}`]);
+    }
+  };
 
   const checkLogin = (
     username:any,
@@ -89,14 +104,19 @@ const Page = () =>{
           logged: new Date(),
         },
       });
-      setLogin(true);
-      setProfile({...match});
-      setFormType('dashboard');
-      setLoggedUser(match.id,match.username);
-      toDashboard();
+      handleUserLogs(match.id,match.username);
+      if(errors.length > 0){
+        setLogin(false);
+      }else{
+        setLogin(true);
+        setProfile({...match});
+        setFormType('dashboard');
+        toDashboard();
+      }
+
     }else{
       setForm({ username: "", password: "" })
-      setErrors('err');
+      setErrors(['login']);
     }
   }
 
@@ -120,8 +140,11 @@ const Page = () =>{
               onSubmit={login} 
               action={(e:any)=>{e.preventDefault}}
             >
-              <p className={clsx('err-msg',{'show':Object.values(errors).some(value => value !== 'good')})}>
+              <p className={clsx('err-msg',{'show':errors[0] === 'login'})}>
                 Invalid username and/or password.
+              </p>
+              <p className={clsx('err-msg',{'show':errors[0] === 'session'})}>
+                Login Failed<br/>{errors[1]}
               </p>
               <Field className="form-group">
                 <FieldLabel htmlFor="username">Username</FieldLabel>

@@ -25,15 +25,9 @@ const Dashboard = () =>{
   const {data: userFound} = useGetUser({id:updatedUserID});
 
   const showToastNotif = (message:string) => {
-    const notif = toast.add({
-      title: "Success",
+    toast.add({
+      type: "success",
       description: <><strong>{message}</strong>,<br/>has been successfully updated.</>,
-      actionProps: {
-        children: "Ok",
-        onClick() {
-          toast.close(notif)
-        },
-      },
     })
   }
 

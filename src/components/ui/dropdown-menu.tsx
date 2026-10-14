@@ -151,6 +151,7 @@ function DropdownMenuCheckboxItem({
   ...props
 }: MenuPrimitive.CheckboxItem.Props & {
   inset?: boolean
+  tickerType?: string | undefined
 }) {
   return (
     <MenuPrimitive.CheckboxItem

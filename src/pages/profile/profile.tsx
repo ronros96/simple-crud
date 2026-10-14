@@ -43,6 +43,7 @@ import { Label } from "@components/ui/label"
 import { Checkbox } from "@components/ui/checkbox"
 import { PhoneInput } from "@components/ui/phone"
 import { toast, Toaster } from "@components/ui/toast"
+import { Spinner } from "@components/ui/spinner"
 import BackCancel from '@components/back_cancel/backCancel';
 import { Eye, EyeOff } from "lucide-react"
 //state
@@ -50,7 +51,7 @@ import { useErrors, useProfile, useUser, useLogin, useUserUpdated } from "@src/s
 // helpers
 import {checkAllFields, showRequirements, fieldError, FieldOrginizer} from "@src/lib/helpers/field";
 import { ProfileFields } from "@src/fields/profile";
-import { fixContact, loggedOut } from "@lib/helpers/user";
+import { clearUser, fixContact, loggedOut } from "@lib/helpers/user";
 import { useRoute } from "@lib/helpers/routes";
 //hooks
 import { usePutUser, useCreateUser, useGetUser, useGetUsers } from '@hooks/Profile';
@@ -65,6 +66,7 @@ const Profile = () => {
   const {data: allUsers} = useGetUsers();
   //global state form type
   const formType = useProfile((state:any) => state.formType);
+  const setFormType = useProfile((state:any) => state.setFormType);
 
   //update / register
   const newProfile = ['sign-in','new-user'];
@@ -85,6 +87,7 @@ const Profile = () => {
   const [init, setInit] = useState(false);
   const [contactNum,setContactNum] = useState(fixContact(contact,address)[0]);
   const [contactLoc,setContactLoc] = useState(fixContact(contact,address)[1]);
+  const [credUpdate, setCredUpdate] = useState(false);
 
   //users
   const setUsers = useUser((state:any) => state.setUsers);
@@ -119,27 +122,26 @@ const Profile = () => {
     if(updateProfile.includes(formType))
        return 'Update';
     if(!updateProfile.includes(formType) && !newProfile.includes(formType))
-      return <span>Closing...</span>;
+      return <span className='flex items-center gap-[var(--gap)]'>Closing <Spinner className="size-6"/></span>;
   }
 
   const setContact = () => {
     setUserPicked({contact:`${contactNum} x${contactLoc}`})
   }
 
-  const unloadAddress = () =>{
-    const currentAddress = address;
-    if(Array.isArray(currentAddress)){
-      const currentCountry = Country.getCountryByCode(currentAddress[0]);
+  const loadAddress = () =>{
+    if(Array.isArray(address)){
+      const currentCountry = Country.getCountryByCode(address[0]);
       setCountry(currentCountry ?? null);
       
-      const currentState = State.getStateByCodeAndCountry(currentAddress[1],currentAddress[0])
+      const currentState = State.getStateByCodeAndCountry(address[1],address[0])
       setState(currentState ?? null);
 
-      const cityData = City.getCitiesOfState(currentAddress[0],currentAddress[1]);
-      const currentCity = cityData.find(city => city.name === currentAddress[2]);
+      const cityData = City.getCitiesOfState(address[0],address[1]);
+      const currentCity = cityData.find(city => city.name === address[2]);
       setCity(currentCity ?? null);
-      setAddressL1(currentAddress[3] ?? "");
-      setAddressL2(currentAddress[4] ?? "");
+      setAddressL1(address[3] ?? "");
+      setAddressL2(address[4] ?? "");
     }
   }
 
@@ -230,6 +232,8 @@ const Profile = () => {
             logged: new Date(),
             bot:false,
           });
+          clearUser();
+          setFormType('created');
           toSuccess();
         }catch (error:any) {
           showToastError(error.message);
@@ -251,38 +255,43 @@ const Profile = () => {
               bot:false,
             }
           });
+          clearUser();
           setProfileUpdate(true);
           setUpdatedUserID(userID);
-          toDashboard();
-          if(formType === 'update-profile'){
-            loggedOut
+          if(credUpdate){
+            setFormType('success');
+            toSuccess();
+          }else{
+            setFormType('dashboard');
+            toDashboard();
           }
         }catch (error:any) {
           showToastError(error.message);
         }
       }
     }else{
-      setErrors(result);
       console.log(result)
+      setErrors(result);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
   }
-
+  
   const filteredUsers = useMemo(
     () => allUsers?.filter((user:User) => !(user.id === id )) ?? [],
     [allUsers]
   );
 
-  //setUsers to check username uniqueness.
   useEffect(()=>{
     if(!init && Array.isArray(address) && contact !== ''){
       setContactNum(fixContact(contact,address)[0]);
       setContactLoc(fixContact(contact,address)[1]);
-      unloadAddress();
+      loadAddress();
+      console.log(address,contact)
       setInit(true);
     }
-  },[address,contact,init])
+  },[userFound,contact,init])
 
+  //setUsers to check username uniqueness.
   useEffect(() => {
     if(id){
       setUsers(filteredUsers);
@@ -303,6 +312,20 @@ const Profile = () => {
       setCityData(City.getCitiesOfState(country?.isoCode, state?.isoCode));
     }
   }, [state]);
+
+  useEffect(()=>{
+    if(init){
+      setAddress()
+    }
+    
+  },[country,state,city,addressL1,addressL2])
+
+  useEffect(()=>{
+    if(init){
+      setContact()
+    }
+    
+  },[contactLoc,contactNum])
 
   return ( UserPicked &&
     <section className={
@@ -342,9 +365,10 @@ const Profile = () => {
                   type="text"
                   name="username"
                   value={username}
-                  onChange={(e) =>
+                  onChange={(e) =>{
+                    setCredUpdate(true)
                     setUserPicked({ username: e.target.value })
-                  }
+                  }}
                   aria-required="true"
                 />
               </InputGroup>
@@ -368,9 +392,10 @@ const Profile = () => {
                   type={showPassword ? "text" : "password"}
                   name="password"
                   value={password}
-                   onChange={(e) =>
+                   onChange={(e) =>{
+                    setCredUpdate(true)
                     setUserPicked({ password: e.target.value })
-                  }
+                  }}
                   aria-required="true"
                 />
                 <InputGroupAddon align="inline-end">
@@ -457,7 +482,7 @@ const Profile = () => {
                     setContact;
                   }}
                   type="number"
-                  aria-required="true"
+                  aria-required="false"
                 />
               </InputGroup>
             </Field>}
@@ -511,7 +536,6 @@ const Profile = () => {
                       setCountry(selected);
                       setState(null);
                       setCity(null)
-                      setAddress()
                     }
                   }}
                 >
@@ -544,7 +568,6 @@ const Profile = () => {
                     if (selected) {
                       setState(selected);
                       setCity(null)
-                      setAddress()
                     }
                   }}
                   disabled={stateData.length === 0}
@@ -577,7 +600,6 @@ const Profile = () => {
                     );
                     if (selected) {
                       setCity(selected);
-                      setAddress()
                     }
                   }}
                   disabled={cityData.length === 0}
@@ -608,7 +630,6 @@ const Profile = () => {
                   value={addressL1}
                   onChange={(e) => {
                     setAddressL1(e.target.value)
-                    setAddress()
                   }}
                   type="text"
                   aria-required="true"
@@ -626,7 +647,6 @@ const Profile = () => {
                   value={addressL2}
                   onChange={(e) => {
                     setAddressL2(e.target.value)
-                    setAddress()
                   }}
                   type="text"
                   aria-required="true"
@@ -683,15 +703,17 @@ const Profile = () => {
             <div className="divider-horizontal col-full"></div>
           </div>}
 
+          {!updateProfile.includes(formType) && !newProfile.includes(formType) ? 
+          <div className='flex items-center justify-end gap-[var(--gap)]'>Closing <Spinner/></div> :
           <div className={clsx('field-group',{'error':fieldError(errors,'terms')})}>
             <div className='flex justify-center lg:justify-end gap-5'>
               <Button type="submit">
-                 {newProfile.includes(formType) && 'Register'}
-                 {updateProfile.includes(formType) && 'Update'}
+                {newProfile.includes(formType) ? 'Register':'Update'}
               </Button>
               <BackCancel/>
             </div>
-          </div>
+          </div> 
+          }
         </div>
       </form>
       <Toaster/>

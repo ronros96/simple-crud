@@ -1,4 +1,5 @@
 import "./backcancel.css";
+import { useState } from "react";
 import { ArrowLeft} from "lucide-react"
 import {
   Dialog,
@@ -16,7 +17,6 @@ import { useProfile } from "@src/store/store";
 import { useRoute } from "@lib/helpers/routes";
 
 const BackCancel = (props:any) =>{
-
   const type = props.type;
   //hooks
   const formType = useProfile((state:any) => state.formType);
@@ -25,8 +25,14 @@ const BackCancel = (props:any) =>{
   const { toLogin, toDashboard } = useRoute();
 
   const returnDashboard = [
+    'update-profile',
     'update-user',
     'new-user'
+  ]
+
+  const mainPages = [
+    'login',
+    'dashboard'
   ]
 
   const closeForm = () => {
@@ -62,15 +68,29 @@ const BackCancel = (props:any) =>{
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className='items-center flex-col flex-row'>
-          {formType === 'sign-in' && <>
+          {formType === 'sign-in'  && <>
           <DialogClose render={<Button variant="outline" className="sm" onClick={clearForm}>Clear Form</Button>} />
           <div className='divider-vertical'></div></>
           }
-          <Button className="stroke sm" onClick={closeForm}>
-            {formType === 'sign-in' && 'Yes, Back to login'}
-            {returnDashboard.includes(formType) && 'Yes, Back to Dashboard'}
+          {formType === 'new-user'  && <>
+          <DialogClose render={<Button variant="outline" className="sm" onClick={clearUser}>Clear Form</Button>} />
+          <div className='divider-vertical'></div></>
+          }
+          <Button 
+            className="stroke sm" 
+            onClick={closeForm}
+            disabled={mainPages.includes(formType)}
+          >
+            {
+              formType === 'sign-in' ? 'Yes, Back to login' :
+              returnDashboard.includes(formType) ? 'Yes, Back to Dashboard' :
+              'Closing...'
+            }
           </Button>
-          <DialogClose render={<Button variant="outline" className="stroke sm">Cancel</Button>} />
+          <DialogClose
+            render={<Button variant="outline" className="stroke sm">Cancel</Button>}
+            disabled={mainPages.includes(formType)}
+          />
         </DialogFooter>
       </DialogContent>
     </Dialog>

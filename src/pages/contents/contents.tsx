@@ -137,7 +137,6 @@ const Contents = () =>{
       const elapsed = performance.now() - startTimeRef.current;
       const percentage = Math.min((elapsed / duration) * 100, 100);
       setProgress(percentage);
-      console.log(progress,percentage)
       if (percentage < 100) {
         timerRef.current = requestAnimationFrame(update);
       }
