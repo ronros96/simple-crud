@@ -7,7 +7,6 @@ import clsx from 'clsx';
 import Header from '@layout/header/header';
 import Footer from '@layout/footer/footer';
 import Preloader from '@components/preloader/preloader';
-import { toast, Toaster } from "@components/ui/toast";
 //states
 import { useColorScheme } from './store/store';
 import { useLogin,useProfile } from "@src/store/store";
@@ -18,7 +17,7 @@ import { useRestoreAuthSession } from '@hooks/logs';
 import { useGetUser } from '@hooks/Profile';
 
 function App() {
-  //hokks
+  //hooks
   const {
     data: session,
     isPending,
@@ -85,7 +84,6 @@ function App() {
           <Outlet />
         </div>
       </main>
-      <Toaster/>
       <Footer/>
     </>
   )

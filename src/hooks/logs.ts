@@ -85,9 +85,6 @@ const restoreSession = async (): Promise<ILoginSession | null> => {
   if (!session_id) return null;
 
   const url = new URL(`${API_URL}/Users/${userId}/Logins`);
-  url.searchParams.append('sortBy', 'date_logged');
-  url.searchParams.append('sortBy', 'desc');
-
   const response = await fetch(url);
 
   if (response.status === 404) {
@@ -99,6 +96,7 @@ const restoreSession = async (): Promise<ILoginSession | null> => {
     throw new Error("Unable to verify login session.");
   }
   const session:ILoginSession = await response.json();
+
   //clean retain 10 remove old session
   if(userId && Object(session).length > 10){
     deleteOldLoginLogs(userId);
@@ -109,7 +107,7 @@ const restoreSession = async (): Promise<ILoginSession | null> => {
   
   // Check that the record matches the requested session.
   if (!validSession) {
-    removeAuthCookie();
+    //removeAuthCookie();
     return null;
   }
 
@@ -146,15 +144,16 @@ export const useRestoreAuthSession = () => {
 
 const deleteOldLoginLogs = async (userId:string): Promise<void> => {
   const url = new URL(`${API_URL}/Users/${userId}/Logins`);
-  url.searchParams.append('sortBy', 'date_logged');
-  url.searchParams.append('sortBy', 'asc');
   const response = await fetch(url);
 
   if (!response.ok) {
     throw new Error("Failed to fetch login logs.");
   }
   const logs: ILoginSession[] = await response.json();
-  const oldLogs = logs.slice(10);
+  const sortedLogs = [...logs].sort((a, b) =>
+    Date.parse(b.date_logged) - Date.parse(a.date_logged)
+  );
+  const oldLogs = sortedLogs.slice(10);
 
   await Promise.all(
     oldLogs.map(async (log) => {

@@ -51,6 +51,7 @@ const Contents = () =>{
   const startTimeRef = useRef<number>(0);
   const duration = 1000;
   const [viewFilter, setViewFilter] = useState({
+    all: true,
     name: true,
     contact: true,
     email: true,
@@ -180,6 +181,12 @@ const Contents = () =>{
   };
 
   useEffect(()=>{
+    if(Object.values(viewFilter).some((filters => !filters))){
+      setViewFilter({...viewFilter,all:true})
+    }
+  },[viewFilter])
+
+  useEffect(()=>{
     searchUsers(searchValue);
   },[searchValue])
 
@@ -221,6 +228,16 @@ const Contents = () =>{
               <DropdownMenuLabel>
                 Filter View
               </DropdownMenuLabel>
+              <DropdownMenuCheckboxItem
+                tickerType='visual'
+                checked={viewFilter.all}
+                onCheckedChange={(checked) =>
+                  setViewFilter({ ...viewFilter, all: checked === true })
+                }
+                disabled={viewFilter.all}
+              >
+                Show All
+              </DropdownMenuCheckboxItem>
               <DropdownMenuCheckboxItem
                 tickerType='visual'
                 checked={viewFilter.name}

@@ -79,7 +79,20 @@
 
 .profile-card .edit-user{
   left: initial;
+  top:.5rem;
   right: 1rem;
+  padding: .5rem;
+  border-radius: 10px;
+  background-color: var(--button);
+  color: var(--white);
+
+  transition: top .3s ease;
+
+  &:focus{
+    top: .55rem;
+    box-shadow: 0 0 .25rem #000000EE;
+  }
+
 }
 
 .select-all:has(.profile-check-all + input[type=checkbox]:checked) .profile-check-all,
