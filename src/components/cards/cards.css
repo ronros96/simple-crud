@@ -44,6 +44,27 @@
     gap: 0 var(--gap);
     grid-template-columns: 5rem 3fr;
     border-top: solid 1px var(--dgray);
+    height: auto;
+    
+    &.hide{
+      padding: 0;
+      border-top: none;
+      max-height: 0;
+    }
+
+    &.show-1{
+      max-height: calc(var(--gap) * 6);
+    }
+
+    &.show-2{
+      max-height: calc(var(--gap) * 9);
+    }
+
+    &.show-all{
+      max-height: calc(var(--gap) * 12);
+    }
+
+    transition: max-height .3s ease;
 
     p:nth-last-child(2),
     p:last-child{
@@ -51,6 +72,9 @@
     }
   }
 
+  &:has(.contents.hide) h4{
+    margin-bottom: 0;
+  }
 }
 
 .profile-card .user-checkbox{

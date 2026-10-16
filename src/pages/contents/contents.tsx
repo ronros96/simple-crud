@@ -1,5 +1,7 @@
 import clsx from 'clsx';
 import { useEffect, useState, useRef, useMemo } from "react";
+//TS types
+import type { User } from '@src/fields/type';
 import {
   CircleX,
   CircleCheck,
@@ -30,16 +32,14 @@ import {
 import { Button } from "@components/ui/button";
 import { Progress } from "@components/ui/progress"
 import SearchBar from '@components/search/search';
-
-import { useProfile, useUser, useSearch } from "@src/store/store";
+//storage
+import { useProfile, useUser, useSearch, useFilter } from "@src/store/store";
 import { useGetUsers, useDeleteUser } from '@hooks/Profile';
 import ProfileCard from '@components/cards/profileCard';
-
+//helpers
 import { clearUser, fixAddress } from '@lib/helpers/user';
 import { useRoute } from '@lib/helpers/routes';
-
 import { profileIcon } from "@lib/helpers/user";
-import type { User } from '@src/fields/type';
 
 const Contents = () =>{
   //local states
@@ -50,13 +50,6 @@ const Contents = () =>{
   const timerRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(0);
   const duration = 1000;
-  const [viewFilter, setViewFilter] = useState({
-    all: true,
-    name: true,
-    contact: true,
-    email: true,
-    address: true,
-  })
   //global states
   const userID = useProfile((state:any) => state.id);
   const username = useProfile((state:any) => state.username);
@@ -67,6 +60,9 @@ const Contents = () =>{
   const Users = useUser((state:any) => state.Users);
   const searchType = useSearch((state:any) => state.searchType);
   const searchValue = useSearch((state:any) => state.searchValue);
+  const viewFilter = useFilter((state:any) => state.viewFilter);
+  const setViewFilter = useFilter((state:any) => state.setViewFilter);
+  
   //hooks
   const {data: allUsers, refetch} = useGetUsers();
   const deleteUser = useDeleteUser();
@@ -183,8 +179,14 @@ const Contents = () =>{
   useEffect(()=>{
     if(Object.values(viewFilter).some((filters => !filters))){
       setViewFilter({...viewFilter,all:true})
+    }else{
+      setViewFilter({...viewFilter,all:false})
     }
-  },[viewFilter])
+  },[
+    viewFilter.contact,
+    viewFilter.email,
+    viewFilter.address
+  ]);
 
   useEffect(()=>{
     searchUsers(searchValue);
@@ -230,29 +232,25 @@ const Contents = () =>{
               </DropdownMenuLabel>
               <DropdownMenuCheckboxItem
                 tickerType='visual'
-                checked={viewFilter.all}
-                onCheckedChange={(checked) =>
-                  setViewFilter({ ...viewFilter, all: checked === true })
+                checked={!viewFilter.all}
+                onCheckedChange={(check) =>{
+                    setViewFilter({
+                      all: check,
+                      contact: true,
+                      email: true,
+                      address: true,
+                    });
+                  }
                 }
-                disabled={viewFilter.all}
+                disabled={!viewFilter.all}
               >
                 Show All
               </DropdownMenuCheckboxItem>
               <DropdownMenuCheckboxItem
                 tickerType='visual'
-                checked={viewFilter.name}
-                onCheckedChange={(checked) =>
-                  setViewFilter({ ...viewFilter, name: checked === true })
-                }
-                
-              >
-                Name
-              </DropdownMenuCheckboxItem>
-              <DropdownMenuCheckboxItem
-                tickerType='visual'
                 checked={viewFilter.contact}
                 onCheckedChange={(checked) =>
-                  setViewFilter({ ...viewFilter, contact: checked === true })
+                  setViewFilter({contact: checked === true })
                 }
               >
                 Contact
@@ -261,7 +259,7 @@ const Contents = () =>{
                 tickerType='visual'
                 checked={viewFilter.email}
                 onCheckedChange={(checked) =>
-                  setViewFilter({ ...viewFilter, email: checked === true })
+                  setViewFilter({email: checked === true })
                 }
               >
                 Email
@@ -270,7 +268,7 @@ const Contents = () =>{
                 tickerType='visual'
                 checked={viewFilter.address}
                 onCheckedChange={(checked) =>
-                  setViewFilter({ ...viewFilter, address: checked === true })
+                  setViewFilter({address: checked === true })
                 }
               >
                 Address

@@ -7,7 +7,7 @@ import type { User } from '@src/fields/type';
 import { Checkbox } from "@components/ui/checkbox";
 import { SquarePen } from "lucide-react"
 //storage
-import { useUser, useProfile } from "@src/store/store";
+import { useUser, useProfile, useFilter } from "@src/store/store";
 //helpers
 import { profileIcon } from "@lib/helpers/user";
 import { useRoute } from '@lib/helpers/routes';
@@ -23,6 +23,7 @@ const ProfileCard = () =>{
   const selected = useUser((state:any) => state.selected);
   const setSelected = useUser((state:any) => state.setSelected);
   const setFormType = useProfile((state:any) => state.setFormType);
+  const viewFilter = useFilter((state:any) => state.viewFilter);
   //navigation
   const { toUpdateProfile } = useRoute();
 
@@ -48,7 +49,13 @@ const ProfileCard = () =>{
     e.preventDefault();
     setFormType('update-user');
     toUpdateProfile(id)
-  } 
+  }
+
+  const filtersCount = Object.entries(viewFilter)
+  .filter(([key, value]) => key !== "all" && value)
+  .length;
+
+  console.log(filtersCount,viewFilter)
 
   useEffect(() => {
     const userVal = Users && Users?.map((user:User) => ({
@@ -92,13 +99,26 @@ const ProfileCard = () =>{
           {user.firstname}{' '}{user.lastname}
           {user.bot && <span className='bot'>Dummy</span>}
         </h4>
-        <div className='contents'>
-          <p><strong>Contact</strong></p>
-          <p>{fixContact(user.contact,user.bot ? user.address : undefined).join(' ')}</p>
-          <p><strong>Email</strong></p>
-          <p>{user.email}</p>
-          <p><strong>Address</strong></p>
-          <p>{fixAddress(user.address)}</p>
+        <div
+          className={clsx('contents',{
+            'hide':filtersCount === 0,
+            'show-1':filtersCount === 1,
+            'show-2':filtersCount === 2,
+            'show-all':filtersCount === 3,
+          })}  
+        >
+          {viewFilter.contact && <>
+            <p><strong>Contact</strong></p>
+            <p>{fixContact(user.contact,user.bot ? user.address : undefined).join(' ')}</p>
+          </>}
+          {viewFilter.email && <>
+            <p><strong>Email</strong></p>
+            <p>{user.email}</p>
+          </>}
+          {viewFilter.address && <>
+            <p><strong>Address</strong></p>
+            <p>{fixAddress(user.address)}</p>
+          </>}
         </div>
       </div>
     })}

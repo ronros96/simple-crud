@@ -158,6 +158,35 @@ export const useUser  = create<UserStore>((set) => ({
     }))
 }));
 
+//CARD FILTERS
+type Filters = {
+  all: boolean;
+  contact: boolean;
+  email: boolean;
+  address: boolean;
+}
+
+type FliterStore = {
+  viewFilter:Partial<Filters>;
+  setViewFilter: (Filters: Required<Filters>) => void;
+}
+
+export const useFilter  = create<FliterStore>((set) => ({
+  viewFilter:{
+    all: true,
+    contact: true,
+    email: true,
+    address: true,
+  },
+  setViewFilter: (filter) =>
+    set((state) => ({
+      viewFilter: {
+        ...state.viewFilter,
+        ...filter,
+      },
+    })),
+}));
+
 //for User Update Notif
 export const useUserUpdated  = create((set) => ({
   profileUpdate:false,
