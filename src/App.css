@@ -320,9 +320,10 @@ h6,
 .header-6{
   font-size: var(--font-base);
 }
-.text-sm{
+
+/* .text-sm{
   font-size: var(--font-sm);
-}
+} */
 
 .important{
   color: var(--important);

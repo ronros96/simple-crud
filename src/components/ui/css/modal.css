@@ -1,0 +1,46 @@
+/* MODAL / DIALOG BOX */
+.modal{
+  padding: 1rem;
+  background-color: var(--frame-bg);
+  
+  &.sm{
+    max-width: 25rem;
+  }
+
+  &.all-centered{
+    [data-slot=dialog-footer]{
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    [data-slot=dialog-title]{
+      text-align: center;
+    }
+  }
+
+  [data-slot=dialog-close]{
+    color: var(--white);
+    svg{
+      width: var(--gap);
+      height: var(--gap);
+    }
+    &:hover{
+      background-color: var(--button);
+    }
+  }
+
+  [data-slot=dialog-title]{
+    padding-bottom: var(--gap);
+    font-family: var(--pixel);
+    font-size: var(--font-md);
+    color: var(--text-default);
+    border-bottom: solid 1px var(--dgray);
+  }
+  
+  @media screen and (min-width: 680px) {
+    padding: 2rem;
+    &.sm{
+      max-width: 35rem;
+    }
+  }
+}

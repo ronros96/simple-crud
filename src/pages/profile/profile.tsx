@@ -270,7 +270,6 @@ const Profile = () => {
         }
       }
     }else{
-      console.log(result)
       setErrors(result);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
@@ -286,7 +285,6 @@ const Profile = () => {
       setContactNum(fixContact(contact,address)[0]);
       setContactLoc(fixContact(contact,address)[1]);
       loadAddress();
-      console.log(address,contact)
       setInit(true);
     }
   },[userFound,contact,init])

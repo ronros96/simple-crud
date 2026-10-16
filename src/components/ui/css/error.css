@@ -1,0 +1,13 @@
+/* ERRORS */
+.err-msg{
+  display:none;
+  margin-top: 1rem;
+  padding: .5rem 1rem;
+  width: 100%;
+  text-align: center;
+  background-color: var(--error);
+  border-radius: 10px;
+  &.show{
+    display: block;
+  }
+}

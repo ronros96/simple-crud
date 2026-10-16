@@ -1,0 +1,44 @@
+.form-group{
+  width: 100%;
+  margin-bottom: 1.5rem;
+  gap:var(--gapHalf) var(--gap);
+
+  &.error{
+    label{color: var(--error);}
+    textarea,
+    [data-slot=input-group],
+    span[role=checkbox],
+    [data-slot=select-trigger]
+    {border-color: var(--error);}
+    
+  }
+
+  .form-group{
+    margin-bottom: 0;
+  }
+
+  &:last-child{
+    margin-bottom: 0;
+  }
+
+  label,
+  legend{
+    font-size: inherit;
+    font-weight: 400;
+    gap:0;
+    text-transform: uppercase;
+    &.normal{
+      text-transform: none;
+    }
+    &.normal-case{
+      text-transform: none;
+    }
+    ul li{
+      text-transform: none;
+    }
+  }
+}
+
+fieldset label{
+  text-transform: none;
+}

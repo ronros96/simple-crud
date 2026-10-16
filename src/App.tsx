@@ -1,12 +1,21 @@
 import './App.css';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router';
 import clsx from 'clsx';
 //UI
+import { OctagonX, X } from "lucide-react"
 import Header from '@layout/header/header';
 import Footer from '@layout/footer/footer';
 import Preloader from '@components/preloader/preloader';
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@components/ui/alert";
+import { Button } from "@components/ui/button";
+
+
 //states
 import { useColorScheme } from './store/store';
 import { useLogin,useProfile } from "@src/store/store";
@@ -20,13 +29,14 @@ function App() {
   //hooks
   const {
     data: session,
-    isPending,
     isError,
   } = useRestoreAuthSession();
   const {data: validUser} = useGetUser({
     id:session && Object(session).map((item:any) => item.UserId)[0]
   });
 
+  const [errorLogs,setErrorLogs] = useState(false);
+  const [showError,setshowError] = useState(false);
   const currentScheme =  useColorScheme((state:any) => state.currentScheme);
   const isLogged = useLogin((state:any) => state.isLogged);
   const setLogin = useLogin((state:any) => state.setLogin);
@@ -62,24 +72,38 @@ function App() {
     }
   },[session,validUser]);
 
-  if (isPending) {
-    return <div className='status'>Checking session...</div>;
-  }
+  useEffect(()=>{
+    if (isError && !errorLogs) {
+      setErrorLogs(true);
+      setshowError(true);
+      setTimeout(()=>{
+        setshowError(false);
+      },5300)
+    }
+  },[errorLogs,isError]);
 
-  if (isError) {
-    return <div className='status'>Unable to verify session. Please try again.</div>;
-  }
+  
 
   return (
     <>
+      <Preloader/>
       <Header/>
+      <Alert  className={clsx({'show':showError})}>
+        <OctagonX className='error'/>
+        <AlertTitle>Session Error</AlertTitle>
+        <AlertDescription>
+          Unable to verify your session.
+        </AlertDescription>
+        <Button className="icon cooldown-close" onClick={()=>{
+          setshowError(false)
+        }}><X/></Button>
+      </Alert>
       <main className={clsx(
         'flex items-center flex-col',
         currentScheme,
         {'justify-start':isLogged && formType !== 'success'},
         {'justify-center':!isLogged || formType === 'success'}
       )}>
-        <Preloader/>
         <div className="page-content w-full flex flex-col items-center">
           <Outlet />
         </div>

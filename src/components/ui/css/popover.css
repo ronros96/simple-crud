@@ -1,0 +1,19 @@
+/* POPOVER */
+[data-slot=popover-content]{
+  background-color: var(--secondary-bg);
+
+  [data-slot=command]{
+    background-color: var(--secondary-bg);
+  }
+
+  [data-slot=command-item]{
+    background-color: var(--secondary-bg);
+    transition: background-color .3s var(--ease);
+    &[data-selected=true]{
+      background-color: var(--link);
+    }
+    *{
+      color: var(--text-default);
+    }
+  }
+}

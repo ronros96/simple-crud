@@ -1,4 +1,5 @@
-// RouteProgress.tsx
+import './preloader.css';
+import clsx from 'clsx';
 import { useEffect, useState } from "react";
 import { useNavigation } from "react-router";
 
@@ -22,14 +23,12 @@ export default function Preloader() {
     const t = setTimeout(() => {
       setVisible(false);
       setProgress(0);
-    }, 300);
+    }, 500);
     return () => clearTimeout(t);
   }, [loading]);
 
-  if (!visible) return null;
-
   return (
-    <div className="preloader">
+    <div className={clsx("preloader",{'show':visible})}>
       <div className="progress" style={{ width: `${progress}%` }} />
     </div>
   );

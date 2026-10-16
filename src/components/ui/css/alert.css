@@ -1,0 +1,117 @@
+/* ALERT */
+@property --timingWhite{
+  syntax: "<percentage>";
+  initial-value: 0%;
+  inherits: false;
+}
+
+@property --timingBlack{
+  syntax: "<percentage>";
+  initial-value: 100%;
+  inherits: false;
+}
+
+@keyframes timer {
+  from{
+    --timingWhite:0%;
+    --timingBlack:100%;
+  }to{
+    --timingWhite:0%;
+    --timingBlack:0%;
+  }
+}
+
+[data-slot='alert']{
+  position: fixed;
+  top: -200px;
+  left: 1rem;
+  width: auto;
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  padding: var(--gap);
+  background-color: var(--frame-bg);
+  border-radius: 10px;
+  corner-shape: squircle;
+  box-shadow: 0 .5rem 1rem var(--black);
+  border-color: var(--dgray);
+  z-index: 30;
+
+  transition: top .3s var(--ease);
+
+  &.show{
+    top:1rem;
+  }
+
+  svg{
+    grid-column: 1 / 1 ;
+    grid-row: 1 / 1;
+    color: var(--text-default);
+    &.error{
+      color: var(--error);
+    }
+  }
+}
+
+[data-slot=alert-title]{
+  grid-column: 2 / 2 ;
+  grid-row: 1 / 2;
+  padding: .25rem 0;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
+  font-family: var(--pixel);
+  color: var(--text-default);
+}
+
+[data-slot=alert-description]{
+  grid-column: 2 / 2 ;
+  grid-row: 2 / 2;
+  padding: .5rem 0 .5rem;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
+  font-size: var(--font-sm);
+  color:var(--lgray);
+}
+
+[data-slot='alert'] .cooldown-close{
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  margin-left: var(--gap);
+  grid-column: 3 / 3 ;
+  grid-row: 1 / 2 ;
+  background-color: var(--secondary-bg);
+  border-radius: 100vmax;
+  isolation: isolate;
+  cursor: pointer;
+  overflow: hidden;
+
+  &::before,
+  &::after{
+    content: '';
+    position: absolute;
+    display: block;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    translate: -50% -50%;
+    z-index: -2;
+    background-image: conic-gradient(var(--secondary-bg) var(--timingBlack),  white var(--timingWhite));
+  }
+
+  &::before{
+    animation: timer 5s .6s var(--ease) forwards;
+  }
+
+  &::after{
+    width: calc(100% - 2px);
+    height: calc(100% - 2px);
+    border-radius: 100vmax;
+    background: var(--secondary-bg);
+    z-index: -1;
+  }
+}

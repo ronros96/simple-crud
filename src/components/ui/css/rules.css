@@ -1,0 +1,12 @@
+/* RULES */
+ul.rules{
+  li{
+    font-size: var(--font-base);
+    &.good{
+      color: var(--green);
+    }
+    &.err{
+      color: var(--error);
+    }
+  }
+} 

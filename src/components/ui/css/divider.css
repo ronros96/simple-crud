@@ -1,0 +1,21 @@
+/* LINE DIVIDERS */
+.divider-vertical,
+.divider-horizontal{
+  flex-shrink: 0;
+  height: 1px;
+  width: 100%;
+  background-color: var(--dgray);
+}
+
+.divider-vertical{
+  @media screen and (min-width: 680px) {
+    height: 100%;
+    width: 1px;
+  }
+}
+
+.divider-horizontal{
+  margin-bottom: var(--gap);
+  height: 1px;
+  width: 100%;
+}

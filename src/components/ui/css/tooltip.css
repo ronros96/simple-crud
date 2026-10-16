@@ -1,0 +1,7 @@
+/* TOOLTIP */
+[data-slot=tooltip-content]{
+  background-color: var(--pop-up);
+  p{
+    margin: 0;
+  }
+}

@@ -88,8 +88,9 @@ const restoreSession = async (): Promise<ILoginSession | null> => {
   const response = await fetch(url);
 
   if (response.status === 404) {
-    removeAuthCookie();
-    return null;
+    // removeAuthCookie();
+    // return null;
+     throw new Error("Unable to verify login session.");
   }
 
   if (!response.ok) {
@@ -98,7 +99,7 @@ const restoreSession = async (): Promise<ILoginSession | null> => {
   const session:ILoginSession = await response.json();
 
   //clean retain 10 remove old session
-  if(userId && Object(session).length > 10){
+  if(userId && Object(session).length > 9){
     deleteOldLoginLogs(userId);
   }
 
@@ -107,8 +108,10 @@ const restoreSession = async (): Promise<ILoginSession | null> => {
   
   // Check that the record matches the requested session.
   if (!validSession) {
-    //removeAuthCookie();
+    removeAuthCookie();
     return null;
+  }else{
+    createSession(validSession)
   }
 
   // Enforce a 24-hour limit even if the API record remains.
@@ -153,7 +156,7 @@ const deleteOldLoginLogs = async (userId:string): Promise<void> => {
   const sortedLogs = [...logs].sort((a, b) =>
     Date.parse(b.date_logged) - Date.parse(a.date_logged)
   );
-  const oldLogs = sortedLogs.slice(10);
+  const oldLogs = sortedLogs.slice(9);
 
   await Promise.all(
     oldLogs.map(async (log) => {
