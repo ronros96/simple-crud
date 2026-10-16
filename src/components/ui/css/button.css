@@ -24,7 +24,6 @@ button.counter{
   background-color: var(--button);
   font-family: var(--open-sans);
   font-weight: 600;
-  font-size: var(--font-base);
   text-transform: uppercase;
   text-box-trim: trim-both;
   text-box-edge: cap alphabetic;
@@ -55,7 +54,18 @@ button.counter{
     display: flex;
     align-items: center;
     gap: .15rem;
+    font-weight: 300;
     background-color: var(--frame-bg);
+    color: var(--text-default);
+  }
+
+  span .max-count{
+    margin-left: .25rem;
+    padding-left: .25rem;
+    font-style: normal;
+    font-weight: 300;
+    color: var(--lgray);
+    border-left: solid 1px var(--dgray);
   }
 
   small{
@@ -65,6 +75,7 @@ button.counter{
     text-transform: uppercase;
     border-left: solid 1px #FFFFFF55;
   }
+  
 }
 
 button.sm,

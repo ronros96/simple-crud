@@ -4,7 +4,6 @@ import { useEffect, useState, useRef, useMemo } from "react";
 import type { User } from '@src/fields/type';
 import {
   CircleX,
-  CircleCheck,
   UserCheck,
   UserRoundX,
   UserRoundPlus,
@@ -199,7 +198,7 @@ const Contents = () =>{
   return  <>
     <title>{`${import.meta.env.VITE_APP_TITLE} | Dashboard`}</title>
     <div className='contents'>
-      <div className="md:flex items-center w-full justify-between gap-[var(--gap)] py-[var(--gap)]">
+      <div className="top-panel md:flex items-center w-full justify-between gap-[var(--gap)] py-[var(--gap)]">
         <h1 className="header-4 mb-0">Profiles</h1>
         <SearchBar/>
         <DropdownMenu>
@@ -208,11 +207,11 @@ const Contents = () =>{
               Action
               <span>
                 <UserCheck/>
-                {selectedCount}
+                {selectedCount}<em className='max-count'>15</em>
               </span>
             </Button>
           }/>
-          <DropdownMenuContent className="dropmenu w-60" align="end">
+          <DropdownMenuContent className="dropmenu w-70" align="end">
             <DropdownMenuGroup>
               <DropdownMenuItem
                 onClick={() => {
@@ -273,15 +272,6 @@ const Contents = () =>{
               >
                 Address
               </DropdownMenuCheckboxItem>
-              {/* <DropdownMenuCheckboxItem
-                checked={viewFilter.contact}
-                onCheckedChange={(checked) =>
-                  setViewFilter({ ...viewFilter, contact: checked === true })
-                }
-              >
-                <Lock/>
-                Lock Selected User(s)
-              </DropdownMenuCheckboxItem> */}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
@@ -289,14 +279,9 @@ const Contents = () =>{
                 Selected Users
                 <span>
                   <UserCheck size={'1rem'}/>
-                  {selectedCount}
+                  {selectedCount}<em>15</em>
                 </span>
               </DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => checkAll(true)}
-              >
-                <CircleCheck/> Select All
-              </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => checkAll(false)}
                 disabled={!hasSelected}

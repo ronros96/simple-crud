@@ -37,7 +37,7 @@
   --secondary-bg:light-dark(#FAF6F2,#1C1B1B);
   --frame-bg:light-dark(#F5EFE9,#101010);
   --dgray:light-dark(#DAD7CD,#2D2D2D);
-  --lgray:#979397;
+  --lgray:(#888888,#979397);
   --link:#4B91DD;
   --button:#85A2CC;
   --button-hover:#a6c8ec;
@@ -84,7 +84,6 @@
     text-box-trim: trim-both;
     text-box-edge: cap alphabetic;
     font-family: var(--pixel);
-    font-size: var(--font-base);
     font-weight: 700;
     border-radius: 100vmax;
     border: solid 2px transparent;
@@ -107,17 +106,19 @@
     --main-bg:#242121;
     --secondary-bg:#1C1B1B;
     --frame-bg:#101010;
+    --lgray:#979397;
     --dgray:#2D2D2D;
     --footer:#111010;
   }
 
   body:has(.light){
     --text-default:#000;
-    --button-default:#85A2CC;
+    --button-default:#333;
     --main-bg:#FFFFFF;
     --secondary-bg:#FAF6F2;
     --frame-bg:#F5EFE9;
     --dgray:#DAD7CD;
+    --lgray:#888888;
     --footer:#cec1c1;
   }
 
@@ -160,7 +161,7 @@
 
 *{
   box-sizing: border-box;
-  font-size: var(--base-font-size);
+  font-size: var(--font-base);
 }
 
 @keyframes page-out {
@@ -195,7 +196,6 @@ html,
 body{
   position: relative;
   font-family: var(--open-sans);
-  font-size: var(--font-base);
   font-optical-sizing: auto;
   color: var(--text-default);
   background: radial-gradient(var(--dgray) 2px, var(--main-bg) 1px) 0 0 / 30px 30px;

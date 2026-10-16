@@ -26,6 +26,13 @@
       border-radius: 5px;
       border: solid 1px var(--dgray);
     }
+    em{
+      padding-left: .25rem;
+      font-style: normal;
+      font-weight: 300;
+      color: var(--lgray);
+      border-left: solid 1px var(--dgray);
+    }
   }
 
   [data-slot=dropdown-menu-item]{

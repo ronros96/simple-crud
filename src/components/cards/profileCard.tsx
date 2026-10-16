@@ -4,8 +4,14 @@ import { useEffect} from 'react';
 //type
 import type { User } from '@src/fields/type';
 //UI
+import { 
+  SquarePen,
+  Phone,
+  AtSign,
+  MapPinHouse
+
+} from "lucide-react"
 import { Checkbox } from "@components/ui/checkbox";
-import { SquarePen } from "lucide-react"
 //storage
 import { useUser, useProfile, useFilter } from "@src/store/store";
 //helpers
@@ -27,6 +33,10 @@ const ProfileCard = () =>{
   //navigation
   const { toUpdateProfile } = useRoute();
 
+  const selectedCount:number = selected.filter(
+    (item: any) => item.value === true
+  ).length;
+
   const isSelected = (id: string) => {
     return selected.find((item:any) => item.id === id)?.value ?? false;
   };
@@ -38,11 +48,11 @@ const ProfileCard = () =>{
   const handleSelect = (id: string, value: boolean) => {
     setSelected((prev:any) =>
       prev.map((item:any) =>
-        item.id === id
-          ? { ...item, value }
-          : item
+        item.id === id ? { ...item, value: selectedCount < 15 ? value : false } : item
       )
     );
+
+
   };
 
   const updateProfile = (e:any,id:any) =>{
@@ -54,8 +64,6 @@ const ProfileCard = () =>{
   const filtersCount = Object.entries(viewFilter)
   .filter(([key, value]) => key !== "all" && value)
   .length;
-
-  console.log(filtersCount,viewFilter)
 
   useEffect(() => {
     const userVal = Users && Users?.map((user:User) => ({
@@ -70,7 +78,7 @@ const ProfileCard = () =>{
   }, [Users]);
 
   return (
-  <div className='grid lg:grid-cols-3 md:grid-cols-2 gap-[var(--gap)]'>
+  <div className='grid lg:grid-cols-3 md:grid-cols-2 gap-[var(--gap)] mt-5'>
     {selected && Users?.map((user:any)=>{
       return <div
         className={clsx('profile-card',{'hidden':!isVisible(`${user.id}-${user.username}`) })}
@@ -108,15 +116,15 @@ const ProfileCard = () =>{
           })}  
         >
           {viewFilter.contact && <>
-            <p><strong>Contact</strong></p>
+            <p><Phone size={20}/></p>
             <p>{fixContact(user.contact,user.bot ? user.address : undefined).join(' ')}</p>
           </>}
           {viewFilter.email && <>
-            <p><strong>Email</strong></p>
-            <p>{user.email}</p>
+            <p><AtSign size={20}/></p>
+            <p className='email' title={user.email}>{user.email}</p>
           </>}
           {viewFilter.address && <>
-            <p><strong>Address</strong></p>
+            <p><MapPinHouse size={20}/></p>
             <p>{fixAddress(user.address)}</p>
           </>}
         </div>

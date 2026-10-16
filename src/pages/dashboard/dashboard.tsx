@@ -4,34 +4,48 @@ import { toast, Toaster } from "@components/ui/toast";
 //Hooks
 import { useGetUsers, useGetUser } from '@hooks/Profile';
 //Global States
-import { useLogin, useUserUpdated } from "@src/store/store";
-//UI
-
+import { useLogin, useUserUpdated, useUser } from "@src/store/store";
+//contents
 import Contents from '../contents/contents';
 
-
-
 const Dashboard = () =>{
-  //hooks
-  const {data: allUsers} = useGetUsers();
-  const isLogged =  useLogin((state:any) => state.isLogged);
-  
-  //notify
-  const notifiedUserID = useRef<string | null>(null);
-  const profileUpdate = useUserUpdated((state:any) => state.profileUpdate);
-  const updatedUserID = useUserUpdated((state:any) => state.updatedUserID);
-  const setProfileUpdate = useUserUpdated((state:any) => state.setProfileUpdate);
-  const setUpdatedUserID = useUserUpdated((state:any) => state.setUpdatedUserID);
-  const {data: userFound} = useGetUser({id:updatedUserID});
+//hooks
+const {data: allUsers} = useGetUsers();
+const isLogged =  useLogin((state:any) => state.isLogged);
 
-  const showToastNotif = (message:string) => {
-    toast.add({
-      type: "success",
-      description: <><strong>{message}</strong>,<br/>has been successfully updated.</>,
-    })
-  }
+//notify
+const notifiedUserID = useRef<string | null>(null);
+const profileUpdate = useUserUpdated((state:any) => state.profileUpdate);
+const updatedUserID = useUserUpdated((state:any) => state.updatedUserID);
+const setProfileUpdate = useUserUpdated((state:any) => state.setProfileUpdate);
+const setUpdatedUserID = useUserUpdated((state:any) => state.setUpdatedUserID);
+const selected = useUser((state:any) => state.selected);
+const {data: userFound} = useGetUser({id:updatedUserID});
 
- useEffect(() => {
+const showToastNotif = (message:string) => {
+  toast.add({
+    type: "success",
+    description: <><strong>{message}</strong><br/>has been successfully updated.</>,
+  })
+}
+
+const showToastMax = () => {
+  toast.add({
+    type: "success",
+    description: <><strong>Max profile selection reached</strong></>,
+  })
+}
+
+const selectedCount: number = selected.filter(
+  (item: any) => item.value
+).length;
+
+useEffect(() => {
+  selectedCount > 14 && showToastMax();
+  console.log(selectedCount)
+},[selectedCount])
+
+useEffect(() => {
   if (!profileUpdate || !updatedUserID || !userFound) return;
   if (notifiedUserID.current === updatedUserID) return;
   notifiedUserID.current = updatedUserID;
@@ -47,12 +61,12 @@ const Dashboard = () =>{
   setUpdatedUserID,
 ]);
 
-  return (
-    <section className='container header-margin transparent w-full'>
-      {allUsers && isLogged  && <Contents/>}
-      <Toaster/>
-    </section>
-  )
+return (
+  <section className='container header-margin transparent w-full'>
+    {allUsers && isLogged  && <Contents/>}
+    <Toaster/>
+  </section>
+)
   
 }
 export default Dashboard;

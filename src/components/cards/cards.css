@@ -1,6 +1,6 @@
 .profile-card{
   position: relative;
-  padding: var(--gap2x);
+  padding: var(--gap);
   background-color: var(--frame-bg);
   border-radius: var(--gap);
   overflow: hidden;
@@ -25,6 +25,10 @@
     }
   }
 
+  @media screen and (min-width: 1200px) {
+    padding: var(--gap2x);
+  }
+
   &:hover .user-checkbox,
   &:hover .edit-user,
   &:has(.user-checkbox + input[type=checkbox]:checked) .user-checkbox{
@@ -41,10 +45,16 @@
   .contents{
     padding-top: var(--gap);
     display: grid;
-    gap: 0 var(--gap);
-    grid-template-columns: 5rem 3fr;
+    gap: 0 var(--gapHalf);
+    grid-template-columns: auto 3fr;
     border-top: solid 1px var(--dgray);
     height: auto;
+
+    .email{
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
     
     &.hide{
       padding: 0;
@@ -72,6 +82,10 @@
     }
   }
 
+  svg{
+    color: var(--lgray);
+  }
+
   &:has(.contents.hide) h4{
     margin-bottom: 0;
   }
@@ -87,8 +101,8 @@
 .profile-card .user-checkbox,
 .profile-card .edit-user{
   position: absolute;
-  top: 1rem;
-  left: 1rem;
+  top: .5rem;
+  left: .5rem;
   opacity: 1;
   box-shadow: 0 .25rem .25rem #000000EE;
   z-index: 10;
@@ -99,22 +113,33 @@
   @media screen and (min-width: 1024px) {
     opacity: 0;
   }
+
+  @media screen and (min-width: 1200px) {
+    top: 1rem;
+    left: 1rem;
+  }
 }
 
 .profile-card .edit-user{
   left: initial;
   top:.5rem;
-  right: 1rem;
+  right: .5rem;
   padding: .5rem;
   border-radius: 10px;
   background-color: var(--button);
-  color: var(--white);
+  svg{
+    color: var(--white);
+  }
 
-  transition: top .3s ease;
+  transition: top .3s ease,opacity .3s var(--ease);
 
   &:focus{
     top: .55rem;
     box-shadow: 0 0 .25rem #000000EE;
+  }
+
+  @media screen and (min-width: 1200px) {
+    right: 1rem;
   }
 
 }

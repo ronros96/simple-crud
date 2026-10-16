@@ -51,7 +51,7 @@ import { useErrors, useProfile, useUser, useLogin, useUserUpdated } from "@src/s
 // helpers
 import {checkAllFields, showRequirements, fieldError, FieldOrginizer} from "@src/lib/helpers/field";
 import { ProfileFields } from "@src/fields/profile";
-import { clearUser, fixContact, loggedOut } from "@lib/helpers/user";
+import { clearUser, fixContact } from "@lib/helpers/user";
 import { useRoute } from "@lib/helpers/routes";
 //hooks
 import { usePutUser, useCreateUser, useGetUser, useGetUsers } from '@hooks/Profile';
@@ -252,7 +252,6 @@ const Profile = () => {
               email:email,
               address:address,
               logged: new Date(),
-              bot:false,
             }
           });
           clearUser();
@@ -364,7 +363,7 @@ const Profile = () => {
                   name="username"
                   value={username}
                   onChange={(e) =>{
-                    setCredUpdate(true)
+                    setCredUpdate(formType === 'update-profile' ? true : false)
                     setUserPicked({ username: e.target.value })
                   }}
                   aria-required="true"
@@ -391,7 +390,7 @@ const Profile = () => {
                   name="password"
                   value={password}
                    onChange={(e) =>{
-                    setCredUpdate(true)
+                    setCredUpdate(formType === 'update-profile' ? true : false)
                     setUserPicked({ password: e.target.value })
                   }}
                   aria-required="true"
