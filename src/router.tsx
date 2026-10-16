@@ -4,6 +4,7 @@ import { CancelledError } from '@tanstack/react-query';
 import { queryClient } from '@lib/queryClient';
 import { usersQuery } from '@hooks/Profile';
 
+import About from '@src/pages/about/about';
 import Success from '@src/pages/success';
 import NotFound from '@src/pages/not_found';
 
@@ -58,6 +59,10 @@ export const router = createBrowserRouter(
             const { default: Component } = await import('@page/profile/profile');
             return { Component, loader: usersLoader};
           },
+        },
+        {
+          path: 'about',
+          element: <About/>
         },
         {
           path: 'success',

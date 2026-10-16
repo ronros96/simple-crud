@@ -2,6 +2,8 @@ import './header.css';
 import { 
   LogOutIcon,
   UserPen,
+  Info,
+  ArrowLeft,
 } from "lucide-react"
 import {
   DropdownMenu,
@@ -41,18 +43,19 @@ const Header = () => {
   const setFormType =  useProfile((state:any) => state.setFormType);
   const isLogged =  useLogin((state:any) => state.isLogged);
   //navigation
-  const { toUpdateProfile } = useRoute();
+  const { toUpdateProfile, toAbout, toDashboard } = useRoute();
 
   const showHeader = [
     'dashboard',
     'update-profile',
     'update-user',
-    'new-user'
+    'new-user',
+    'about'
   ];
   const showBackCancel = [
     'update-profile',
     'update-user',
-    'new-user'
+    'new-user',
   ]
 
   return (
@@ -66,6 +69,18 @@ const Header = () => {
         <div className='header-container'>
           <div className='user-info'>
             {showBackCancel.includes(formType) && <BackCancel type='header'/>}
+            {formType === 'about' && 
+            <Button 
+              variant="outline"
+              className='back'
+              onClick={()=>{
+                setFormType('dashboard');
+                toDashboard();
+              }}
+            >
+              <ArrowLeft size={'1rem'}/>
+              Back
+            </Button>}
             <DropdownMenu>
               <DropdownMenuTrigger render={<Button className='icon'>
                 {profileIcon(firstname,lastname)}
@@ -73,6 +88,15 @@ const Header = () => {
               } />
               <DropdownMenuContent align="end" className='dropmenu'>
                 <DropdownMenuGroup>
+                  <DropdownMenuItem 
+                    onClick={(e:any)=>{
+                      setFormType('about');
+                      toAbout();
+                    }}
+                  >
+                    <Info />
+                    About
+                  </DropdownMenuItem>
                   <DropdownMenuItem 
                     onClick={(e:any)=>{
                       setFormType('update-profile');
