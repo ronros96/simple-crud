@@ -84,6 +84,12 @@
 
   svg{
     color: var(--lgray);
+    width: var(--gap);
+    height: var(--gap);
+  }
+
+  [data-slot=checkbox-indicator] svg{
+    color: var(--white);
   }
 
   &:has(.contents.hide) h4{

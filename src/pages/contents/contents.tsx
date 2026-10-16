@@ -1,4 +1,3 @@
-import clsx from 'clsx';
 import { useEffect, useState, useRef, useMemo } from "react";
 //TS types
 import type { User } from '@src/fields/type';
@@ -8,7 +7,8 @@ import {
   UserRoundX,
   UserRoundPlus,
   View,
-} from "lucide-react"
+  Menu,
+} from "lucide-react";
 import {
   Dialog,
   DialogClose,
@@ -198,13 +198,13 @@ const Contents = () =>{
   return  <>
     <title>{`${import.meta.env.VITE_APP_TITLE} | Dashboard`}</title>
     <div className='contents'>
-      <div className="top-panel md:flex items-center w-full justify-between gap-[var(--gap)] py-[var(--gap)]">
-        <h1 className="header-4 mb-0">Profiles</h1>
+      <div className="top-panel flex flex-wrap md:flex-nowrap items-center w-full justify-between gap-[var(--gap)] py-[var(--gap)]">
+        <h1 className="header-4 mb-0 flex-1 md:flex-initial">Profiles</h1>
         <SearchBar/>
         <DropdownMenu>
-          <DropdownMenuTrigger render={
-            <Button>
-              Action
+          <DropdownMenuTrigger className="md:flex-[1_0_auto] md:order-3" render={
+            <Button className="action-menu">
+              <Menu/>
               <span>
                 <UserCheck/>
                 {selectedCount}<em className='max-count'>15</em>

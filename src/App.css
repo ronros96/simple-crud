@@ -202,6 +202,10 @@ body{
   background-repeat: repeat;
 }
 
+body:has(.light){
+  background: radial-gradient(var(--frame-bg) 2px, var(--main-bg) 1px) 0 0 / 30px 30px;
+}
+
 main{
   position: relative;
   width: 100%;

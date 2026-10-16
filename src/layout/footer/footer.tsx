@@ -24,7 +24,7 @@ const Footer = () => {
             <a href="https://ronros96.github.io/portfolio/" target='blank' rel="noopener"><BiHome size={'1.5rem'}/></a>
             } />
             <TooltipContent>
-              <p>View my portfolio</p>
+              <p className='mb-0'>View my portfolio</p>
             </TooltipContent>
           </Tooltip>
           <Tooltip>
@@ -32,7 +32,7 @@ const Footer = () => {
             <a href="https://github.com/ronros96" target='blank' rel="noopener"><RiGithubLine size={'1.5rem'}/></a>
             } />
             <TooltipContent>
-              <p>GitHub</p>
+              <p className='mb-0'>GitHub</p>
             </TooltipContent>
           </Tooltip>
           <Tooltip>
@@ -40,7 +40,7 @@ const Footer = () => {
             <a href="https://www.linkedin.com/in/aaronros/" target='blank' rel="noopener"><TbBrandLinkedin size={'1.5rem'}/></a>
             } />
             <TooltipContent>
-              <p>LinkedIn</p>
+              <p className='mb-0'>LinkedIn</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

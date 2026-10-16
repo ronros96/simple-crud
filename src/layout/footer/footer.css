@@ -36,7 +36,6 @@ footer{
   }
 
   p{
-    margin-bottom: 0;
     text-box-trim: trim-both;
     text-box-edge: cap alphabetic;
     span{

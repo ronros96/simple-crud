@@ -174,4 +174,9 @@ object {
   background-repeat: repeat;
   border-bottom: solid 1px var(--dgray);
   z-index: 15;
+
+  .action-menu>svg{
+    width: calc(var(--gap) * 1.2);
+    height: calc(var(--gap) * 1.2);
+  }
 }
