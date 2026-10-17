@@ -89,7 +89,7 @@ const Header = () => {
               <DropdownMenuContent align="end" className='dropmenu'>
                 <DropdownMenuGroup>
                   <DropdownMenuItem 
-                    onClick={(e:any)=>{
+                    onClick={()=>{
                       setFormType('about');
                       toAbout();
                     }}
@@ -98,7 +98,7 @@ const Header = () => {
                     About
                   </DropdownMenuItem>
                   <DropdownMenuItem 
-                    onClick={(e:any)=>{
+                    onClick={()=>{
                       setFormType('update-profile');
                       toUpdateProfile(id);
                     }}
