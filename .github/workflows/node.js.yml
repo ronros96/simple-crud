@@ -32,6 +32,9 @@ jobs:
 
       - name: Build project
         run: npm run build
+      
+      - name: Fix SPA routing for GitHub Pages
+        run: cp dist/index.html dist/404.html
 
       - name: Upload GitHub Pages artifact
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
