@@ -4,6 +4,7 @@
   margin-right: 1rem;
   left: 1rem;
   width: auto;
+  max-width: 30rem;
   grid-template-columns: auto 1fr auto;
   grid-template-rows: auto auto;
    gap:var(--gap);
@@ -19,6 +20,7 @@
 
   @media screen and (min-width: 768px) {
     gap: var(--gap2x) var(--gap);
+    max-width: initial;
   }
 
   &[data-variant=outline]{
@@ -67,20 +69,22 @@
   grid-column: 2 / 2 ;
   grid-row: 2 / 2;
   padding: .5rem 0 .5rem;
+  height: auto;
   text-box-trim: trim-both;
   text-box-edge: cap alphabetic;
   line-height: 1.2;
+  -webkit-line-clamp: 3;
   font-size: var(--font-sm);
   color:var(--text-default);
   flex: 1 0 100%;
 
   @media screen and (min-width: 768px) {
-     flex: 1;
+    flex: 1;
   }
 }
 
 [data-slot=item-actions]{
-  flex:1;
+  flex:1 0 100%;
   justify-content: center;
   @media screen and (min-width: 768px){
     flex:0;
