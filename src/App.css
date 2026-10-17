@@ -37,8 +37,8 @@
   --secondary-bg:light-dark(#FAF6F2,#1C1B1B);
   --frame-bg:light-dark(#F5EFE9,#101010);
   --dgray:light-dark(#DAD7CD,#2D2D2D);
-  --lgray:(#888888,#979397);
-  --link:#4B91DD;
+  --lgray:light-dark(#888888,#979397);
+  --link:light-dark(#306fb3,#4B91DD);
   --button:#85A2CC;
   --button-hover:#a6c8ec;
   --error:#D44D4D;
@@ -108,6 +108,7 @@
     --frame-bg:#101010;
     --lgray:#979397;
     --dgray:#2D2D2D;
+    --link:#4B91DD;
     --footer:#111010;
   }
 
@@ -119,6 +120,7 @@
     --frame-bg:#F5EFE9;
     --dgray:#DAD7CD;
     --lgray:#888888;
+    --link:#306fb3;
     --footer:#cec1c1;
   }
 

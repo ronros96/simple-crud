@@ -1,0 +1,116 @@
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
+.container.about{
+  max-width: 60rem;
+
+  h3{
+    margin-top: var(--gap);
+  }
+
+  h4{
+    margin-top: var(--gap);
+    color:var(--important);
+    text-transform: none;
+  }
+
+  h5,h6{
+    text-transform: none;
+    margin-bottom: var(--gapHalf);
+    text-align: center;
+    line-height: 1.2;
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
+  }
+
+  strong{
+    color: var(--important);
+  }
+
+  ul{
+    padding: 0;
+    margin: 0;
+    margin-bottom: var(--gap);
+    gap:var(--gap);
+  }
+  
+  ul li{
+    display: grid;
+    align-items: start;
+    grid-template-rows: auto auto 1fr;
+    justify-content: center;
+    gap: var(--gapHalf);
+    list-style: none;
+    padding: var(--gap);
+    border: solid 1px var(--dgray);
+    border-radius: 10px;
+    corner-shape: squircle;
+    text-align: center;
+
+    ul li{
+      padding: var(--gapHalf);
+      border: none;
+    }
+
+    svg{
+      margin: 0 auto .5rem;
+    }
+  }
+
+  .divider{
+    width: 50%;
+    height: 2px;
+    margin: 0 auto;
+    background-color: var(--dgray);
+  }
+
+  .pacifico-regular {
+    font-family: "Pacifico", cursive;
+    font-weight: 400;
+    font-style: normal;
+    font-size: var(--font-md);
+  }
+}
+
+.git-button{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  margin: var(--gap2x) auto 0;
+  padding: 0;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
+  border: solid 1px var(--button);
+  border-radius: 20px;
+  corner-shape: squircle;
+  color: var(--white);
+  overflow: hidden;
+
+  span{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--gapHalf) var(--gap);
+    gap:var(--gapHalf);
+    background-color: var(--button);
+
+    transition: background-color .3s var(--ease), color .3s var(--ease);
+  }
+
+  span:last-child{
+    color: var(--lgray);
+    background-color: var(--frame-bg);
+  }
+
+  &:hover{
+    text-decoration: none;
+    span:first-child{
+      color: #333;
+      background-color: var(--button-hover);
+    }
+    span:last-child{
+      color: var(--button);
+    }
+    
+  }
+}
