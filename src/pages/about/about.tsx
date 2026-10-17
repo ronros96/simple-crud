@@ -130,8 +130,9 @@ const About = () => {
       <ul className='grid grid-cols-1'>
         <li>
           <h5>
-            (<a href="https://react.dev/" target="_blank" rel="noopener" role="link"><FaReact size={20} /> React</a> + <a href="https://react.dev/" target="_blank" rel="noopener" role="link"><TbBrandVite size={20} /> Vite</a>)
-            in <a href="https://www.typescriptlang.org/" target="_blank" rel="noopener" role="link"><TbBrandTypescript size={20}/> TypeScript</a>
+            (<a href="https://react.dev/" target="_blank" rel="noopener" role="link"><FaReact size={20} /> React</a>{' '}+{' '} 
+            <a href="https://vite.dev/" target="_blank" rel="noopener" role="link"><TbBrandVite size={20} /> Vite</a>){' '}in{' '} 
+            <a href="https://www.typescriptlang.org/" target="_blank" rel="noopener" role="link"><TbBrandTypescript size={20}/> TypeScript</a>
           </h5>
           A modern web development stack that combines React for building interactive user interfaces, Vite for fast development and optimized builds, and TypeScript for type safety and more reliable code. Together, they provide a fast, scalable, and maintainable foundation for developing responsive web applications.
           <Divider />

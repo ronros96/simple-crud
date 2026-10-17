@@ -7,7 +7,7 @@ import clsx from 'clsx';
 import { 
   OctagonX, 
   X,
-  Info, 
+  Cookie, 
 } from "lucide-react"
 import Header from '@layout/header/header';
 import Footer from '@layout/footer/footer';
@@ -17,7 +17,16 @@ import {
   AlertDescription,
   AlertTitle,
 } from "@components/ui/alert";
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+} from "@components/ui/item"
 import { Button } from "@components/ui/button";
+import { Spinner } from "@components/ui/spinner"
 //states
 import { useColorScheme } from './store/store';
 import { useLogin, useProfile } from "@src/store/store";
@@ -41,6 +50,8 @@ function App() {
   const currentScheme = useColorScheme((state: any) => state.currentScheme);
   const isLogged = useLogin((state: any) => state.isLogged);
   const setLogin = useLogin((state: any) => state.setLogin);
+  const allowCookies = useLogin((state: any) => state.allowCookies);
+  const setCookies = useLogin((state: any) => state.setCookies);
   const formType = useProfile((state: any) => state.formType);
   const setFormType = useProfile((state: any) => state.setFormType);
   const userID = useProfile((state: any) => state.id);
@@ -50,6 +61,13 @@ function App() {
   const location = useLocation()
   const reservedPaths = ['about', 'update', 'register'];
   const { id } = useParams();
+  //Check Cookies
+  const checkCookies = () => {
+  const item = document.cookie
+      .split("; ")
+      .find((cookie) => cookie.startsWith('session'))?.split(',')[0];
+    return item ? false : true;
+  };
 
   const { data: validUser } = useGetUser({
     id: session && Object(session).map((item: any) => item.UserId)[0] || userID
@@ -110,15 +128,40 @@ function App() {
     }
   }, [errorLogs, isError]);
 
+  useEffect(()=>{
+    setCookies(checkCookies())
+  },[allowCookies])
+
   return (
     <>
       <Preloader />
       <Header />
+
+      <Item variant="outline" className={clsx({ 'show': allowCookies })}>
+        <ItemContent>
+          <ItemTitle>
+            <Cookie/>
+            Cookie Notice
+          </ItemTitle>
+          <ItemDescription className='mb-0'>
+            We use cookies only to maintain your login session. No other information is collected through cookies.
+          </ItemDescription>
+        </ItemContent>
+        <ItemActions>
+          <Button className="stroke">
+            Accept
+          </Button>
+          <Button className="stroke">
+            Decline
+          </Button>
+        </ItemActions>
+      </Item>
+
       <Alert className={clsx({ 'show': showStatus })}>
-        <Info/>
-        <AlertTitle>Loading</AlertTitle>
+        <Spinner/>
+        <AlertTitle>Verifiying Session </AlertTitle>
         <AlertDescription>
-          Verifiying Session
+          Please wait, while system is verifitying your session.
         </AlertDescription>
       </Alert>
 

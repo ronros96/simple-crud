@@ -14,19 +14,23 @@ export const useColorScheme = create<ColorScheme>((set) => ({
 // LOG IN
 type Login = {
   isLogged: boolean;
+  allowCookies: boolean;
   id: string;
   username: string;
 }
 
 type LoginStore = Login & {
   setLogin: (Login: Required<Login>) => void;
+  setCookies: (Login: Required<Login>) => void;
 };
 
 export const useLogin = create<LoginStore>((set) => ({
   isLogged: false,
+  allowCookies: false,
   id: '',
   username: '',
   setLogin: (state:any) => set({isLogged:state}),
+  setCookies: (state:any) => set({allowCookies:state}),
 }));
 
 // ROLES
