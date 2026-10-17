@@ -45,7 +45,7 @@ const About = () =>{
       <p>Feel free to test the available features, explore the interface, and see how CRUD operations work in practice.</p>
       <p>You're also welcome to clone the repository, inspect the code, and build upon the project to suit your own needs.</p>
       <p>Thanks for checking out my work. Happy exploring!</p>
-      <a><a href="https://github.com/ronros96/simple-crud" target="_blank" rel="noopener">Git</a></a>
+      <a href="https://github.com/ronros96/simple-crud" target="_blank" rel="noopener">Git</a>
     </section>
   )
 }

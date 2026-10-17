@@ -42,7 +42,6 @@ const selectedCount: number = selected.filter(
 
 useEffect(() => {
   selectedCount > 14 && showToastMax();
-  console.log(selectedCount)
 },[selectedCount])
 
 useEffect(() => {

@@ -34,7 +34,6 @@ const Page = () =>{
     username: string;
     password: string;
   }
-  
   const isLogged =  useLogin((state:any) => state.isLogged);
   const formType =  useProfile((state:any) => state.formType);
   //navigation
@@ -113,7 +112,6 @@ const Page = () =>{
         setFormType('dashboard');
         toDashboard();
       }
-
     }else{
       setForm({ username: "", password: "" })
       setErrors(['login']);

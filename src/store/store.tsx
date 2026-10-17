@@ -20,7 +20,6 @@ type Login = {
 
 type LoginStore = Login & {
   setLogin: (Login: Required<Login>) => void;
-  setUsername: (Login: Required<Login>) => void;
 };
 
 export const useLogin = create<LoginStore>((set) => ({
@@ -28,7 +27,6 @@ export const useLogin = create<LoginStore>((set) => ({
   id: '',
   username: '',
   setLogin: (state:any) => set({isLogged:state}),
-  setUsername: (state:any) => set({id:state,username:state})
 }));
 
 // ROLES

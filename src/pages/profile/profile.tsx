@@ -314,17 +314,15 @@ const Profile = () => {
     if (init) {
       setAddress()
     }
-
   }, [country, state, city, addressL1, addressL2])
 
   useEffect(() => {
     if (init) {
       setContact()
     }
-
   }, [contactLoc, contactNum])
 
-  return (UserPicked &&
+  return (UserPicked && formType !== '' &&
     <section className={
       clsx('container',
         {
