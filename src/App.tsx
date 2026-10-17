@@ -22,7 +22,6 @@ import {
   ItemActions,
   ItemContent,
   ItemDescription,
-  ItemMedia,
   ItemTitle,
 } from "@components/ui/item"
 import { Button } from "@components/ui/button";
