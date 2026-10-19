@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 //TS types
 import {
   CircleX,
@@ -45,7 +45,7 @@ const Contents = () =>{
   const complete = useDelete((state:any) => state.complete);
   
   //hooks
-  const {data: allUsers, refetch} = useGetUsers();
+  const {data: allUsers} = useGetUsers();
   //navigation
   const { toNewProfile } = useRoute();
 
@@ -125,9 +125,8 @@ const Contents = () =>{
   },[searchValue])
 
   useEffect(()=>{
-    refetch
     setUsers(users)
-  },[Users,complete])
+  },[Users,users,complete])
 
   return  <>
     <title>{`${import.meta.env.VITE_APP_TITLE} | Dashboard`}</title>

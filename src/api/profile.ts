@@ -38,6 +38,10 @@ async function request<T>(
       throw new Error(message);
     }
 
+    if (response.status === 404) {
+      return undefined as T;
+    }
+
     // DELETE may return an empty response
     if (response.status === 204) {
       return undefined as T;
@@ -67,6 +71,7 @@ export const getUser = async ({
   return request<User>(
     `${API_URL}/${encodeURIComponent(identifier!)}`
   );
+  
 };
 
 /* 

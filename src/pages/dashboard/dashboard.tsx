@@ -4,68 +4,81 @@ import { toast, Toaster } from "@components/ui/toast";
 //Hooks
 import { useGetUsers, useGetUser } from '@hooks/Profile';
 //Global States
-import { useLogin, useUserUpdated, useUser } from "@src/store/store";
+import { useLogin, useUserAction, useUser } from "@src/store/store";
 //contents
 import Contents from '../contents/contents';
 
 const Dashboard = () =>{
-//hooks
-const {data: allUsers} = useGetUsers();
-const isLogged =  useLogin((state:any) => state.isLogged);
+  //hooks
+  const {data: allUsers} = useGetUsers();
+  const isLogged =  useLogin((state:any) => state.isLogged);
+  //notify
+  const notifShown = useRef(false);
+  const userAction = useUserAction((state:any) => state.userAction);
+  const setUserAction = useUserAction((state:any) => state.setUserAction);
+  const selected = useUser((state:any) => state.selected);
+  const {data: userFound} = useGetUser({id:userAction.status === 'update' ? userAction.userID : null});
 
-//notify
-const notifiedUserID = useRef<string | null>(null);
-const profileUpdate = useUserUpdated((state:any) => state.profileUpdate);
-const updatedUserID = useUserUpdated((state:any) => state.updatedUserID);
-const setProfileUpdate = useUserUpdated((state:any) => state.setProfileUpdate);
-const setUpdatedUserID = useUserUpdated((state:any) => state.setUpdatedUserID);
-const selected = useUser((state:any) => state.selected);
-const {data: userFound} = useGetUser({id:updatedUserID});
+  const clearUserAction = () => {
+     setUserAction({
+      status:'',
+      userID:'',
+      firstname: '',
+      lastname: '',
+    });
+  }
 
-const showToastNotif = (message:string) => {
-  toast.add({
-    type: "success",
-    description: <><strong>{message}</strong><br/>has been successfully updated.</>,
-  })
-}
+  const showUpdateNotif = (message:string) => {
+    toast.add({
+      type: "success",
+      description: <><strong>{message}</strong><br/>has been successfully updated.</>,
+    });
+    clearUserAction();
+  }
 
-const showToastMax = () => {
-  toast.add({
-    type: "success",
-    description: <><strong>Max profile selection reached</strong></>,
-  })
-}
+  const showDeleteNotif = (message:string) => {
+    toast.add({
+      type: "info",
+      description: <><strong>{message}</strong><br/>has been successfully deleted.</>,
+    });
+    notifShown.current = false;
+    clearUserAction();
+  }
 
-const selectedCount: number = selected.filter(
-  (item: any) => item.value
-).length;
+  const showToastMax = () => {
+    toast.add({
+      type: "success",
+      description: <><strong>Max profile selection reached</strong></>,
+    });
+  }
 
-useEffect(() => {
-  selectedCount > 14 && showToastMax();
-},[selectedCount])
+  const selectedCount: number = selected.filter(
+    (item: any) => item.value
+  ).length;
 
-useEffect(() => {
-  if (!profileUpdate || !updatedUserID || !userFound) return;
-  if (notifiedUserID.current === updatedUserID) return;
-  notifiedUserID.current = updatedUserID;
-  const msg = `${userFound.firstname} ${userFound.lastname}`;
-  showToastNotif(msg);
-  setProfileUpdate(false);
-  setUpdatedUserID('');
-}, [
-  profileUpdate,
-  updatedUserID,
-  userFound,
-  setProfileUpdate,
-  setUpdatedUserID,
-]);
+  useEffect(() => {
+    selectedCount > 14 && showToastMax();
+  },[selectedCount]);
 
-return (
-  <section className='container header-margin transparent w-full'>
-    {allUsers && isLogged  && <Contents/>}
-    <Toaster/>
-  </section>
-)
-  
+  useEffect(() => {
+    console.log(userAction,notifShown.current)
+    if (userAction.status === 'update' && userFound){
+      const msg = `${userFound.firstname} ${userFound.lastname}`;
+      showUpdateNotif(msg);
+    }
+    if (userAction.status === 'delete' && !notifShown.current){
+      const msg = `${userAction.firstname} ${userAction.lastname}`;
+      showDeleteNotif(msg);
+      notifShown.current = true;
+    }
+  }, [userAction,userFound,notifShown.current]);
+
+  return (
+    <section className='container header-margin transparent w-full'>
+      {allUsers && isLogged  && <Contents/>}
+      <Toaster/>
+    </section>
+  )
+    
 }
 export default Dashboard;

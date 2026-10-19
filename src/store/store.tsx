@@ -205,12 +205,34 @@ export const useFilter  = create<FliterStore>((set) => ({
     })),
 }));
 
-//for User Update Notif
-export const useUserUpdated  = create((set) => ({
-  profileUpdate:false,
-  updatedUserID:'',
-  setProfileUpdate: (state:any) => set({profileUpdate:state}),
-  setUpdatedUserID: (state:any) => set({updatedUserID:state})
+//FOR USER ACTION NOTIFS
+type ActionStatus = '' | 'update' | 'delete'
+
+type UserStatus = {
+  status: ActionStatus;
+  userID: string;
+  firstname: string;
+  lastname: string;
+}
+
+type UserStatusStore = {
+  userAction:Partial<UserStatus>
+  setUserAction: (UserStatus: Required<UserStatus>) => void;
+}
+export const useUserAction  = create<UserStatusStore>((set) => ({
+  userAction:{
+    status: '',
+    userID: '',
+    firstname: '',
+    lastname: '',
+  },
+ setUserAction: (userStatus) =>
+    set((state) => ({
+      userAction: {
+        ...state.userAction,
+        ...userStatus,
+      },
+    })),
 }));
 
 // SEARCH

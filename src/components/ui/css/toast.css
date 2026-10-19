@@ -3,6 +3,7 @@
   background-color: var(--frame-bg);
   box-shadow: 0 0 1rem #00000088;
   border: solid 2px var(--dgray);
+  z-index: 50;
 
   h2{
     color: var(--text-default);

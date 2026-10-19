@@ -18,9 +18,10 @@ import { Button } from "@components/ui/button";
 //hooks
 import { useDeleteUser } from '@hooks/Profile';
 //states
-import { useUser, useDelete} from "@src/store/store";
+import { useUser, useDelete, useProfile, useUserAction} from "@src/store/store";
 //helpers
 import { usePath, useRoute } from "@lib/helpers/routes";
+import { clearForm, clearUser } from "@lib/helpers/user";
 
 const DeleteUser = (props:any) => {
   //props
@@ -29,19 +30,20 @@ const DeleteUser = (props:any) => {
   const batchType = props.batchType;
   //routes
   const cleanPath = usePath();
-  const { toSuccess } = useRoute()
+  const { toDashboard } = useRoute()
   //global states
   const selected = useUser((state:any) => state.selected);
+  const UserPicked = useUser((state: any) => state.UserPicked);
+  const setFormType = useProfile((state: any) => state.setFormType);
   const complete = useDelete((state:any) => state.complete);
   const setComplete = useDelete((state:any) => state.setComplete);
-  const UserPicked = useUser((state: any) => state.UserPicked);
+  const setUserAction = useUserAction((state: any) => state.setUserAction);
   //hooks
   const deleteUser = useDeleteUser();
   //local states
   const [open,setOpen] = useState(false);
   const [progress, setProgress] = useState(0);
   const [confirm, setConfirm] = useState(false);
-  // const [complete, setComplete] = useState(false);
   const timerRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(0);
   const duration = 1000;
@@ -87,20 +89,36 @@ const DeleteUser = (props:any) => {
 
       for (let i = 0; i < total; i++) {
         const user = usersToDelete[i];
+        setUserAction({
+          status: 'delete',
+          userID: user.id,
+          firstname: user.firstname,
+          lastname: user.lastname
+        });
         await deleteUser.mutateAsync(user.userID);
         const deletePercent = ((i + 1) / total) * 100;
         setProgress(deletePercent);
-        if(deletePercent === 100){
+        if(i + 1 === total){
           setComplete(true);
-          if(cleanPath === 'update'){
-            toSuccess()
-          }
         }
       }
     } catch (error: any) {
       alert(error.message);
     }
   };
+
+  const deleteDone = () =>{
+    // console.log(UserAction)
+    if(cleanPath === 'update'){
+      clearForm();
+      clearUser();
+      setFormType('dashboard');
+      toDashboard();
+    }else{
+      clearUser();
+      setOpen(false)
+    }
+  }
 
   return (
     <Dialog 
@@ -170,9 +188,7 @@ const DeleteUser = (props:any) => {
                 e.preventDefault();
               }}
               onPointerDown={startProgress}
-              onPointerUp={
-                stopProgress
-              }
+              onPointerUp={stopProgress}
               onPointerLeave={stopProgress}
               onPointerCancel={stopProgress}
               disabled={confirm}
@@ -183,7 +199,13 @@ const DeleteUser = (props:any) => {
               }
               
             </Button>:
-            <DialogClose render={<Button variant="outline" className="sm stroke" disabled={!complete}>Okay</Button>} />
+            <Button 
+              className="sm stroke" 
+              disabled={!complete}
+              onClick={deleteDone}
+            >
+              Okay
+            </Button>
           }
           {!confirm && <DialogClose render={<Button variant="outline" className="stroke sm">Cancel</Button>}/>}
         </DialogFooter>

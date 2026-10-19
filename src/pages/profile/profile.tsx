@@ -48,7 +48,7 @@ import BackCancel from '@components/back_cancel/backCancel';
 import DeleteUser from "@components/delete_user/deleteUser";
 import { Eye, EyeOff } from "lucide-react"
 //state
-import { useErrors, useProfile, useUser, useLogin, useUserUpdated } from "@src/store/store";
+import { useErrors, useProfile, useUser, useLogin, useUserAction } from "@src/store/store";
 // helpers
 import { checkAllFields, showRequirements, fieldError, FieldOrginizer } from "@src/lib/helpers/field";
 import { ProfileFields } from "@src/fields/profile";
@@ -110,8 +110,7 @@ const Profile = () => {
   const stateRef = useRef<HTMLElement | null>(null);
   const cityRef = useRef<HTMLElement | null>(null);
   //Notification state
-  const setProfileUpdate = useUserUpdated((state: any) => state.setProfileUpdate);
-  const setUpdatedUserID = useUserUpdated((state: any) => state.setUpdatedUserID);
+  const setUserAction = useUserAction((state: any) => state.setUserAction);
   //navigation
   const { toSuccess, toDashboard } = useRoute();
 
@@ -256,8 +255,10 @@ const Profile = () => {
             }
           });
           clearUser();
-          setProfileUpdate(true);
-          setUpdatedUserID(userID);
+          setUserAction({
+            status:'update',
+            userID:userID
+          })
           if (credUpdate) {
             setFormType('success');
             toSuccess();
@@ -282,18 +283,21 @@ const Profile = () => {
 
   useEffect(() => {
     if (!init && Array.isArray(address) && contact !== '') {
+      setUserPicked({ 
+        userID: userFound?.id, 
+        ...userFound
+      });
       setContactNum(fixContact(contact, address)[0]);
       setContactLoc(fixContact(contact, address)[1]);
       loadAddress();
       setInit(true);
     }
-  }, [userFound, contact, init])
+  }, [userFound, UserPicked, userFound, contact, init])
 
   //setUsers to check username uniqueness.
   useEffect(() => {
     if (id) {
       setUsers(filteredUsers);
-      setUserPicked({ userID: id });
     } else {
       setUsers(allUsers);
     }
