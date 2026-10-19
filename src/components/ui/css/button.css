@@ -145,10 +145,28 @@ button.sm.delete{
   }
 }
 
+button.text-only.delete{
+  width: 100%;
+  justify-content: start;
+  background-color: transparent;
+  transition: none;
+  &:hover{
+    color: var(--black);
+    background-color:  var(--error);
+  }
+}
+
+button.text-only.delete:has(svg,span,small){
+  padding: var(--gapHalf);
+  gap:var(--gapHalf)
+}
+
 button.delete.stroke{
+  color: var(--error);
   border-color: var(--error);
   background-color: transparent;
   &:hover{
+    color: var(--error-hover);
     border-color: var(--error-hover);
     background-color: transparent;
   }

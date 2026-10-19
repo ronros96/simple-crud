@@ -45,6 +45,7 @@ import { PhoneInput } from "@components/ui/phone"
 import { toast, Toaster } from "@components/ui/toast"
 import { Spinner } from "@components/ui/spinner"
 import BackCancel from '@components/back_cancel/backCancel';
+import DeleteUser from "@components/delete_user/deleteUser";
 import { Eye, EyeOff } from "lucide-react"
 //state
 import { useErrors, useProfile, useUser, useLogin, useUserUpdated } from "@src/store/store";
@@ -75,7 +76,7 @@ const Profile = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [saving, setSaving] = useState(false);
   //global state fields
-  const userID = id !== null ? id : UserPicked.id;
+  const userID = id !== null ? id : UserPicked.userID;
   const username = UserPicked.username ?? userFound?.username ?? '';
   const password = UserPicked.password ?? userFound?.password ?? '';
   const firstname = UserPicked.firstname ?? userFound?.firstname ?? '';
@@ -292,6 +293,7 @@ const Profile = () => {
   useEffect(() => {
     if (id) {
       setUsers(filteredUsers);
+      setUserPicked({ userID: id });
     } else {
       setUsers(allUsers);
     }
@@ -701,16 +703,20 @@ const Profile = () => {
           {!updateProfile.includes(formType) && !newProfile.includes(formType) ?
             <div className='flex items-center justify-end gap-[var(--gap)]'>Closing <Spinner /></div> :
             <div className={clsx('field-group', { 'error': fieldError(errors, 'terms') })}>
-              <div className='flex justify-center lg:justify-end gap-5'>
-                <Button type="submit">
-                  {newProfile.includes(formType) ? 'Register' : 'Update'}
-                </Button>
-                <BackCancel />
+              <div className='flex justify-between gap-5'>
+                {formType === "update-user" && <DeleteUser variant="stroke" />}
+                <div className='flex gap-5 flex-[1_0_auto] justify-end'>
+                  <Button type="submit">
+                    {newProfile.includes(formType) ? 'Register' : 'Update'}
+                  </Button>
+                  <BackCancel />
+                </div>
               </div>
             </div>
           }
         </div>
       </form>
+      
       <Toaster />
     </section>
   )

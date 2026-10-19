@@ -1,7 +1,7 @@
 import './App.css';
 
 import { useEffect, useState } from 'react';
-import { Outlet, useLocation, useParams } from 'react-router';
+import { Outlet, useParams } from 'react-router';
 import clsx from 'clsx';
 //UI
 import { 
@@ -30,7 +30,7 @@ import { Spinner } from "@components/ui/spinner"
 import { useColorScheme } from './store/store';
 import { useLogin, useProfile } from "@src/store/store";
 //helpers
-import { useRoute } from "@lib/helpers/routes";
+import { useRoute, usePath } from "@lib/helpers/routes";
 //Hooks
 import { useRestoreAuthSession } from '@hooks/logs';
 import { useGetUser } from '@hooks/Profile';
@@ -52,31 +52,30 @@ function App() {
   const currentScheme = useColorScheme((state: any) => state.currentScheme);
   const isLogged = useLogin((state: any) => state.isLogged);
   const setLogin = useLogin((state: any) => state.setLogin);
-  // const allowCookies = useLogin((state: any) => state.allowCookies);
-  // const setCookies = useLogin((state: any) => state.setCookies);
+  const cookies = useLogin((state: any) => state.cookies);
+  const setCookies = useLogin((state: any) => state.setCookies);
   const formType = useProfile((state: any) => state.formType);
   const setFormType = useProfile((state: any) => state.setFormType);
   const userID = useProfile((state: any) => state.id);
   const setProfile = useProfile((state: any) => state.setProfile);
   //navigation
   const { toDashboard, toLogin, toUpdateProfile, toNewProfile, toAbout } = useRoute();
-  const location = useLocation()
+  const cleanPath = usePath();
   const reservedPaths = ['about', 'update', 'register'];
   const { id } = useParams();
-  //Check Cookies
-  // const checkCookies = () => {
-  // const item = document.cookie
-  //     .split("; ")
-  //     .find((cookie) => cookie.startsWith('session'))?.split(',')[0];
-  //   return item ? false : true;
-  // };
+  // Check Cookies
+  const checkCookies = () => {
+  const item = document.cookie
+      .split("; ")
+      .find((cookie) => cookie.startsWith('session'))?.split(',')[0];
+    return item ? false : true;
+  };
 
   const { data: validUser } = useGetUser({
     id: session && Object(session).map((item: any) => item.UserId)[0] || userID
   });
 
   useEffect(() => {
-    const cleanPath = location.pathname.split('/')[1];
     setShowStatus(isPending);
     if (session && validUser || userID !== '') {
       if(!isLogged){
@@ -132,31 +131,30 @@ function App() {
     }
   }, [showError.errorLogs, isError]);
 
-  // useEffect(()=>{
-  //   setCookies(checkCookies())
-  // },[allowCookies])
+  useEffect(()=>{
+    cookies === "idle" && setCookies(checkCookies() ? "idle":"yes");
+  },[cookies]);
 
   return (
     <>
       <Preloader />
       <Header />
 
-      <Item variant="outline" className={clsx({ 'show': false })}>
+      <Item variant="outline" className={clsx({ 'show': cookies === "idle" })}>
         <ItemContent>
           <ItemTitle>
             <Cookie/>
             Cookie Notice
           </ItemTitle>
           <ItemDescription className='mb-0'>
-            We use cookies only to maintain your login session. No other information is collected through cookies.
+            This site uses a cookie to keep you logged in. It expires after 24 hours of inactivity.<br className='hidden md:inline'/> No other information is collected through cookies.
           </ItemDescription>
         </ItemContent>
         <ItemActions>
-          <Button className="stroke sm">
-            Accept
-          </Button>
-          <Button className="stroke sm">
-            Decline
+          <Button 
+            className="stroke sm"
+            onClick={()=>{setCookies('yes')}}>
+            Got It
           </Button>
         </ItemActions>
       </Item>

@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 
 export const useRoute = () => {
   const navigate = useNavigate();
@@ -12,3 +12,8 @@ export const useRoute = () => {
     toUpdateProfile: (id:string) => navigate(`/update/${id}`,{ viewTransition: true }),
   };
 };
+
+export const usePath = () => {
+  const location = useLocation();
+  return location.pathname.split('/')[1];
+}

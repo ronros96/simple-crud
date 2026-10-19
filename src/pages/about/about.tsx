@@ -150,7 +150,7 @@ const About = () => {
                 <SiShadcnui size={20} />
                 <a href="https://ui.shadcn.com/" target="_blank" rel="noopener" role="link">ShadCN</a>
               </h6>
-              UI library
+              UI Component library
             </li>
             <li>
               <h6>
@@ -175,7 +175,7 @@ const About = () => {
       <p>Thanks for checking out my work. Happy exploring!</p>
       <a href="https://github.com/ronros96/simple-crud" target="_blank" rel="noopener" role="link" className='git-button'>
         <span>
-          <GitFork size={20}/> Fork
+          <GitFork size={20}/> Git
         </span>
         <span>
           <RiGithubLine size={20}/>

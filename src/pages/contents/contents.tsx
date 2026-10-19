@@ -1,23 +1,12 @@
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 //TS types
-import type { User } from '@src/fields/type';
 import {
   CircleX,
   UserCheck,
-  UserRoundX,
   UserRoundPlus,
   View,
   Menu,
 } from "lucide-react";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,11 +18,11 @@ import {
   DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import { Button } from "@components/ui/button";
-import { Progress } from "@components/ui/progress"
 import SearchBar from '@components/search/search';
+import DeleteUser from "@components/delete_user/deleteUser";
 //storage
-import { useProfile, useUser, useSearch, useFilter } from "@src/store/store";
-import { useGetUsers, useDeleteUser } from '@hooks/Profile';
+import { useProfile, useUser, useSearch, useFilter, useDelete } from "@src/store/store";
+import { useGetUsers } from '@hooks/Profile';
 import ProfileCard from '@components/cards/profileCard';
 //helpers
 import { clearUser, fixAddress } from '@lib/helpers/user';
@@ -41,14 +30,6 @@ import { useRoute } from '@lib/helpers/routes';
 import { profileIcon } from "@lib/helpers/user";
 
 const Contents = () =>{
-  //local states
-  const [open,setOpen] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [confirm, setConfirm] = useState(false);
-  const [complete, setComplete] = useState(false);
-  const timerRef = useRef<number | null>(null);
-  const startTimeRef = useRef<number>(0);
-  const duration = 1000;
   //global states
   const userID = useProfile((state:any) => state.id);
   const username = useProfile((state:any) => state.username);
@@ -61,10 +42,10 @@ const Contents = () =>{
   const searchValue = useSearch((state:any) => state.searchValue);
   const viewFilter = useFilter((state:any) => state.viewFilter);
   const setViewFilter = useFilter((state:any) => state.setViewFilter);
+  const complete = useDelete((state:any) => state.complete);
   
   //hooks
   const {data: allUsers, refetch} = useGetUsers();
-  const deleteUser = useDeleteUser();
   //navigation
   const { toNewProfile } = useRoute();
 
@@ -127,54 +108,6 @@ const Contents = () =>{
     );
   }
 
-  const startProgress = () => {
-    startTimeRef.current = performance.now();
-    const update = () => {
-      const elapsed = performance.now() - startTimeRef.current;
-      const percentage = Math.min((elapsed / duration) * 100, 100);
-      setProgress(percentage);
-      if (percentage < 100) {
-        timerRef.current = requestAnimationFrame(update);
-      }
-      if(percentage === 100){
-        setConfirm(true);
-        setTimeout(()=>{
-          handleComplete();
-        },1000)
-      }
-    };
-    timerRef.current = requestAnimationFrame(update);
-  };
-
-  const stopProgress = () => {
-    if (timerRef.current) {
-      cancelAnimationFrame(timerRef.current);
-      timerRef.current = null;
-    }
-    setProgress(0);
-  };
-
-  const handleComplete = async () => {
-    setProgress(0);
-    try {
-      const usersToDelete = selected.filter(
-        (user: User) => user.value
-      );
-      const total = usersToDelete.length;
-
-      for (let i = 0; i < total; i++) {
-        const user = usersToDelete[i];
-        await deleteUser.mutateAsync(user.userID);
-        const deletePercent = ((i + 1) / total) * 100;
-        setProgress(deletePercent);
-      }
-      refetch;
-      setComplete(true);
-    } catch (error: any) {
-      alert(error.message);
-    }
-  };
-
   useEffect(()=>{
     if(Object.values(viewFilter).some((filters => !filters))){
       setViewFilter({...viewFilter,all:true})
@@ -192,8 +125,9 @@ const Contents = () =>{
   },[searchValue])
 
   useEffect(()=>{
+    refetch
     setUsers(users)
-  },[Users])
+  },[Users,complete])
 
   return  <>
     <title>{`${import.meta.env.VITE_APP_TITLE} | Dashboard`}</title>
@@ -203,7 +137,9 @@ const Contents = () =>{
         <SearchBar/>
         <DropdownMenu>
           <DropdownMenuTrigger className="md:flex-[1_0_auto] md:order-3" render={
-            <Button className="action-menu">
+            <Button 
+              className="action-menu"
+            >
               <Menu/>
               <span>
                 <UserCheck/>
@@ -302,75 +238,15 @@ const Contents = () =>{
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem 
+              <DeleteUser 
+                variant="icon-text" 
                 disabled={!hasSelected}
-                variant="destructive"
-                onClick={()=>{
-                  setOpen(!open)
-                }}
-              >
-                <UserRoundX/>
-                Delete All Selected
-              </DropdownMenuItem>
+                batchType="multiple"
+              />
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-
-      <Dialog 
-        open={open} 
-        onOpenChange={() =>{
-          setOpen(!open);
-          setProgress(0);
-          setComplete(false);
-          setConfirm(false);
-          setUsers(allUsers)
-          setSelected(allUsers);
-        }}>
-        <DialogContent className="modal sm all-centered">
-          <DialogHeader>
-            <DialogTitle>Delete {selectedCount > 1 ? 'Users':'User'}?</DialogTitle>
-            <DialogDescription className="text-center mb-0">
-              All Selected {selectedCount > 1 ? 'users':'user'} will be permanently deleted.
-            </DialogDescription>
-            <Progress value={complete ? 100 : progress}>
-              {
-                progress >= 100 && complete ? 'Deleted!' :
-                progress > 1 && !confirm ? 'Confirming...' :
-                progress >= 100 && confirm ? 'Confirmed! Starting to delete' :
-                progress < 100 && confirm ? 'Deleting...' :
-                'Press & Hold the Confirm Button to proceed'
-              }
-            </Progress>
-          </DialogHeader>
-          <DialogFooter className='items-center flex-col flex-row'>
-            {
-              !complete ?
-              <Button 
-                className="sm delete"
-                onClick={(e:any) => {
-                  e.preventDefault();
-                }}
-                onPointerDown={startProgress}
-                onPointerUp={
-                  stopProgress
-                }
-                onPointerLeave={stopProgress}
-                onPointerCancel={stopProgress}
-                disabled={confirm}
-              >
-                {
-                  !confirm ? <>Confirm{' '}<small>Press & Hold</small></>:
-                  <>Confirmed</>
-                }
-                
-              </Button>:
-              <DialogClose render={<Button variant="outline" className="sm stroke" disabled={!complete}>Okay</Button>} />
-            }
-            {!confirm && <DialogClose render={<Button variant="outline" className="stroke sm">Cancel</Button>}/>}
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       {Users?.length > 0 ? 
       <ProfileCard/>:

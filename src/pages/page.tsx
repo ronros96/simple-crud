@@ -106,6 +106,7 @@ const Page = () => {
           logged: new Date(),
         },
       });
+
       handleUserLogs(match.id, match.username);
       if (errors.length > 0) {
         setLogin(false);

@@ -12,9 +12,11 @@ export const useColorScheme = create<ColorScheme>((set) => ({
 
 
 // LOG IN
+type Status = "idle" | "yes" | "no"
+
 type Login = {
   isLogged: boolean;
-  allowCookies: boolean;
+  cookies: Status;
   id: string;
   username: string;
 }
@@ -26,11 +28,11 @@ type LoginStore = Login & {
 
 export const useLogin = create<LoginStore>((set) => ({
   isLogged: false,
-  allowCookies: false,
+  cookies: "idle",
   id: '',
   username: '',
   setLogin: (state:any) => set({isLogged:state}),
-  setCookies: (state:any) => set({allowCookies:state}),
+  setCookies: (state:any) => set({cookies:state}),
 }));
 
 // ROLES
@@ -158,6 +160,20 @@ export const useUser  = create<UserStore>((set) => ({
           ? selected(state.selected)
           : selected,
     }))
+}));
+
+//DELETE PROFILE
+type DeleteUser = {
+  complete:boolean;
+}
+
+type DeleteUserStore = DeleteUser & {
+  setComplete: (Login: Required<Login>) => void;
+};
+
+export const useDelete = create<DeleteUserStore>((set) => ({
+  complete: false,
+  setComplete: (state:any) => set({complete:state}),
 }));
 
 //CARD FILTERS

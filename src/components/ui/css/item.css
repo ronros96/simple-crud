@@ -7,7 +7,7 @@
   max-width: 30rem;
   grid-template-columns: auto 1fr auto;
   grid-template-rows: auto auto;
-   gap:var(--gap);
+  gap:var(--gapHalf);
   align-items: center;
   padding: var(--gap);
   background-color: var(--frame-bg);
@@ -20,7 +20,7 @@
 
   @media screen and (min-width: 768px) {
     gap: var(--gap2x) var(--gap);
-    max-width: initial;
+    max-width: 40rem;
   }
 
   &[data-variant=outline]{
@@ -73,7 +73,7 @@
   text-box-trim: trim-both;
   text-box-edge: cap alphabetic;
   line-height: 1.2;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: none;
   font-size: var(--font-sm);
   color:var(--text-default);
   flex: 1 0 100%;

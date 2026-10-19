@@ -47,14 +47,12 @@ const ProfileCard = () => {
         item.id === id ? { ...item, value: selectedCount < 15 ? value : false } : item
       )
     );
-
-
   };
 
   const updateProfile = (e: any, id: any) => {
     e.preventDefault();
     setFormType('update-user');
-    toUpdateProfile(id)
+    toUpdateProfile(id);
   }
 
   const filtersCount = Object.entries(viewFilter)
