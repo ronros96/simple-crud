@@ -46,7 +46,7 @@
     display: grid;
     align-items: start;
     grid-template-rows: auto auto 1fr;
-    justify-content: center;
+    justify-items: center;
     gap: var(--gapHalf);
     list-style: none;
     padding: var(--gap);
@@ -64,6 +64,10 @@
       margin: 0 auto .5rem;
     }
     h5 svg{
+      margin-bottom: 1rem;
+    }
+
+    h5.icon-inline svg{
       margin-bottom: 0;
     }
   }

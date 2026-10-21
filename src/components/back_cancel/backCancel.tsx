@@ -37,6 +37,7 @@ const BackCancel = (props:any) =>{
   const closeForm = () => {
     if(formType === 'sign-in'){
       setFormType('login');
+      clearUser();
       clearForm();
       toLogin();
     }else if(returnDashboard.includes(formType)){

@@ -44,7 +44,7 @@ const About = () => {
       <ul className='grid grid-cols-2 md:grid-cols-3'>
         <li>
           <h5>
-            <UserPlus />
+            <UserPlus className='mb-10'/>
             Create Accounts
           </h5>
           <Divider />
@@ -127,9 +127,9 @@ const About = () => {
         </li>
       </ul>
       <h4 className='header-5'>Technologies Used</h4>
-      <ul className='grid grid-cols-1'>
+      <ul className='grid grid-cols-1 '>
         <li>
-          <h5>
+          <h5 className='icon-inline'>
             (<a href="https://react.dev/" target="_blank" rel="noopener" role="link"><FaReact size={20} /> React</a>{' '}+{' '} 
             <a href="https://vite.dev/" target="_blank" rel="noopener" role="link"><TbBrandVite size={20} /> Vite</a>){' '}in{' '} 
             <a href="https://www.typescriptlang.org/" target="_blank" rel="noopener" role="link"><TbBrandTypescript size={20}/> TypeScript</a>
