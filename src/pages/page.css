@@ -63,6 +63,18 @@ section{
   }
 }
 
+.container.login-success{
+  .login-form,
+  .login-content{
+    opacity: 0;
+    max-height: 0;
+  }
+  .redirecting{
+    opacity: 1;
+    max-height: 3rem;
+  }
+}
+
 .contents{
   width: 100%;
 }
@@ -80,18 +92,6 @@ section{
     padding-top: var(--gap2x);
     margin-top: var(--gap4x);
   }
-}
-
-.no-result{
-  padding: var(--gap) 0;
-  width: 100%;
-  height: 100%;
-  font-family: var(--pixel);
-  font-size: var(--font-lg);
-  font-weight: 300;
-  text-transform: uppercase;
-  text-align: center;
-  color: var(--lgray);
 }
 
 .login-container{
@@ -114,6 +114,10 @@ section{
 .login-form,
 .login-content{
   width: 100%;
+  opacity: 1;
+  max-height: 20rem;
+
+  transition: opacity .3s var(--ease),max-height .5s var(--ease);
 
   @media screen and (min-width: 768px) {
     max-width: 24rem;
@@ -156,6 +160,25 @@ section{
     }
   }
 }
+
+.redirecting{
+  text-align: center;
+  font-size: var(--font-md);
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+
+  transition: opacity .3s var(--ease),max-height .5s var(--ease);
+
+  strong{
+    font-size: inherit;
+    font-family: var(--pixel);
+    text-transform: uppercase;
+    color: var(--button);
+  }
+}
+
+
 
 object svg{
   fill:none;

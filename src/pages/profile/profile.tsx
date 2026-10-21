@@ -124,7 +124,8 @@ const Profile = () => {
   }
 
   const setContact = () => {
-    setUserPicked({ contact: `${contactNum} x${contactLoc}` })
+    setUserPicked({ contact: `${contactNum} x${contactLoc}` });
+    console.log(UserPicked.contact);
   }
 
   const loadAddress = () => {
@@ -230,7 +231,7 @@ const Profile = () => {
             logged: new Date(),
             bot: false,
           });
-          clearUser();
+
           setFormType('created');
           toSuccess();
         } catch (error: any) {
@@ -258,7 +259,6 @@ const Profile = () => {
             type: "success",
             description: <><strong>{firstname}{' '}{lastname}</strong><br/>has been successfully updated.</>
           })
-
           if (credUpdate) {
             setFormType('success');
             toSuccess();
@@ -317,13 +317,13 @@ const Profile = () => {
   }, [state]);
 
   useEffect(() => {
-    if (init) {
+    if (newProfile.includes(formType) || init){
       setAddress()
     }
   }, [country, state, city, addressL1, addressL2])
 
   useEffect(() => {
-    if (init) {
+    if (newProfile.includes(formType) || init){
       setContact()
     }
   }, [contactLoc, contactNum])

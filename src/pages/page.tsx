@@ -40,7 +40,7 @@ const Page = () => {
   const isLogged = useLogin((state: any) => state.isLogged);
   const formType = useProfile((state: any) => state.formType);
   //navigation
-  const { toDashboard, toNewProfile } = useRoute();
+  const { toNewProfile } = useRoute();
   //hooks
   const createAuthSession = useCreateAuthSession();
   //states
@@ -49,6 +49,8 @@ const Page = () => {
   const setProfile = useProfile((state: any) => state.setProfile);
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState<FormState>({ username: "", password: "" });
+  const [isLoading, setLoading] = useState(false);
+  const [firstname, setFirstname] = useState('');
   //errors
   const errors = useErrors((state: any) => state.errors);
   const setErrors = useErrors((state: any) => state.setErrors);
@@ -56,50 +58,56 @@ const Page = () => {
 
   const clearForm = (e: any) => {
     e.preventDefault;
+    clear()
+  }
+
+  const clear = () =>{
     setShowPassword(false);
     setErrors([]);
     setForm({ username: "", password: "" })
   }
 
-  //login functions
   const { data: allUsers } = useGetUsers();
   const putUser = usePutUser();
 
-  const login = (e: any) => {
-    const formData = new FormData(e.target);
-    const formProps = Object.fromEntries(formData);
-
-    if (formProps.username && formProps.password) {
-      setForm((prev) => ({ ...prev, ...formProps }));
-      checkLogin(formProps.username, formProps.password)
-    } else {
-      clearForm
+  const login = async () => {
+    if (!form.username || !form.password) {
+      clear();
       setErrors(['login']);
+      return;
     }
-  }
 
-  const handleUserLogs = async (id: string, user: string) => {
-    try {
-      await createAuthSession.mutateAsync({
-        UserId: id,
-        username: user,
-      });
-    } catch (error) {
-      console.log(error, 'session error')
-      setErrors(['session', `${error}`]);
-    }
+    await checkLogin(form.username, form.password);
   };
 
-  const checkLogin = (
-    username: any,
-    password: any
+  const handleUserLogs = async (id: string, user: string) => {
+    await createAuthSession.mutateAsync({
+      UserId: id,
+      username: user,
+    });
+  };
+
+  const checkLogin = async (
+    username: string,
+    password: string
   ) => {
-    const match = Object(allUsers).find(
-      (u: any) => u.username === username.trim() && u.password === password
+    const match = allUsers?.find(
+      (u: any) =>
+        u.username === username.trim() &&
+        u.password === password
     );
 
-    if (match) {
-      putUser.mutate({
+    if (!match) {
+      setForm({ username: '', password: '' });
+      setErrors(['login']);
+      return;
+    }
+    clear();
+    setFirstname(match.firstname)
+    setLoading(true)
+
+    try {
+      await putUser.mutateAsync({
         id: match.id,
         user: {
           ...match,
@@ -107,23 +115,20 @@ const Page = () => {
         },
       });
 
-      handleUserLogs(match.id, match.username);
-      if (errors.length > 0) {
-        setLogin(false);
-      } else {
-        setLogin(true);
-        setProfile({ ...match });
-        setFormType('dashboard');
-        toDashboard();
-      }
-    } else {
-      setForm({ username: "", password: "" })
-      setErrors(['login']);
+      await handleUserLogs(match.id, match.username);
+
+      setErrors([]);
+      setLogin(true);
+      setProfile({ ...match });
+
+    } catch (error) {
+      setLogin(false);
+      setErrors(['session', String(error)]);
     }
-  }
+  };
 
   return (
-    <section className='container'>
+    <section className={clsx('container', { 'login-success':isLoading})}>
       {
         !isLogged && formType === 'login' && <>
           <title>{`${import.meta.env.VITE_APP_TITLE} | Log-in`}</title>
@@ -136,6 +141,9 @@ const Page = () => {
             </Tooltip>
           </h1>
           <div className='divider-horizontal'></div>
+          <div className='redirecting'>
+            Welcome Back <strong>{firstname}</strong>
+          </div>
           <div className="login-container">
             <form
               className="login-form"

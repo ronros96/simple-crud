@@ -1,14 +1,16 @@
 import './page.css';
-import { useProfile } from "@src/store/store";
+import { useProfile, useUser } from "@src/store/store";
 import { loggedOut } from "@lib/helpers/user";
 import { Button } from "@components/ui/button";
 import { Spinner } from "@components/ui/spinner";
 
 const Success = () =>{
-  const username =  useProfile((state:any) => state.username);
-  const firstname =  useProfile((state:any) => state.firstname);
-  const lastname =  useProfile((state:any) => state.lastname);
+  const username =  useUser((state:any) => state.UserPicked.username);
+  const firstname =  useUser((state:any) => state.UserPicked.firstname);
+  const lastname =  useUser((state:any) => state.UserPicked.lastname);
   const formType = useProfile((state:any) => state.formType);
+
+  console.log(username)
 
   if(username){
     return (
