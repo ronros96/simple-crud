@@ -76,8 +76,6 @@ export const router = createBrowserRouter(
     },
   ],
   {
-    basename: import.meta.env.VITE_DEPLOY_TARGET === 'github'
-    ? '/simple-crud'
-    : '/',
+    basename: import.meta.env.BASE_URL,
   }
 );
