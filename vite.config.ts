@@ -18,9 +18,9 @@ export default defineConfig(({ mode }) =>{
     build: {
       outDir: './dist'
     },
-    base: env.VITE_DEPLOY_TARGET === 'github'
-      ? '/simple-crud/'
-      : '/',
+    base: process.env.VERCEL === '1'
+    ? '/'
+    : '/simple-crud/',
     resolve: {
       alias: {
         "@src": path.resolve(__dirname, "src"),
