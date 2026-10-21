@@ -1,3 +1,27 @@
+.profile-cards{
+  display: grid;
+  margin-top: var(--gap2x);
+  gap:var(--gap);
+
+  @media screen and (min-width: 768px) {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @media screen and (min-width: 1024px) {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  &:not(:has(> :not(.hidden))):before{
+    content: 'No results found.';
+    display: block;
+    width: 100%;
+    font-size: var(--font-md);
+    color: var(--lgray);
+    text-align: center;
+    grid-column: 1 / 4;
+  }
+}
+
 .profile-card{
   position: relative;
   padding: var(--gap);

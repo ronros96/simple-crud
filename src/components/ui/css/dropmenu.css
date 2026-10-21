@@ -75,7 +75,9 @@
       margin-left: calc(var(--gap) * -1);
       width: calc(var(--gap) + .5rem);
       height: calc(var(--gap) + .5rem);
-      font-size:var(--font-sm);
+      font-size:var(--font-xsm);
+      text-box-trim: trim-both;
+      text-box-edge: cap alphabetic;
       box-shadow: .25rem 0 .25rem #00000088;
       z-index: calc(attr(data-order type(<number>),1) * -1);
       &:first-child{
@@ -86,9 +88,10 @@
       display: none;
     }
 
-    /* .collected:has(> .profile-icon:nth-child(5))::before{
+    .collected:has(> .profile-icon:nth-child(5))::before{
+      content: '';
 
-    } */
+    }
   }
 
   [data-slot=dropdown-menu-checkbox-item]:focus{

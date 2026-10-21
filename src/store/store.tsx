@@ -207,7 +207,8 @@ export const useFilter  = create<FliterStore>((set) => ({
 
 //FOR USER ACTION NOTIFS
 type ActionStatus = '' | 'update' | 'delete'
-
+type BatchType = '' | 'multiple' | 'single'
+ 
 type UserStatus = {
   status: ActionStatus;
   userID: string;
@@ -215,18 +216,36 @@ type UserStatus = {
   lastname: string;
 }
 
+type Trigger = {
+  batchType: BatchType
+  isOpen:boolean
+}
+
 type UserStatusStore = {
+  Trigger:Trigger;
   userAction:Partial<UserStatus>
+  setTrigger: (setTrigger: Required<Trigger>) => void;
   setUserAction: (UserStatus: Required<UserStatus>) => void;
 }
 export const useUserAction  = create<UserStatusStore>((set) => ({
+  Trigger:{
+    batchType: 'single',
+    isOpen: false
+  },
   userAction:{
     status: '',
     userID: '',
     firstname: '',
     lastname: '',
   },
- setUserAction: (userStatus) =>
+  setTrigger: (trigger:any) => 
+    set((state) => ({
+      Trigger: {
+        ...state.Trigger,
+        ...trigger,
+      },
+    })),
+  setUserAction: (userStatus) =>
     set((state) => ({
       userAction: {
         ...state.userAction,

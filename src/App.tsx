@@ -26,14 +26,17 @@ import {
 } from "@components/ui/item"
 import { Button } from "@components/ui/button";
 import { Spinner } from "@components/ui/spinner"
+import { Toaster } from "@components/ui/toast";
 //states
 import { useColorScheme } from './store/store';
 import { useLogin, useProfile } from "@src/store/store";
 //helpers
 import { useRoute, usePath } from "@lib/helpers/routes";
+import { DeleteUser } from "@components/delete_user/deleteUser";
 //Hooks
 import { useRestoreAuthSession } from '@hooks/logs';
 import { useGetUser } from '@hooks/Profile';
+import { setAcknowledge, getAcknowledge } from '@lib/helpers/cookies';
 
 function App() {
   //hooks
@@ -45,7 +48,7 @@ function App() {
 
   const [showError, setShowError] = useState({
     errorLogs:false,
-    showModal:false
+    showAlert:false
   });
   const [showStatus, setShowStatus] = useState(false);
 
@@ -63,13 +66,6 @@ function App() {
   const cleanPath = usePath();
   const reservedPaths = ['about', 'update', 'register'];
   const { id } = useParams();
-  // Check Cookies
-  const checkCookies = () => {
-  const item = document.cookie
-      .split("; ")
-      .find((cookie) => cookie.startsWith('session'))?.split(',')[0];
-    return item ? false : true;
-  };
 
   const { data: validUser } = useGetUser({
     id: session && Object(session).map((item: any) => item.UserId)[0] || userID
@@ -123,24 +119,24 @@ function App() {
     if (isError && !showError.errorLogs) {
       setShowError({
         errorLogs:true,
-        showModal:true
+        showAlert:true
       });
       setTimeout(() => {
-        setShowError((prev) => ({ ...prev, showModal:false }));
+        setShowError((prev) => ({ ...prev, showAlert:false }));
       }, 5300)
     }
   }, [showError.errorLogs, isError]);
 
   useEffect(()=>{
-    cookies === "idle" && setCookies(checkCookies() ? "idle":"yes");
-  },[cookies]);
+    cookies === "idle" && setCookies(getAcknowledge() ? "yes":"idle");
+  },[cookies,getAcknowledge]);
 
   return (
     <>
       <Preloader />
       <Header />
-
-      <Item variant="outline" className={clsx({ 'show': cookies === "idle" })}>
+      {/* Cookies Prompt */}
+      <Item variant="outline" className={clsx({ 'show':cookies === "idle" })}>
         <ItemContent>
           <ItemTitle>
             <Cookie/>
@@ -153,12 +149,16 @@ function App() {
         <ItemActions>
           <Button 
             className="stroke sm"
-            onClick={()=>{setCookies('yes')}}>
+            onClick={()=>{
+              setCookies("yes");
+              setAcknowledge()
+            }}>
             Got It
           </Button>
         </ItemActions>
       </Item>
 
+       {/* Loading Session */}
       <Alert className={clsx({ 'show': showStatus })}>
         <Spinner/>
         <AlertTitle>Verifiying Session </AlertTitle>
@@ -166,18 +166,19 @@ function App() {
           Please wait, while system is verifitying your session.
         </AlertDescription>
       </Alert>
-
-      <Alert className={clsx({ 'show': showError.showModal })}>
+      
+       {/* Session Error Prompt */}
+      <Alert className={clsx({ 'show': showError.showAlert })}>
         <OctagonX className='error' />
         <AlertTitle>Session Error</AlertTitle>
         <AlertDescription>
           Unable to verify your session.
         </AlertDescription>
         <Button className="icon cooldown-close" onClick={() => {
-          setShowError((prev) => ({ ...prev, showModal:false }));
+          setShowError((prev) => ({ ...prev, showAlert:false }));
         }}><X /></Button>
       </Alert>
-
+      
       <main className={clsx(
         'flex items-center flex-col',
         currentScheme,
@@ -188,6 +189,8 @@ function App() {
           <Outlet />
         </div>
       </main>
+      <Toaster/>
+      <DeleteUser/>
       <Footer />
     </>
   )

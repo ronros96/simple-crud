@@ -1,7 +1,12 @@
 /* MODAL / DIALOG BOX */
+[data-slot=dialog-overlay]{
+  z-index: 55;
+}
+
 .modal{
   padding: 1rem;
   background-color: var(--frame-bg);
+  z-index: 60;
   
   &.sm{
     max-width: 25rem;
@@ -35,6 +40,31 @@
     font-size: var(--font-md);
     color: var(--text-default);
     border-bottom: solid 1px var(--dgray);
+  }
+
+  .profile-list{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    cursor: pointer;
+  
+    .profile-icon{
+      z-index: calc(attr(data-order type(<number>),1) * -1);
+      box-shadow: .25rem 0 .5rem #000000ee;
+    }
+
+    .profile-icon:first-child{
+      margin-left: 0;
+    }
+
+    .profile-icon:not(:first-child){
+      margin-left: -1rem;
+
+    }
+  }
+
+  .profile-list p{
+    flex: 1 0 100%;
   }
   
   @media screen and (min-width: 680px) {

@@ -72,7 +72,7 @@ const ProfileCard = () => {
   }, [Users]);
 
   return (
-    <div className='grid lg:grid-cols-3 md:grid-cols-2 gap-[var(--gap)] mt-5'>
+    <div className='profile-cards'>
       {selected && Users?.map((user: any) => {
         return <div
           className={clsx('profile-card', { 'hidden': !isVisible(`${user.id}-${user.username}`) })}
