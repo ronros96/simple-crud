@@ -1,10 +1,10 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 //UI
-import { toast, Toaster } from "@components/ui/toast";
+import { toast } from "@components/ui/toast";
 //Hooks
-import { useGetUsers, useGetUser } from '@hooks/Profile';
+import { useGetUsers} from '@hooks/Profile';
 //Global States
-import { useLogin, useUserAction, useUser } from "@src/store/store";
+import { useLogin, useUser } from "@src/store/store";
 //contents
 import Contents from '../contents/contents';
 

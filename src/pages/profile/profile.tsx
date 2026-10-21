@@ -48,7 +48,7 @@ import BackCancel from '@components/back_cancel/backCancel';
 import { DeleteUserButton } from "@components/delete_user/deleteUser";
 import { Eye, EyeOff } from "lucide-react"
 //state
-import { useErrors, useProfile, useUser, useLogin, useUserAction } from "@src/store/store";
+import { useErrors, useProfile, useUser, useLogin } from "@src/store/store";
 // helpers
 import { checkAllFields, showRequirements, fieldError, FieldOrginizer } from "@src/lib/helpers/field";
 import { ProfileFields } from "@src/fields/profile";
