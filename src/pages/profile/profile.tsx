@@ -42,10 +42,10 @@ import { Button } from "@components/ui/button"
 import { Label } from "@components/ui/label"
 import { Checkbox } from "@components/ui/checkbox"
 import { PhoneInput } from "@components/ui/phone"
-import { toast, Toaster } from "@components/ui/toast"
+import { toast } from "@components/ui/toast"
 import { Spinner } from "@components/ui/spinner"
 import BackCancel from '@components/back_cancel/backCancel';
-import DeleteUser from "@components/delete_user/deleteUser";
+import { DeleteUserButton } from "@components/delete_user/deleteUser";
 import { Eye, EyeOff } from "lucide-react"
 //state
 import { useErrors, useProfile, useUser, useLogin, useUserAction } from "@src/store/store";
@@ -109,8 +109,6 @@ const Profile = () => {
   const countryRef = useRef<HTMLElement | null>(null);
   const stateRef = useRef<HTMLElement | null>(null);
   const cityRef = useRef<HTMLElement | null>(null);
-  //Notification state
-  const setUserAction = useUserAction((state: any) => state.setUserAction);
   //navigation
   const { toSuccess, toDashboard } = useRoute();
 
@@ -255,10 +253,12 @@ const Profile = () => {
             }
           });
           clearUser();
-          setUserAction({
-            status:'update',
-            userID:userID
+          
+          toast.add({
+            type: "success",
+            description: <><strong>{firstname}{' '}{lastname}</strong><br/>has been successfully updated.</>
           })
+
           if (credUpdate) {
             setFormType('success');
             toSuccess();
@@ -708,7 +708,7 @@ const Profile = () => {
             <div className='flex items-center justify-end gap-[var(--gap)]'>Closing <Spinner /></div> :
             <div className={clsx('field-group', { 'error': fieldError(errors, 'terms') })}>
               <div className='flex justify-between gap-5'>
-                {formType === "update-user" && <DeleteUser variant="stroke" />}
+                {formType === "update-user" && <DeleteUserButton variant="stroke" />}
                 <div className='flex gap-5 flex-[1_0_auto] justify-end'>
                   <Button type="submit">
                     {newProfile.includes(formType) ? 'Register' : 'Update'}
@@ -720,8 +720,6 @@ const Profile = () => {
           }
         </div>
       </form>
-      
-      <Toaster />
     </section>
   )
 }

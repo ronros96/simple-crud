@@ -86,14 +86,7 @@
     font-family: var(--pixel);
     font-weight: 700;
     border-radius: 100vmax;
-    border: solid 2px transparent;
     color: var(--white);
-
-    transition: border-color .2s var(--ease);
-
-    &:hover{
-      border-color: var(--button);
-    }
 
     @media screen and (min-width: 680px) {
       cursor: pointer;

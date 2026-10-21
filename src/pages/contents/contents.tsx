@@ -19,7 +19,7 @@ import {
 } from "@components/ui/dropdown-menu";
 import { Button } from "@components/ui/button";
 import SearchBar from '@components/search/search';
-import DeleteUser from "@components/delete_user/deleteUser";
+import { DeleteUserButton } from "@components/delete_user/deleteUser";
 //storage
 import { useProfile, useUser, useSearch, useFilter, useDelete } from "@src/store/store";
 import { useGetUsers } from '@hooks/Profile';
@@ -108,6 +108,15 @@ const Contents = () =>{
     );
   }
 
+  const viewCollected = () =>{
+    setSelected((prev: any[]) =>
+      prev.map((item: any) => ({
+        ...item,
+        visible: item.value ? true : false,
+      }))
+    );
+  } 
+
   useEffect(()=>{
     if(Object.values(viewFilter).some((filters => !filters))){
       setViewFilter({...viewFilter,all:true})
@@ -125,6 +134,7 @@ const Contents = () =>{
   },[searchValue])
 
   useEffect(()=>{
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     setUsers(users)
   },[Users,users,complete])
 
@@ -223,7 +233,10 @@ const Contents = () =>{
               >
                 <CircleX/> Unselect All
               </DropdownMenuItem>
-              <DropdownMenuItem disabled={!hasSelected}>
+              <DropdownMenuItem 
+                disabled={!hasSelected}
+                onClick={viewCollected}
+              >
                 <View/>
                 View Selected
                 <div className='collected'>
@@ -237,7 +250,7 @@ const Contents = () =>{
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DeleteUser 
+              <DeleteUserButton 
                 variant="icon-text" 
                 disabled={!hasSelected}
                 batchType="multiple"
@@ -247,10 +260,7 @@ const Contents = () =>{
         </DropdownMenu>
       </div>
 
-      {Users?.length > 0 ? 
-      <ProfileCard/>:
-      <div className="no-result">No Result</div>
-      }
+      {Users?.length > 0 && <ProfileCard/>}
     </div>
   </>
   }

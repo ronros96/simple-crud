@@ -5,8 +5,6 @@ import {
 } from "lucide-react";
 import {
   Dialog,
-  DialogClose,
-  DialogTrigger,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -15,19 +13,55 @@ import {
 } from "@components/ui/dialog";
 import { Progress } from "@components/ui/progress";
 import { Button } from "@components/ui/button";
+import { toast } from "@components/ui/toast";
 //hooks
 import { useDeleteUser } from '@hooks/Profile';
 //states
 import { useUser, useDelete, useProfile, useUserAction} from "@src/store/store";
 //helpers
 import { usePath, useRoute } from "@lib/helpers/routes";
-import { clearForm, clearUser } from "@lib/helpers/user";
+import { clearForm, clearUser, profileIcon } from "@lib/helpers/user";
+import { SiTrueup } from "react-icons/si";
 
-const DeleteUser = (props:any) => {
+const DeleteUserButton = (props:any) =>{
   //props
   const variant = props.variant;
   const disabled = props.disabled;
   const batchType = props.batchType;
+  const setTrigger = useUserAction((state: any) => state.setTrigger);
+
+  const openDialog = () =>{
+    setTrigger({
+      batchType: batchType,
+      isOpen: SiTrueup
+    });
+  }
+
+  return variant === 'icon-text' ?
+  <Button 
+    className="text-only delete"
+    disabled={disabled}
+    onClick={openDialog}
+  >
+    <UserRoundX/>
+    Delete User
+  </Button>:
+  variant === 'stroke' ?
+  <Button 
+    className="delete stroke sm"
+    onClick={openDialog}
+  >
+    Delete User
+  </Button>:
+  <Button
+    className="delete sm"
+    onClick={openDialog}
+  >
+    Delete User
+  </Button>
+}
+
+const DeleteUser = () => {
   //routes
   const cleanPath = usePath();
   const { toDashboard } = useRoute()
@@ -37,11 +71,11 @@ const DeleteUser = (props:any) => {
   const setFormType = useProfile((state: any) => state.setFormType);
   const complete = useDelete((state:any) => state.complete);
   const setComplete = useDelete((state:any) => state.setComplete);
-  const setUserAction = useUserAction((state: any) => state.setUserAction);
+  const Trigger = useUserAction((state: any) => state.Trigger);
+  const setTrigger = useUserAction((state: any) => state.setTrigger);
   //hooks
   const deleteUser = useDeleteUser();
   //local states
-  const [open,setOpen] = useState(false);
   const [progress, setProgress] = useState(0);
   const [confirm, setConfirm] = useState(false);
   const timerRef = useRef<number | null>(null);
@@ -63,6 +97,10 @@ const DeleteUser = (props:any) => {
       }
       if(percentage === 100){
         setConfirm(true);
+        if(cleanPath === 'update'){
+          setFormType('dashboard');
+          toDashboard();
+        }
         setTimeout(()=>{
           handleComplete();
         },1000)
@@ -82,21 +120,19 @@ const DeleteUser = (props:any) => {
   const handleComplete = async () => {
     setProgress(0);
     try {
-      const usersToDelete = batchType === 'multiple' ? selected.filter(
+      const usersToDelete = Trigger.batchType === 'multiple' ? selected.filter(
         (user: User) => user.value
       ) : [UserPicked];
       const total = usersToDelete.length;
 
       for (let i = 0; i < total; i++) {
         const user = usersToDelete[i];
-        setUserAction({
-          status: 'delete',
-          userID: user.id,
-          firstname: user.firstname,
-          lastname: user.lastname
-        });
         await deleteUser.mutateAsync(user.userID);
         const deletePercent = ((i + 1) / total) * 100;
+        toast.add({
+          type: "error",
+          description: <><strong>{user.firstname}{' '}{user.lastname}</strong><br/>has been successfully deleted.</>,
+        });
         setProgress(deletePercent);
         if(i + 1 === total){
           setComplete(true);
@@ -108,58 +144,23 @@ const DeleteUser = (props:any) => {
   };
 
   const deleteDone = () =>{
-    // console.log(UserAction)
+    setTrigger({
+      batchType:'',
+      isOpen:false
+    });
+    setProgress(0);
+    setConfirm(false);
+    setComplete(false);
     if(cleanPath === 'update'){
       clearForm();
       clearUser();
-      setFormType('dashboard');
-      toDashboard();
     }else{
       clearUser();
-      setOpen(false)
     }
   }
 
   return (
-    <Dialog 
-      open={open}
-      onOpenChange={() =>{
-        setOpen(!open);
-        setProgress(0);
-        setConfirm(false);
-        setComplete(false);
-      }}>
-        <DialogTrigger render={
-        variant === 'icon-text' ?
-        <Button 
-          className="text-only delete"
-          disabled={disabled}
-          onClick={()=>{
-            setOpen(!open)
-
-          }}
-        >
-          <UserRoundX/>
-          Delete User
-        </Button>:
-        variant === 'stroke' ?
-        <Button 
-          className="delete stroke sm"
-          onClick={()=>{
-            setOpen(!open)
-          }}
-        >
-          Delete User
-        </Button>:
-        <Button
-          className="delete sm"
-          onClick={()=>{
-            setOpen(!open)
-          }}
-        >
-          Delete User
-        </Button>
-      } />
+    <Dialog open={Trigger.isOpen}>
       <DialogContent 
         className="modal sm all-centered"
         showCloseButton={false}
@@ -167,7 +168,19 @@ const DeleteUser = (props:any) => {
         <DialogHeader>
           <DialogTitle>Delete {selectedCount > 1 ? 'Users':'User'}?</DialogTitle>
           <DialogDescription className="text-center mb-0">
-            All Selected {selectedCount > 1 ? 'users':'user'} will be permanently deleted.
+            {Trigger.batchType === 'multiple' ? 
+              <>
+              <p>All Selected {selectedCount > 1 ? 'users':'user'} will be permanently deleted.</p>
+              <div className="profile-list">
+                {
+                  selected.map((user:any,ctr:number)=>{
+                    return user.value && profileIcon(user.firstname,user.lastname,ctr)
+                  })
+                }
+              </div>
+              </>:
+              <><strong>{UserPicked.firstname}{' '}{UserPicked.lastname}</strong> will be permanently deleted.</>
+            }
           </DialogDescription>
           <Progress value={complete ? 100 : progress}>
             {
@@ -207,10 +220,21 @@ const DeleteUser = (props:any) => {
               Okay
             </Button>
           }
-          {!confirm && <DialogClose render={<Button variant="outline" className="stroke sm">Cancel</Button>}/>}
+          {!confirm && <Button 
+              className="stroke sm"
+              onClick={()=>setTrigger({
+                batchType:'',
+                isOpen:false
+              })}
+            >
+              Cancel
+          </Button>}
         </DialogFooter>
       </DialogContent>
     </Dialog>
   )
 }
-export default DeleteUser
+export {
+  DeleteUserButton,
+  DeleteUser
+}
