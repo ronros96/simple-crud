@@ -1,0 +1,20 @@
+[
+  {
+    "username": "john.doe",
+      "password": "@Dm1n123456",
+      "firstname": "John",
+      "lastname": "Doe",
+      "contact": "+63 990 123 4567",
+      "email": "john.doe@gmail.com",
+      "address": [
+        "PH",
+        "NCR",
+        "Taguig",
+        "124-I, 11th street.",
+        "Brgy. Umusad"
+      ],
+      "logged": "2026-09-13T23:42:00.922Z",
+      "bot": false,
+      "id": "1"
+  }
+]

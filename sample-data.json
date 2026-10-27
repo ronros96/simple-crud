@@ -1,7 +1,7 @@
 [
   {
     "username": "john.doe",
-    "password": "@Dm1n12345",
+    "password": "f2673eba86d08af7b647f480fa2fc11a13403676540d8a6914853bce0a4a30f0",
     "firstname": "John",
     "lastname": "Doe",
     "contact": "+63 990 123 4567",
@@ -14,7 +14,7 @@
       "Brgy. Umusad"
     ],
     "logged": "2026-09-13T23:42:00.922Z",
-    "bot":false,
+    "bot": false,
     "id": "1"
   },
   {

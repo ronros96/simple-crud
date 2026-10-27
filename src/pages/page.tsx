@@ -1,6 +1,7 @@
 import './page.css';
 import { useState } from 'react';
 import clsx from 'clsx';
+import { sha256 } from 'crypto-hash';
 //ui
 import {
   Eye,
@@ -91,16 +92,28 @@ const Page = () => {
     username: string,
     password: string
   ) => {
+    const hashPass = await sha256(password);
     const match = allUsers?.find(
-      (u: any) =>
-        u.username === username.trim() &&
-        u.password === password
+      (u: any) => u.username === username.trim()
     );
+    // console.log(password,hashPass)
 
     if (!match) {
       setForm({ username: '', password: '' });
       setErrors(['login']);
       return;
+    }else{
+      console.log(match.password ,hashPass)
+      if(!match.bot && match.password !== hashPass){
+        setForm({ username: '', password: '' });
+        setErrors(['login']);
+        return;
+      }
+      else if(match.bot && match.password !== password){
+        setForm({ username: '', password: '' });
+        setErrors(['login']);
+        return;
+      }
     }
     clear();
     setFirstname(match.firstname)
