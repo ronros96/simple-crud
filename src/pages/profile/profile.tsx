@@ -1,9 +1,11 @@
 import './profile.css';
 //types
 import type { User } from '@src/fields/type';
-import clsx from 'clsx';
+
 import { useParams } from 'react-router';
 import { useEffect, useState, useRef, useMemo } from "react";
+import clsx from 'clsx';
+import { sha256 } from 'crypto-hash';
 import { City, Country, State } from "country-state-city";
 import type { ICountry, IState, ICity } from "country-state-city";
 //ui
@@ -217,12 +219,13 @@ const Profile = () => {
 
     if (Object.values(result).every(value => value === "good")) {
       setSaving(true);
-      if (newProfile.includes(formType)) {
+      const hashPassword = await sha256(password);
+      if (newProfile.includes(formType) && hashPassword) {
         try {
           await createUser.mutateAsync({
             id: userID,
             username: username,
-            password: password,
+            password: hashPassword,
             firstname: firstname,
             lastname: lastname,
             contact: contact,
@@ -244,7 +247,7 @@ const Profile = () => {
             user: {
               id: userID,
               username: username,
-              password: password,
+              password: hashPassword,
               firstname: firstname,
               lastname: lastname,
               contact: contact,
